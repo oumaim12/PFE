@@ -3,7 +3,7 @@ import 'package:http/http.dart' as http;
 
 class ApiService {
   // Remplace par l'IP de ton PC
-  static const String baseUrl = "http://192.168.100.71/mon_api";
+  static const String baseUrl = "http://172.20.10.2/mon_api";
   
   // Fonction pour tester la connexion avec affichage détaillé
   static Future<Map<String, dynamic>> testConnexion() async {
@@ -14,7 +14,7 @@ class ApiService {
         body: jsonEncode({"email": "johndoe@example.com", "password": "11111"}),
       );
       
-      // Capturer toutes les informations utiles pour le débo gage
+      // Capturer toutes les informations utiles pour le débogage
       return {
         "statusCode": response.statusCode,
         "headers": response.headers,
@@ -65,5 +65,75 @@ class ApiService {
         "message": "Erreur de connexion: $e",
       };
     }
+  }
+
+
+
+
+
+
+  // Méthode d'inscription
+  static Future<Map<String, dynamic>> register(String name, String email, String password) async {
+    try {
+      // Afficher les informations de débogage
+      print("Tentative d'inscription avec: $name / $email");
+      
+      // Créer la requête HTTP
+      final response = await http.post(
+        Uri.parse("$baseUrl/register.php"),
+        headers: {
+          "Content-Type": "application/json",
+          "Accept": "application/json",
+        },
+        body: jsonEncode({
+          "name": name,
+          "email": email,
+          "password": password,
+        }),
+      );
+      
+      // Afficher les informations de la réponse pour le débogage
+      print("Réponse API - StatusCode: ${response.statusCode}");
+      print("Réponse API - Headers: ${response.headers}");
+      print("Réponse API - Body: '${response.body}'");
+      
+      // Vérifier si la réponse est vide
+      if (response.body.isEmpty) {
+        return {
+          "success": false,
+          "message": "Réponse vide du serveur (code: ${response.statusCode})",
+        };
+      }
+      
+      // Vérifier si la réponse est au format JSON
+      try {
+        final Map<String, dynamic> data = jsonDecode(response.body);
+        
+        // Renvoyer les données structurées
+        return {
+          "success": data['success'] ?? false,
+          "message": data['message'] ?? "Réponse du serveur sans message",
+          "data": data,
+        };
+      } catch (e) {
+        // Erreur de parsing JSON
+        return {
+          "success": false,
+          "message": "Erreur de format de réponse: ${e.toString()}. Contenu: ${response.body.substring(0, min(100, response.body.length))}...",
+        };
+      }
+    } catch (e) {
+      // Erreur de connexion ou autre erreur
+      print("Erreur complète: $e");
+      return {
+        "success": false,
+        "message": "Erreur de connexion: ${e.toString()}",
+      };
+    }
+  }
+  
+  // Fonction utilitaire pour limiter la longueur d'une chaîne
+  static int min(int a, int b) {
+    return (a < b) ? a : b;
   }
 }
