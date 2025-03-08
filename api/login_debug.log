@@ -1,0 +1,485 @@
+Array
+(
+    [email] => johndoe@example.com
+    [password] => 11111
+)
+
+Utilisateur trouvé: Array
+(
+    [id] => 1
+    [name] => John Doe
+    [email] => johndoe@example.com
+    [email_verified_at] => 
+    [password] => 11111
+    [remember_token] => 
+    [created_at] => 
+    [updated_at] => 
+)
+Array
+(
+    [email] => johndoe@example.com
+    [password] => 11111
+)
+
+Utilisateur trouvé: Array
+(
+    [id] => 1
+    [name] => John Doe
+    [email] => johndoe@example.com
+    [email_verified_at] => 
+    [password] => 11111
+    [remember_token] => 
+    [created_at] => 
+    [updated_at] => 
+)
+Array
+(
+    [email] => johndoe@example.com
+    [password] => 11111
+)
+
+Utilisateur trouvé: Array
+(
+    [id] => 1
+    [name] => John Doe
+    [email] => johndoe@example.com
+    [email_verified_at] => 
+    [password] => 11111
+    [remember_token] => 
+    [created_at] => 
+    [updated_at] => 
+)
+Array
+(
+    [email] => johndoe@example.com
+    [password] => 1111
+)
+
+Utilisateur trouvé: Array
+(
+    [id] => 1
+    [name] => John Doe
+    [email] => johndoe@example.com
+    [email_verified_at] => 
+    [password] => 11111
+    [remember_token] => 
+    [created_at] => 
+    [updated_at] => 
+)
+Array
+(
+    [email] => johndoe@example.com
+    [password] => 11111
+)
+
+Utilisateur trouvé: Array
+(
+    [id] => 1
+    [name] => John Doe
+    [email] => johndoe@example.com
+    [email_verified_at] => 
+    [password] => 11111
+    [remember_token] => 
+    [created_at] => 
+    [updated_at] => 
+)
+Array
+(
+    [email] => johndoe@example.com
+    [password] => 11111
+)
+
+Utilisateur trouvé: Array
+(
+    [id] => 1
+    [name] => John Doe
+    [email] => johndoe@example.com
+    [email_verified_at] => 
+    [password] => 11111
+    [remember_token] => 
+    [created_at] => 
+    [updated_at] => 
+)
+Array
+(
+    [email] => oumaima@gmail.com
+    [password] => 1234
+)
+
+Utilisateur trouvé: Array
+(
+    [id] => 2
+    [name] => 
+    [email] => oumaima@gmail.com
+    [email_verified_at] => 
+    [password] => 1234
+    [remember_token] => 
+    [created_at] => 
+    [updated_at] => 
+)
+Array
+(
+    [email] => oumaima@gmail.com
+    [password] => 1234
+)
+
+Utilisateur trouvé: Array
+(
+    [id] => 2
+    [name] => 
+    [email] => oumaima@gmail.com
+    [email_verified_at] => 
+    [password] => 1234
+    [remember_token] => 
+    [created_at] => 
+    [updated_at] => 
+)
+Array
+(
+    [email] => oumaima@gmail.com
+    [password] => 1234
+)
+
+Utilisateur trouvé: Array
+(
+    [id] => 2
+    [name] => 
+    [email] => oumaima@gmail.com
+    [email_verified_at] => 
+    [password] => 1234
+    [remember_token] => 
+    [created_at] => 
+    [updated_at] => 
+)
+Array
+(
+    [email] => oumaima@gmail.com
+    [password] => 1234
+)
+
+Utilisateur trouvé: Array
+(
+    [id] => 2
+    [name] => 
+    [email] => oumaima@gmail.com
+    [email_verified_at] => 
+    [password] => 1234
+    [remember_token] => 
+    [created_at] => 
+    [updated_at] => 
+)
+Array
+(
+    [email] => oumaima@gmail.com
+    [password] => 1234
+)
+
+Utilisateur trouvé: Array
+(
+    [id] => 2
+    [name] => 
+    [email] => oumaima@gmail.com
+    [email_verified_at] => 
+    [password] => 1234
+    [remember_token] => 
+    [created_at] => 
+    [updated_at] => 
+)
+Array
+(
+    [email] => oumaima@gmail.com
+    [password] => 1234
+)
+
+Utilisateur trouvé: Array
+(
+    [id] => 2
+    [name] => 
+    [email] => oumaima@gmail.com
+    [email_verified_at] => 
+    [password] => 1234
+    [remember_token] => 
+    [created_at] => 
+    [updated_at] => 
+)
+Array
+(
+    [email] => oumaima@gmail.com
+    [password] => 1234
+)
+
+Utilisateur trouvé: Array
+(
+    [id] => 2
+    [name] => 
+    [email] => oumaima@gmail.com
+    [email_verified_at] => 
+    [password] => 1234
+    [remember_token] => 
+    [created_at] => 
+    [updated_at] => 
+)
+Array
+(
+    [name] => hamza
+    [email] => hamza@gmail.com
+    [password] => 0000
+)
+Array
+(
+    [name] => hamza
+    [email] => hamza@gmail.com
+    [password] => 0000
+)
+Array
+(
+    [name] => hamza
+    [email] => hamza@gmail.com
+    [password] => 0000
+)
+Array
+(
+    [email] => oumaima@gmail.com
+    [password] => 1234
+)
+
+Utilisateur trouvé: Array
+(
+    [id] => 2
+    [name] => 
+    [email] => oumaima@gmail.com
+    [email_verified_at] => 
+    [password] => 1234
+    [remember_token] => 
+    [created_at] => 
+    [updated_at] => 
+)
+Array
+(
+    [name] => hamza
+    [email] => hamza@gmail.com
+    [password] => 1234
+)
+Array
+(
+    [name] => hamza
+    [email] => hamza@gmail.com
+    [password] => 1234
+)
+Array
+(
+    [name] => hamza
+    [email] => hmza@gmail.com
+    [password] => aaaa1234
+)
+Array
+(
+    [name] => hamza
+    [email] => hmza@gmail.com
+    [password] => aaaa1234
+)
+Array
+(
+    [name] => hamza
+    [email] => hamza@gmail.com
+    [password] => aaaa1234
+)
+Array
+(
+    [name] => hamza
+    [email] => hamza@gmail.com
+    [password] => aaaa1234
+)
+Array
+(
+    [name] => oumaima
+    [email] => oumaima@gmail.com
+    [password] => oumaima
+)
+Array
+(
+    [name] => salma
+    [email] => salma@gmail.com
+    [password] => 0000
+)
+Array
+(
+    [email] => salma@gmail.com
+    [password] => 1234
+)
+
+Utilisateur trouvé: Array
+(
+    [id] => 7
+    [name] => 
+    [email] => salma@gmail.com
+    [email_verified_at] => 
+    [password] => $2y$10$5WLzdnP57EkTrqLtdjoUoenEBKy78zvgYXdymaEUOkjYUysuDQufi
+    [remember_token] => 
+    [created_at] => 
+    [updated_at] => 
+)
+Array
+(
+    [email] => salma@gmail.com
+    [password] => 0000
+)
+
+Utilisateur trouvé: Array
+(
+    [id] => 7
+    [name] => 
+    [email] => salma@gmail.com
+    [email_verified_at] => 
+    [password] => $2y$10$5WLzdnP57EkTrqLtdjoUoenEBKy78zvgYXdymaEUOkjYUysuDQufi
+    [remember_token] => 
+    [created_at] => 
+    [updated_at] => 
+)
+Array
+(
+    [email] => oumaima@gmail.com
+    [password] => 1234
+)
+
+Utilisateur trouvé: Array
+(
+    [id] => 6
+    [name] => 
+    [email] => oumaima@gmail.com
+    [email_verified_at] => 
+    [password] => $2y$10$VTkDVNzacNQMvPuSFW3Dw.5FT7HGtTpk.wqecT5lwRYwu2glGaHfO
+    [remember_token] => 
+    [created_at] => 
+    [updated_at] => 
+)
+Array
+(
+    [email] => salma@gmail.com
+    [password] => 1234
+)
+
+Utilisateur trouvé: Array
+(
+    [id] => 7
+    [name] => 
+    [email] => salma@gmail.com
+    [email_verified_at] => 
+    [password] => $2y$10$5WLzdnP57EkTrqLtdjoUoenEBKy78zvgYXdymaEUOkjYUysuDQufi
+    [remember_token] => 
+    [created_at] => 
+    [updated_at] => 
+)
+Array
+(
+    [email] => salma@gmail.com
+    [password] => 0000
+)
+
+Utilisateur trouvé: Array
+(
+    [id] => 7
+    [name] => 
+    [email] => salma@gmail.com
+    [email_verified_at] => 
+    [password] => $2y$10$5WLzdnP57EkTrqLtdjoUoenEBKy78zvgYXdymaEUOkjYUysuDQufi
+    [remember_token] => 
+    [created_at] => 
+    [updated_at] => 
+)
+Array
+(
+    [email] => salma@gmail.com
+    [password] => 0000
+)
+Array
+(
+    [email] => salma@gmail.com
+    [password] => 0000
+)
+
+Utilisateur trouvé: Array
+(
+    [id] => 7
+    [name] => 
+    [email] => salma@gmail.com
+    [email_verified_at] => 
+    [password] => $2y$10$5WLzdnP57EkTrqLtdjoUoenEBKy78zvgYXdymaEUOkjYUysuDQufi
+    [remember_token] => 
+    [created_at] => 
+    [updated_at] => 
+)
+Array
+(
+    [email] => oumaima@gmail.com
+    [password] => 0000
+)
+
+Utilisateur trouvé: Array
+(
+    [id] => 6
+    [name] => 
+    [email] => oumaima@gmail.com
+    [email_verified_at] => 
+    [password] => $2y$10$VTkDVNzacNQMvPuSFW3Dw.5FT7HGtTpk.wqecT5lwRYwu2glGaHfO
+    [remember_token] => 
+    [created_at] => 
+    [updated_at] => 
+)
+Array
+(
+    [email] => salma@gmail.com
+    [password] => 0000
+)
+
+Utilisateur trouvé: Array
+(
+    [id] => 7
+    [name] => 
+    [email] => salma@gmail.com
+    [email_verified_at] => 
+    [password] => $2y$10$5WLzdnP57EkTrqLtdjoUoenEBKy78zvgYXdymaEUOkjYUysuDQufi
+    [remember_token] => 
+    [created_at] => 
+    [updated_at] => 
+)
+Array
+(
+    [email] => salma@gmail.com
+    [password] => 0000
+)
+
+Utilisateur trouvé: Array
+(
+    [id] => 7
+    [name] => 
+    [email] => salma@gmail.com
+    [email_verified_at] => 
+    [password] => $2y$10$5WLzdnP57EkTrqLtdjoUoenEBKy78zvgYXdymaEUOkjYUysuDQufi
+    [remember_token] => 
+    [created_at] => 
+    [updated_at] => 
+)
+Array
+(
+    [name] => saad
+    [email] => saad@gmail.com
+    [password] => 1111
+)
+Array
+(
+    [email] => saad@gmail.com
+    [password] => 1111
+)
+
+Utilisateur trouvé: Array
+(
+    [id] => 8
+    [name] => 
+    [email] => saad@gmail.com
+    [email_verified_at] => 
+    [password] => $2y$10$oI9vdup41HZ2RILs5UIgKOF3VJ3FiBE06AHpmVSEVFu2Fzx2K5JRy
+    [remember_token] => 
+    [created_at] => 
+    [updated_at] => 
+)

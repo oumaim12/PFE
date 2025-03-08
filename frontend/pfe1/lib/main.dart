@@ -1,5 +1,6 @@
 import 'package:flutter/material.dart';
 import 'package:pfe1/api_service.dart';
+import 'package:pfe1/homePage.dart';
 import 'package:pfe1/registerscreen.dart';
 
 void main() {
@@ -17,7 +18,10 @@ class MyApp extends StatelessWidget {
 }
 
 class LoginScreen extends StatefulWidget {
+  const LoginScreen({super.key});
+
   @override
+  // ignore: library_private_types_in_public_api
   _LoginScreenState createState() => _LoginScreenState();
 }
 
@@ -25,138 +29,158 @@ class _LoginScreenState extends State<LoginScreen> {
   final TextEditingController emailController = TextEditingController();
   final TextEditingController passwordController = TextEditingController();
   bool _isLoading = false;
-  String _debugInfo = "";
-
-  // Fonction pour tester la connexion à l'API
-  // void _testConnexion() async {
-  //   setState(() {
-  //     _isLoading = true;
-  //     _debugInfo = "Test de connexion en cours...";
-  //   });
-
-  //   try {
-  //     final result = await ApiService.testConnexion();
-  //     setState(() {
-  //       _debugInfo = "Résultat du test:\n${result.toString()}";
-  //     });
-  //   } catch (e) {
-  //     setState(() {
-  //       _debugInfo = "Erreur lors du test: $e";
-  //     });
-  //   } finally {
-  //     setState(() {
-  //       _isLoading = false;
-  //     });
-  //   }
-  // }
+  String? _errorMessage;
 
   // Fonction pour traiter la connexion
   void _login() async {
     String email = emailController.text.trim();
     String password = passwordController.text.trim();
 
+    // Validation des champs
     if (email.isEmpty || password.isEmpty) {
-      ScaffoldMessenger.of(context).showSnackBar(
-        SnackBar(content: Text("Veuillez remplir tous les champs")),
-      );
+      setState(() {
+        _errorMessage = "Veuillez remplir tous les champs";
+      });
       return;
     }
 
     setState(() {
       _isLoading = true;
-      _debugInfo = "Tentative de connexion...";
+      _errorMessage = null;
     });
 
-    // Appel à la fonction de connexion et affichage du résultat
-    final result = await ApiService.login(email, password);
-    
-    setState(() {
-      _isLoading = false;
-      _debugInfo = "Résultat: $result";
-    });
+    try {
+      // Appel à l'API pour la connexion
+      final result = await ApiService.login(email, password);
 
-    if (result['success']) {
-      ScaffoldMessenger.of(context).showSnackBar(
-        SnackBar(content: Text("Connexion réussie!")),
- 
-      );
-      // Navigation vers l'écran suivant ici si la connexion est réussie
-    } else {
-      ScaffoldMessenger.of(context).showSnackBar(
-        SnackBar(content: Text(result['message'])),
-      );
+      if (result['success'] == true) {
+        // Connexion réussie
+        // ignore: use_build_context_synchronously
+        ScaffoldMessenger.of(context).showSnackBar(
+          const SnackBar(
+            content: Text("Connexion réussie"),
+            backgroundColor: Colors.green,
+            duration: Duration(seconds: 2),
+          ),
+        );
+
+        // Rediriger vers la page d'accueil
+        // ignore: use_build_context_synchronously
+        await Future.delayed(const Duration(seconds: 2));
+        Navigator.pushReplacement(
+          context,
+          MaterialPageRoute(builder: (context) => const HomePage()),
+        );
+      } else {
+        // Afficher le message d'erreur renvoyé par le serveur
+        setState(() {
+          _errorMessage = result['message'] ?? "Une erreur est survenue";
+        });
+      }
+    } catch (e) {
+      setState(() {
+        _errorMessage = "Erreur de connexion: $e";
+      });
+    } finally {
+      setState(() {
+        _isLoading = false;
+      });
     }
   }
 
   @override
   Widget build(BuildContext context) {
     return Scaffold(
-      appBar: AppBar(title: Text("Skbt Motorcycle ")),
-      body: Padding(
-        padding: EdgeInsets.all(20),
-        child: SingleChildScrollView(
-          child: Column(
-            mainAxisAlignment: MainAxisAlignment.center,
-            children: [
-              // Champ de texte pour l'email
-              TextField(
-                controller: emailController,
-                decoration: InputDecoration(
-                  labelText: "Email",
-                  border: OutlineInputBorder(),
-                ),
-                keyboardType: TextInputType.emailAddress,
-              ),
-              SizedBox(height: 10),
-              // Champ de texte pour le mot de passe
-              TextField(
-                controller: passwordController,
-                decoration: InputDecoration(
-                  labelText: "Mot de passe",
-                  border: OutlineInputBorder(),
-                ),
-                obscureText: true, // Masquer le mot de passe
-              ),
-              SizedBox(height: 20),
-              // Bouton pour soumettre le formulaire
-              ElevatedButton(
-                onPressed: _isLoading ? null : _login,
-                child: _isLoading
-                    ? CircularProgressIndicator(color: Colors.white)
-                    : Text("Se connecter"),
-              ),
-              SizedBox(height: 10),
+      appBar: AppBar(
+        title: const Text("Connexion"),
+        centerTitle: true,
+      ),
+      body: SingleChildScrollView(
+        padding: const EdgeInsets.all(20),
+        child: Column(
+          crossAxisAlignment: CrossAxisAlignment.stretch,
+          children: [
+            const SizedBox(height: 20),
 
-
-              //s'inscrire 
-             ElevatedButton(
-  onPressed: () {
-    Navigator.push(
-      context,
-      MaterialPageRoute(builder: (context) => RegisterScreen()),
-    );
-  },
-  child: Text("S'inscrire"),
-),
-              // Bouton pour tester la connexion
-              // ElevatedButton(
-              //   onPressed: _isLoading ? null : _testConnexion,
-              //   child: Text("Tester la connexion à l'API"),
-              // ),
-              SizedBox(height: 20),
-              // Affichage des informations de débogage
-              if (_debugInfo.isNotEmpty)
-                Container(
-                  padding: EdgeInsets.all(10),
-                  color: Colors.grey[200],
-                  width: double.infinity,
-                  child: Text(
-                    _debugInfo,
-                    style: TextStyle(fontFamily: 'monospace'),
-                  ),
+            // Affichage du message d'erreur
+            if (_errorMessage != null)
+              Container(
+                padding: const EdgeInsets.all(10),
+                margin: const EdgeInsets.only(bottom: 20),
+                decoration: BoxDecoration(
+                  color: Colors.red.shade100,
+                  borderRadius: BorderRadius.circular(8),
+                  border: Border.all(color: Colors.red.shade300),
                 ),
-            ],
-          ),
+                child: Text(
+                  _errorMessage!,
+                  style: TextStyle(color: Colors.red.shade800),
+                ),
+              ),
+
+            // Champ d'email
+            TextField(
+              controller: emailController,
+              decoration: const InputDecoration(
+                labelText: "Email",
+                border: OutlineInputBorder(),
+                prefixIcon: Icon(Icons.email),
+              ),
+              keyboardType: TextInputType.emailAddress,
+              textInputAction: TextInputAction.next,
+            ),
+            const SizedBox(height: 15),
+
+            // Champ de mot de passe
+            TextField(
+              controller: passwordController,
+              decoration: const InputDecoration(
+                labelText: "Mot de passe",
+                border: OutlineInputBorder(),
+                prefixIcon: Icon(Icons.lock),
+              ),
+              obscureText: true,
+              textInputAction: TextInputAction.done,
+              onSubmitted: (_) => _login(),
+            ),
+            const SizedBox(height: 25),
+
+            // Bouton de connexion
+            SizedBox(
+              height: 50,
+              child: _isLoading
+                  ? const Center(child: CircularProgressIndicator())
+                  : ElevatedButton(
+                      onPressed: _login,
+                      style: ElevatedButton.styleFrom(
+                        backgroundColor: Theme.of(context).primaryColor,
+                        foregroundColor: Colors.white,
+                      ),
+                      child: const Text(
+                        "Se connecter",
+                        style: TextStyle(fontSize: 16),
+                      ),
+                    ),
+            ),
+            const SizedBox(height: 15),
+
+            // Bouton pour s'inscrire
+            TextButton(
+              onPressed: () {
+                Navigator.push(
+                  context,
+                  MaterialPageRoute(builder: (context) => const RegisterScreen()),
+                );
+              },
+              child: const Text(
+                "Pas de compte ? S'inscrire",
+                style: TextStyle(
+                  color: Colors.blue,
+                  fontSize: 14,
+                ),
+              ),
+            ),
+          ],
         ),
       ),
     );
