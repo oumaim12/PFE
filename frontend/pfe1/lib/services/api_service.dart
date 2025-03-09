@@ -3,7 +3,7 @@ import 'package:http/http.dart' as http;
 
 class ApiService {
   // Remplace par l'IP de ton PC
-  static const String baseUrl = "http://172.20.10.2/mon_api";
+  static const String baseUrl = "http://192.168.1.2/mon_api";
   
   // Fonction pour tester la connexion avec affichage détaillé
   static Future<Map<String, dynamic>> testConnexion() async {
@@ -67,13 +67,14 @@ class ApiService {
     }
   }
 
-
-
-
-
-
-  // Méthode d'inscription
-  static Future<Map<String, dynamic>> register(String name, String email, String password) async {
+  // Méthode d'inscription modifiée pour inclure phone et address
+  static Future<Map<String, dynamic>> register(
+    String name, 
+    String email, 
+    String password, {
+    String? phone,
+    String? address,
+  }) async {
     try {
       // Afficher les informations de débogage
       print("Tentative d'inscription avec: $name / $email");
@@ -89,6 +90,8 @@ class ApiService {
           "name": name,
           "email": email,
           "password": password,
+          "phone": phone,
+          "address": address,
         }),
       );
       

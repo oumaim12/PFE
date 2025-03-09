@@ -1,6 +1,6 @@
 import 'package:flutter/material.dart';
-import 'package:pfe1/homePage.dart';
-import 'api_service.dart';
+import 'home_page.dart';
+import '../services/api_service.dart';
 
 class RegisterScreen extends StatefulWidget {
   const RegisterScreen({super.key});
@@ -14,6 +14,8 @@ class _RegisterScreenState extends State<RegisterScreen> {
   final TextEditingController emailController = TextEditingController();
   final TextEditingController passwordController = TextEditingController();
   final TextEditingController confirmPasswordController = TextEditingController();
+  final TextEditingController phoneController = TextEditingController();
+  final TextEditingController addressController = TextEditingController();
 
   bool _isLoading = false;
   String? _errorMessage;
@@ -28,11 +30,13 @@ class _RegisterScreenState extends State<RegisterScreen> {
     String email = emailController.text.trim();
     String password = passwordController.text.trim();
     String confirmPassword = confirmPasswordController.text.trim();
+    String phone = phoneController.text.trim();
+    String address = addressController.text.trim();
 
     // Validation des champs côté client
-    if (email.isEmpty || password.isEmpty || confirmPassword.isEmpty || name.isEmpty) {
+    if (name.isEmpty || email.isEmpty || password.isEmpty || confirmPassword.isEmpty) {
       setState(() {
-        _errorMessage = "Veuillez remplir tous les champs";
+        _errorMessage = "Veuillez remplir tous les champs obligatoires";
         _isLoading = false;
       });
       return;
@@ -58,11 +62,16 @@ class _RegisterScreenState extends State<RegisterScreen> {
 
     try {
       // Appeler l'API pour l'inscription
-      final result = await ApiService.register(name, email, password);
+      final result = await ApiService.register(
+        name,
+        email,
+        password,
+        phone: phone.isNotEmpty ? phone : null,
+        address: address.isNotEmpty ? address : null,
+      );
 
       // Résultat de l'API
       if (result['success'] == true) {
-  
         // Inscription réussie
         // ignore: use_build_context_synchronously
         ScaffoldMessenger.of(context).showSnackBar(
@@ -73,7 +82,6 @@ class _RegisterScreenState extends State<RegisterScreen> {
           ),
         );
         // Rediriger vers la page d'accueil
-        
         // ignore: use_build_context_synchronously
         await Future.delayed(const Duration(seconds: 2));
         Navigator.pushReplacement(
@@ -131,11 +139,37 @@ class _RegisterScreenState extends State<RegisterScreen> {
             TextField(
               controller: nameController,
               decoration: const InputDecoration(
-                labelText: "Nom complet",
+                labelText: "Nom complet *",
                 border: OutlineInputBorder(),
                 prefixIcon: Icon(Icons.person),
               ),
               keyboardType: TextInputType.text,
+              textInputAction: TextInputAction.next,
+            ),
+            const SizedBox(height: 15),
+            
+            // Champ de téléphone
+            TextField(
+              controller: phoneController,
+              decoration: const InputDecoration(
+                labelText: "Téléphone",
+                border: OutlineInputBorder(),
+                prefixIcon: Icon(Icons.phone),
+              ),
+              keyboardType: TextInputType.phone,
+              textInputAction: TextInputAction.next,
+            ),
+            const SizedBox(height: 15),
+            
+            // Champ d'adresse
+            TextField(
+              controller: addressController,
+              decoration: const InputDecoration(
+                labelText: "Adresse",
+                border: OutlineInputBorder(),
+                prefixIcon: Icon(Icons.location_on),
+              ),
+              keyboardType: TextInputType.streetAddress,
               textInputAction: TextInputAction.next,
             ),
             const SizedBox(height: 15),
