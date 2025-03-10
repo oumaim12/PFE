@@ -3,7 +3,7 @@ import 'package:http/http.dart' as http;
 
 class ApiService {
   // Remplace par l'IP de ton PC
-  static const String baseUrl = "http://192.168.80.83/mon_api";
+  static const String baseUrl = "http://192.168.1.20/mon_api";
 
   // Fonction pour tester la connexion avec affichage détaillé
   static Future<Map<String, dynamic>> testConnexion() async {
