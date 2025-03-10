@@ -57,18 +57,20 @@ class _HomePageState extends State<HomePage> {
   @override
   Widget build(BuildContext context) {
     return Scaffold(
+      backgroundColor: Colors.black,
       appBar: AppBar(
+        backgroundColor: Colors.grey[900],
         title: _showSearchBar && _selectedIndex == 1
             ? AnimatedContainer(
                 duration: Duration(milliseconds: 300),
                 width: double.infinity,
                 height: 40,
                 decoration: BoxDecoration(
-                  color: Colors.white,
+                  color: Colors.grey[800],
                   borderRadius: BorderRadius.circular(20),
                   boxShadow: [
                     BoxShadow(
-                      color: Colors.black12,
+                      color: Colors.black38,
                       blurRadius: 5,
                       offset: Offset(0, 2),)
                   ],
@@ -77,26 +79,28 @@ class _HomePageState extends State<HomePage> {
                   controller: _searchController,
                   decoration: InputDecoration(
                     hintText: 'Rechercher des pièces...',
+                    hintStyle: TextStyle(color: Colors.grey[400]),
                     border: InputBorder.none,
-                    prefixIcon: Icon(Icons.search, color: Colors.orange),
+                    prefixIcon: Icon(Icons.search, color: Colors.red),
                     suffixIcon: _isSearching
                         ? IconButton(
-                            icon: Icon(Icons.close, color: Colors.orange),
+                            icon: Icon(Icons.close, color: Colors.red),
                             onPressed: _toggleSearch,
                           )
                         : null,
                   ),
-                  style: TextStyle(color: Colors.black),
+                  style: TextStyle(color: Colors.white),
                   autofocus: true,
                   onChanged: (value) {
                     // Ajoutez ici la logique de recherche
                   },
                 ),
               )
-            : Text('Moto Parts Shopping'),
+            : Text('Moto Parts Shopping', style: TextStyle(color: Colors.white)),
+        iconTheme: IconThemeData(color: Colors.red),
         actions: [
           IconButton(
-            icon: Icon(Icons.search),
+            icon: Icon(Icons.search, color: Colors.red),
             onPressed: () {
               setState(() {
                 _selectedIndex = 1;
@@ -105,7 +109,7 @@ class _HomePageState extends State<HomePage> {
             },
           ),
           IconButton(
-            icon: Icon(Icons.shopping_cart),
+            icon: Icon(Icons.shopping_cart, color: Colors.red),
             onPressed: () {
               setState(() {
                 _selectedIndex = 3;
@@ -116,10 +120,12 @@ class _HomePageState extends State<HomePage> {
       ),
       body: _pages[_selectedIndex],
       bottomNavigationBar: BottomNavigationBar(
+        backgroundColor: Colors.grey[900],
         currentIndex: _selectedIndex,
         onTap: _onItemTapped,
-        selectedItemColor: Colors.orange,
+        selectedItemColor: Colors.red,
         unselectedItemColor: Colors.grey,
+        type: BottomNavigationBarType.fixed,
         items: [
           BottomNavigationBarItem(icon: Icon(Icons.home), label: 'Accueil'),
           BottomNavigationBarItem(icon: Icon(Icons.search), label: 'Recherche'),
@@ -146,9 +152,18 @@ class HomeContent extends StatelessWidget {
               height: 150,
               decoration: BoxDecoration(
                 borderRadius: BorderRadius.circular(10),
+                gradient: LinearGradient(
+                  colors: [Colors.red.shade900, Colors.red.shade700],
+                  begin: Alignment.topLeft,
+                  end: Alignment.bottomRight,
+                ),
                 image: DecorationImage(
                   image: NetworkImage('https://via.placeholder.com/600x150'),
                   fit: BoxFit.cover,
+                  colorFilter: ColorFilter.mode(
+                    Colors.red.withOpacity(0.3),
+                    BlendMode.overlay,
+                  ),
                 ),
               ),
               child: Center(
@@ -158,6 +173,13 @@ class HomeContent extends StatelessWidget {
                     color: Colors.white,
                     fontSize: 24,
                     fontWeight: FontWeight.bold,
+                    shadows: [
+                      Shadow(
+                        color: Colors.black,
+                        offset: Offset(1, 1),
+                        blurRadius: 3,
+                      ),
+                    ],
                   ),
                 ),
               ),
@@ -165,7 +187,11 @@ class HomeContent extends StatelessWidget {
             SizedBox(height: 20),
             Text(
               'Suggestions pour vous',
-              style: TextStyle(fontSize: 20, fontWeight: FontWeight.bold),
+              style: TextStyle(
+                fontSize: 20, 
+                fontWeight: FontWeight.bold,
+                color: Colors.white,
+              ),
             ),
             SizedBox(height: 10),
             GridView.builder(

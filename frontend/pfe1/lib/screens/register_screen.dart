@@ -108,9 +108,15 @@ class _RegisterScreenState extends State<RegisterScreen> {
   @override
   Widget build(BuildContext context) {
     return Scaffold(
+      backgroundColor: Colors.black,
       appBar: AppBar(
-        title: const Text("Créer un compte"),
+        backgroundColor: Colors.grey[900],
+        title: const Text(
+          "Créer un compte",
+          style: TextStyle(color: Colors.white),
+        ),
         centerTitle: true,
+        iconTheme: IconThemeData(color: Colors.red),
       ),
       body: SingleChildScrollView(
         padding: const EdgeInsets.all(20),
@@ -125,92 +131,164 @@ class _RegisterScreenState extends State<RegisterScreen> {
                 padding: const EdgeInsets.all(10),
                 margin: const EdgeInsets.only(bottom: 20),
                 decoration: BoxDecoration(
-                  color: Colors.red.shade100,
+                  color: Colors.red.shade900.withOpacity(0.3),
                   borderRadius: BorderRadius.circular(8),
-                  border: Border.all(color: Colors.red.shade300),
+                  border: Border.all(color: Colors.red.shade800),
                 ),
                 child: Text(
                   _errorMessage!,
-                  style: TextStyle(color: Colors.red.shade800),
+                  style: TextStyle(color: Colors.red.shade200),
                 ),
               ),
             
             // Champ de nom
             TextField(
               controller: nameController,
-              decoration: const InputDecoration(
+              decoration: InputDecoration(
                 labelText: "Nom complet *",
-                border: OutlineInputBorder(),
-                prefixIcon: Icon(Icons.person),
+                labelStyle: TextStyle(color: Colors.grey),
+                border: OutlineInputBorder(
+                  borderSide: BorderSide(color: Colors.grey.shade800),
+                ),
+                enabledBorder: OutlineInputBorder(
+                  borderSide: BorderSide(color: Colors.grey.shade800),
+                ),
+                focusedBorder: OutlineInputBorder(
+                  borderSide: BorderSide(color: Colors.red),
+                ),
+                prefixIcon: Icon(Icons.person, color: Colors.red),
+                filled: true,
+                fillColor: Colors.grey[850],
               ),
               keyboardType: TextInputType.text,
               textInputAction: TextInputAction.next,
+              style: TextStyle(color: Colors.white),
             ),
             const SizedBox(height: 15),
             
             // Champ de téléphone
             TextField(
               controller: phoneController,
-              decoration: const InputDecoration(
+              decoration: InputDecoration(
                 labelText: "Téléphone",
-                border: OutlineInputBorder(),
-                prefixIcon: Icon(Icons.phone),
+                labelStyle: TextStyle(color: Colors.grey),
+                border: OutlineInputBorder(
+                  borderSide: BorderSide(color: Colors.grey.shade800),
+                ),
+                enabledBorder: OutlineInputBorder(
+                  borderSide: BorderSide(color: Colors.grey.shade800),
+                ),
+                focusedBorder: OutlineInputBorder(
+                  borderSide: BorderSide(color: Colors.red),
+                ),
+                prefixIcon: Icon(Icons.phone, color: Colors.red),
+                filled: true,
+                fillColor: Colors.grey[850],
               ),
               keyboardType: TextInputType.phone,
               textInputAction: TextInputAction.next,
+              style: TextStyle(color: Colors.white),
             ),
             const SizedBox(height: 15),
             
             // Champ d'adresse
             TextField(
               controller: addressController,
-              decoration: const InputDecoration(
+              decoration: InputDecoration(
                 labelText: "Adresse",
-                border: OutlineInputBorder(),
-                prefixIcon: Icon(Icons.location_on),
+                labelStyle: TextStyle(color: Colors.grey),
+                border: OutlineInputBorder(
+                  borderSide: BorderSide(color: Colors.grey.shade800),
+                ),
+                enabledBorder: OutlineInputBorder(
+                  borderSide: BorderSide(color: Colors.grey.shade800),
+                ),
+                focusedBorder: OutlineInputBorder(
+                  borderSide: BorderSide(color: Colors.red),
+                ),
+                prefixIcon: Icon(Icons.location_on, color: Colors.red),
+                filled: true,
+                fillColor: Colors.grey[850],
               ),
               keyboardType: TextInputType.streetAddress,
               textInputAction: TextInputAction.next,
+              style: TextStyle(color: Colors.white),
             ),
             const SizedBox(height: 15),
             
             // Champ d'email
             TextField(
               controller: emailController,
-              decoration: const InputDecoration(
-                labelText: "Email",
-                border: OutlineInputBorder(),
-                prefixIcon: Icon(Icons.email),
+              decoration: InputDecoration(
+                labelText: "Email *",
+                labelStyle: TextStyle(color: Colors.grey),
+                border: OutlineInputBorder(
+                  borderSide: BorderSide(color: Colors.grey.shade800),
+                ),
+                enabledBorder: OutlineInputBorder(
+                  borderSide: BorderSide(color: Colors.grey.shade800),
+                ),
+                focusedBorder: OutlineInputBorder(
+                  borderSide: BorderSide(color: Colors.red),
+                ),
+                prefixIcon: Icon(Icons.email, color: Colors.red),
+                filled: true,
+                fillColor: Colors.grey[850],
               ),
               keyboardType: TextInputType.emailAddress,
               textInputAction: TextInputAction.next,
+              style: TextStyle(color: Colors.white),
             ),
             const SizedBox(height: 15),
             
             // Champ de mot de passe
             TextField(
               controller: passwordController,
-              decoration: const InputDecoration(
-                labelText: "Mot de passe",
-                border: OutlineInputBorder(),
-                prefixIcon: Icon(Icons.lock),
+              decoration: InputDecoration(
+                labelText: "Mot de passe *",
+                labelStyle: TextStyle(color: Colors.grey),
+                border: OutlineInputBorder(
+                  borderSide: BorderSide(color: Colors.grey.shade800),
+                ),
+                enabledBorder: OutlineInputBorder(
+                  borderSide: BorderSide(color: Colors.grey.shade800),
+                ),
+                focusedBorder: OutlineInputBorder(
+                  borderSide: BorderSide(color: Colors.red),
+                ),
+                prefixIcon: Icon(Icons.lock, color: Colors.red),
+                filled: true,
+                fillColor: Colors.grey[850],
               ),
               obscureText: true,
               textInputAction: TextInputAction.next,
+              style: TextStyle(color: Colors.white),
             ),
             const SizedBox(height: 15),
             
             // Champ de confirmation du mot de passe
             TextField(
               controller: confirmPasswordController,
-              decoration: const InputDecoration(
-                labelText: "Confirmer le mot de passe",
-                border: OutlineInputBorder(),
-                prefixIcon: Icon(Icons.lock_outline),
+              decoration: InputDecoration(
+                labelText: "Confirmer le mot de passe *",
+                labelStyle: TextStyle(color: Colors.grey),
+                border: OutlineInputBorder(
+                  borderSide: BorderSide(color: Colors.grey.shade800),
+                ),
+                enabledBorder: OutlineInputBorder(
+                  borderSide: BorderSide(color: Colors.grey.shade800),
+                ),
+                focusedBorder: OutlineInputBorder(
+                  borderSide: BorderSide(color: Colors.red),
+                ),
+                prefixIcon: Icon(Icons.lock_outline, color: Colors.red),
+                filled: true,
+                fillColor: Colors.grey[850],
               ),
               obscureText: true,
               textInputAction: TextInputAction.done,
               onSubmitted: (_) => _register(),
+              style: TextStyle(color: Colors.white),
             ),
             const SizedBox(height: 25),
             
@@ -218,19 +296,24 @@ class _RegisterScreenState extends State<RegisterScreen> {
             SizedBox(
               height: 50,
               child: _isLoading
-                  ? const Center(child: CircularProgressIndicator())
+                  ? Center(child: CircularProgressIndicator(color: Colors.red))
                   : ElevatedButton(
                       onPressed: _register,
                       style: ElevatedButton.styleFrom(
-                        backgroundColor: Theme.of(context).primaryColor,
+                        backgroundColor: Colors.red,
                         foregroundColor: Colors.white,
+                        elevation: 5,
+                        shape: RoundedRectangleBorder(
+                          borderRadius: BorderRadius.circular(8),
+                        ),
                       ),
                       child: const Text(
                         "S'inscrire",
-                        style: TextStyle(fontSize: 16),
+                        style: TextStyle(fontSize: 16, fontWeight: FontWeight.bold),
                       ),
                     ),
             ),
+            const SizedBox(height: 20),
           ],
         ),
       ),
