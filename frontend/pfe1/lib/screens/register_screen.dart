@@ -10,12 +10,14 @@ class RegisterScreen extends StatefulWidget {
 }
 
 class _RegisterScreenState extends State<RegisterScreen> {
-  final TextEditingController nameController = TextEditingController();
+  final TextEditingController firstNameController = TextEditingController();
+  final TextEditingController lastNameController = TextEditingController();
   final TextEditingController emailController = TextEditingController();
   final TextEditingController passwordController = TextEditingController();
   final TextEditingController confirmPasswordController = TextEditingController();
   final TextEditingController phoneController = TextEditingController();
   final TextEditingController addressController = TextEditingController();
+  final TextEditingController cniController = TextEditingController();
 
   bool _isLoading = false;
   String? _errorMessage;
@@ -26,15 +28,18 @@ class _RegisterScreenState extends State<RegisterScreen> {
       _isLoading = true;
     });
 
-    String name = nameController.text.trim();
+    String firstName = firstNameController.text.trim();
+    String lastName = lastNameController.text.trim();
     String email = emailController.text.trim();
     String password = passwordController.text.trim();
     String confirmPassword = confirmPasswordController.text.trim();
     String phone = phoneController.text.trim();
     String address = addressController.text.trim();
+    String cni = cniController.text.trim();
 
-    // Validation des champs côté client
-    if (name.isEmpty || email.isEmpty || password.isEmpty || confirmPassword.isEmpty) {
+    // Client-side validation
+    if (firstName.isEmpty || lastName.isEmpty || email.isEmpty || 
+        password.isEmpty || confirmPassword.isEmpty || cni.isEmpty) {
       setState(() {
         _errorMessage = "Veuillez remplir tous les champs obligatoires";
         _isLoading = false;
@@ -50,7 +55,6 @@ class _RegisterScreenState extends State<RegisterScreen> {
       return;
     }
 
-    // Validation basique de l'email
     final emailRegex = RegExp(r'^[\w-\.]+@([\w-]+\.)+[\w-]{2,4}$');
     if (!emailRegex.hasMatch(email)) {
       setState(() {
@@ -61,19 +65,17 @@ class _RegisterScreenState extends State<RegisterScreen> {
     }
 
     try {
-      // Appeler l'API pour l'inscription
       final result = await ApiService.register(
-        name,
+        firstName,
+        lastName,
         email,
         password,
+        cni,
         phone: phone.isNotEmpty ? phone : null,
         address: address.isNotEmpty ? address : null,
       );
 
-      // Résultat de l'API
       if (result['success'] == true) {
-        // Inscription réussie
-        // ignore: use_build_context_synchronously
         ScaffoldMessenger.of(context).showSnackBar(
           const SnackBar(
             content: Text("Inscription réussie"),
@@ -81,15 +83,12 @@ class _RegisterScreenState extends State<RegisterScreen> {
             duration: Duration(seconds: 2),
           ),
         );
-        // Rediriger vers la page d'accueil
-        // ignore: use_build_context_synchronously
         await Future.delayed(const Duration(seconds: 2));
         Navigator.pushReplacement(
           context,
           MaterialPageRoute(builder: (context) => const HomePage()),
         );
       } else {
-        // Afficher le message d'erreur renvoyé par le serveur
         setState(() {
           _errorMessage = result['message'] ?? "Une erreur est survenue";
         });
@@ -108,9 +107,15 @@ class _RegisterScreenState extends State<RegisterScreen> {
   @override
   Widget build(BuildContext context) {
     return Scaffold(
+      backgroundColor: Colors.black,
       appBar: AppBar(
-        title: const Text("Créer un compte"),
+        backgroundColor: Colors.grey[900],
+        title: const Text(
+          "Créer un compte",
+          style: TextStyle(color: Colors.white),
+        ),
         centerTitle: true,
+        iconTheme: const IconThemeData(color: Colors.red),
       ),
       body: SingleChildScrollView(
         padding: const EdgeInsets.all(20),
@@ -119,121 +124,194 @@ class _RegisterScreenState extends State<RegisterScreen> {
           children: [
             const SizedBox(height: 20),
             
-            // Affichage du message d'erreur
             if (_errorMessage != null)
-              Container(
-                padding: const EdgeInsets.all(10),
-                margin: const EdgeInsets.only(bottom: 20),
-                decoration: BoxDecoration(
-                  color: Colors.red.shade100,
-                  borderRadius: BorderRadius.circular(8),
-                  border: Border.all(color: Colors.red.shade300),
-                ),
-                child: Text(
-                  _errorMessage!,
-                  style: TextStyle(color: Colors.red.shade800),
-                ),
-              ),
+              ErrorMessageWidget(message: _errorMessage!),
             
-            // Champ de nom
+            // First Name Field
             TextField(
-              controller: nameController,
-              decoration: const InputDecoration(
-                labelText: "Nom complet *",
-                border: OutlineInputBorder(),
-                prefixIcon: Icon(Icons.person),
-              ),
-              keyboardType: TextInputType.text,
-              textInputAction: TextInputAction.next,
+              controller: firstNameController,
+              decoration: _inputDecoration("Prénom *", Icons.person),
             ),
             const SizedBox(height: 15),
             
-            // Champ de téléphone
+            // Last Name Field
+            TextField(
+              controller: lastNameController,
+              decoration: _inputDecoration("Nom de famille *", Icons.person_outline),
+            ),
+            const SizedBox(height: 15),
+            
+            // CNI Field
+            TextField(
+              controller: cniController,
+              decoration: _inputDecoration("Numéro CNI *", Icons.credit_card),
+              keyboardType: TextInputType.number,
+            ),
+            const SizedBox(height: 15),
+            
+            // Phone Field
             TextField(
               controller: phoneController,
-              decoration: const InputDecoration(
-                labelText: "Téléphone",
-                border: OutlineInputBorder(),
-                prefixIcon: Icon(Icons.phone),
-              ),
+              decoration: _inputDecoration("Téléphone", Icons.phone),
               keyboardType: TextInputType.phone,
-              textInputAction: TextInputAction.next,
             ),
             const SizedBox(height: 15),
             
-            // Champ d'adresse
+            // Address Field
             TextField(
               controller: addressController,
-              decoration: const InputDecoration(
-                labelText: "Adresse",
-                border: OutlineInputBorder(),
-                prefixIcon: Icon(Icons.location_on),
-              ),
+              decoration: _inputDecoration("Adresse", Icons.location_on),
               keyboardType: TextInputType.streetAddress,
-              textInputAction: TextInputAction.next,
             ),
             const SizedBox(height: 15),
             
-            // Champ d'email
+            // Email Field
             TextField(
               controller: emailController,
-              decoration: const InputDecoration(
-                labelText: "Email",
-                border: OutlineInputBorder(),
-                prefixIcon: Icon(Icons.email),
-              ),
+              decoration: _inputDecoration("Email ", Icons.email),
               keyboardType: TextInputType.emailAddress,
-              textInputAction: TextInputAction.next,
             ),
             const SizedBox(height: 15),
             
-            // Champ de mot de passe
-            TextField(
+            // Password Field
+            PasswordField(
               controller: passwordController,
-              decoration: const InputDecoration(
-                labelText: "Mot de passe",
-                border: OutlineInputBorder(),
-                prefixIcon: Icon(Icons.lock),
-              ),
-              obscureText: true,
-              textInputAction: TextInputAction.next,
+              label: "Mot de passe *",
             ),
             const SizedBox(height: 15),
             
-            // Champ de confirmation du mot de passe
-            TextField(
+            // Confirm Password Field
+            PasswordField(
               controller: confirmPasswordController,
-              decoration: const InputDecoration(
-                labelText: "Confirmer le mot de passe",
-                border: OutlineInputBorder(),
-                prefixIcon: Icon(Icons.lock_outline),
-              ),
-              obscureText: true,
-              textInputAction: TextInputAction.done,
+              label: "Confirmer le mot de passe *",
               onSubmitted: (_) => _register(),
             ),
             const SizedBox(height: 25),
             
-            // Bouton d'inscription
-            SizedBox(
-              height: 50,
-              child: _isLoading
-                  ? const Center(child: CircularProgressIndicator())
-                  : ElevatedButton(
-                      onPressed: _register,
-                      style: ElevatedButton.styleFrom(
-                        backgroundColor: Theme.of(context).primaryColor,
-                        foregroundColor: Colors.white,
-                      ),
-                      child: const Text(
-                        "S'inscrire",
-                        style: TextStyle(fontSize: 16),
-                      ),
-                    ),
+            RegisterButton(
+              isLoading: _isLoading,
+              onPressed: _register,
             ),
+            const SizedBox(height: 20),
           ],
         ),
       ),
+    );
+  }
+
+  InputDecoration _inputDecoration(String label, IconData icon) {
+    return InputDecoration(
+      labelText: label,
+      labelStyle: const TextStyle(color: Color.fromARGB(255, 255, 255, 255)),
+      border: OutlineInputBorder(
+        borderSide: BorderSide(color: Colors.grey.shade800),
+      ),
+      enabledBorder: OutlineInputBorder(
+        borderSide: BorderSide(color: Colors.grey.shade800),
+      ),
+      focusedBorder: const OutlineInputBorder(
+        borderSide: BorderSide(color: Colors.red),
+      ),
+      prefixIcon: Icon(icon, color: Colors.red),
+      filled: true,
+      fillColor: Colors.grey[850],
+    );
+  }
+}
+
+class PasswordField extends StatelessWidget {
+  final TextEditingController controller;
+  final String label;
+  final void Function(String)? onSubmitted;
+
+  const PasswordField({
+    super.key,
+    required this.controller,
+    required this.label,
+    this.onSubmitted,
+  });
+
+  @override
+  Widget build(BuildContext context) {
+    return TextField(
+      controller: controller,
+      decoration: InputDecoration(
+        labelText: label,
+        labelStyle: const TextStyle(color: Color.fromARGB(255, 255, 255, 255)),
+        border: OutlineInputBorder(
+          borderSide: BorderSide(color: Colors.grey.shade800),
+        ),
+        enabledBorder: OutlineInputBorder(
+          borderSide: BorderSide(color: Colors.grey.shade800),
+        ),
+        focusedBorder: const OutlineInputBorder(
+          borderSide: BorderSide(color: Colors.red),
+        ),
+        prefixIcon: const Icon(Icons.lock, color: Colors.red),
+        filled: true,
+        fillColor: Colors.grey[850],
+      ),
+      obscureText: true,
+      onSubmitted: onSubmitted,
+      style: const TextStyle(color: Colors.white),
+    );
+  }
+}
+
+class ErrorMessageWidget extends StatelessWidget {
+  final String message;
+
+  const ErrorMessageWidget({super.key, required this.message});
+
+  @override
+  Widget build(BuildContext context) {
+    return Container(
+      padding: const EdgeInsets.all(10),
+      margin: const EdgeInsets.only(bottom: 20),
+      decoration: BoxDecoration(
+        color: Colors.red.shade900.withOpacity(0.3),
+        borderRadius: BorderRadius.circular(8),
+        border: Border.all(color: Colors.red.shade800),
+      ),
+      child: Text(
+        message,
+        style: TextStyle(color: Colors.red.shade200),
+      ),
+    );
+  }
+}
+
+class RegisterButton extends StatelessWidget {
+  final bool isLoading;
+  final VoidCallback onPressed;
+
+  const RegisterButton({
+    super.key,
+    required this.isLoading,
+    required this.onPressed,
+  });
+
+  @override
+  Widget build(BuildContext context) {
+    return SizedBox(
+      height: 50,
+      child: isLoading
+          ? const Center(child: CircularProgressIndicator(color: Colors.red))
+          : ElevatedButton(
+              onPressed: onPressed,
+              style: ElevatedButton.styleFrom(
+                backgroundColor: Colors.red,
+                foregroundColor: Colors.white,
+                elevation: 5,
+                shape: RoundedRectangleBorder(
+                  borderRadius: BorderRadius.circular(8),
+                ),
+              ),
+              child: const Text(
+                "S'inscrire",
+                style: TextStyle(fontSize: 16, fontWeight: FontWeight.bold),
+              ),
+            ),
     );
   }
 }

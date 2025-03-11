@@ -483,3 +483,483 @@ Utilisateur trouvé: Array
     [created_at] => 
     [updated_at] => 
 )
+Array
+(
+    [name] => hamza
+    [email] => hamza@gmail.com
+    [password] => 1234
+)
+Array
+(
+    [email] => hamza@gmail.com
+    [password] => 1234
+)
+
+Utilisateur trouvé: Array
+(
+    [id] => 3
+    [name] => 
+    [email] => hamza@gmail.com
+    [email_verified_at] => 
+    [password] => $2y$10$zmom4wFRxl4rJjDco2p77u6g5xg7MkSQKYxHwLiXp8Ae6aCfH7cee
+    [phone] => 
+    [address] => 
+    [remember_token] => 
+    [created_at] => 
+    [updated_at] => 
+)
+Array
+(
+    [email] => hamza@gmail.com
+    [password] => 1234
+)
+
+Utilisateur trouvé: Array
+(
+    [id] => 3
+    [name] => 
+    [email] => hamza@gmail.com
+    [email_verified_at] => 
+    [password] => $2y$10$zmom4wFRxl4rJjDco2p77u6g5xg7MkSQKYxHwLiXp8Ae6aCfH7cee
+    [phone] => 
+    [address] => 
+    [remember_token] => 
+    [created_at] => 
+    [updated_at] => 
+)
+Array
+(
+    [email] => hamza@gmail.com
+    [password] => 1234
+)
+
+Utilisateur trouvé: Array
+(
+    [id] => 3
+    [name] => 
+    [email] => hamza@gmail.com
+    [email_verified_at] => 
+    [password] => $2y$10$zmom4wFRxl4rJjDco2p77u6g5xg7MkSQKYxHwLiXp8Ae6aCfH7cee
+    [phone] => 
+    [address] => 
+    [remember_token] => 
+    [created_at] => 
+    [updated_at] => 
+)
+Array
+(
+    [email] => hamza@gmail.com
+    [password] => 1234
+)
+
+Utilisateur trouvé: Array
+(
+    [id] => 3
+    [name] => 
+    [email] => hamza@gmail.com
+    [email_verified_at] => 
+    [password] => $2y$10$zmom4wFRxl4rJjDco2p77u6g5xg7MkSQKYxHwLiXp8Ae6aCfH7cee
+    [phone] => 
+    [address] => 
+    [remember_token] => 
+    [created_at] => 
+    [updated_at] => 
+)
+Array
+(
+    [email] => hamza@gmail.com
+    [password] => 1234
+)
+
+Utilisateur trouvé: Array
+(
+    [id] => 3
+    [name] => 
+    [email] => hamza@gmail.com
+    [email_verified_at] => 
+    [password] => $2y$10$zmom4wFRxl4rJjDco2p77u6g5xg7MkSQKYxHwLiXp8Ae6aCfH7cee
+    [phone] => 
+    [address] => 
+    [remember_token] => 
+    [created_at] => 
+    [updated_at] => 
+)
+Array
+(
+    [name] => Saad
+    [email] => Saad@gmail.com
+    [password] => 2222
+)
+Array
+(
+    [email] => Saad@gmail.com
+    [password] => 2222
+)
+
+Utilisateur trouvé: Array
+(
+    [id] => 4
+    [name] => 
+    [email] => Saad@gmail.com
+    [email_verified_at] => 
+    [password] => $2y$10$QlWc6wqIFPCoaZo6O4UbyuiknhIJNcGo/.28xxNXdsYYOx8zf7ke.
+    [phone] => 
+    [address] => 
+    [remember_token] => 
+    [created_at] => 
+    [updated_at] => 
+)
+Array
+(
+    [email] => shdafa
+    [password] => fasfafas
+)
+
+Utilisateur trouvé: Array
+(
+    [email] => Hamza@gmail.com
+    [password] => 1234
+)
+
+Utilisateur trouvé: Array
+(
+    [id] => 3
+    [name] => 
+    [email] => hamza@gmail.com
+    [email_verified_at] => 
+    [password] => $2y$10$zmom4wFRxl4rJjDco2p77u6g5xg7MkSQKYxHwLiXp8Ae6aCfH7cee
+    [phone] => 
+    [address] => 
+    [remember_token] => 
+    [created_at] => 
+    [updated_at] => 
+)
+Array
+(
+    [email] => Hamza@gmail.com
+    [password] => 1234
+)
+
+Utilisateur trouvé: Array
+(
+    [id] => 3
+    [name] => 
+    [email] => hamza@gmail.com
+    [email_verified_at] => 
+    [password] => $2y$10$zmom4wFRxl4rJjDco2p77u6g5xg7MkSQKYxHwLiXp8Ae6aCfH7cee
+    [phone] => 
+    [address] => 
+    [remember_token] => 
+    [created_at] => 
+    [updated_at] => 
+)
+Array
+(
+    [name] => abdelghani boudribila
+    [email] => abdelghani.boudribila@gmail.com
+    [password] => niggachainai
+)
+Array
+(
+    [email] => abdelghani.boudribila@gmail.com
+    [password] => niggachainai
+)
+
+Utilisateur trouvé: Array
+(
+    [id] => 5
+    [name] => 
+    [email] => abdelghani.boudribila@gmail.com
+    [email_verified_at] => 
+    [password] => $2y$10$Cksc05TmqAbWE.5Diu2ztueFqWTExeF7qRurXjOccJUy/U62CspmG
+    [phone] => 
+    [address] => 
+    [remember_token] => 
+    [created_at] => 
+    [updated_at] => 
+)
+Array
+(
+    [email] => Hamzaaitbouhou75@gmail.com
+    [password] => 1234
+)
+
+Utilisateur trouvé: Array
+(
+    [id] => 6
+    [name] => Hamza Aitbouhou
+    [email] => Hamzaaitbouhou75@gmail.com
+    [email_verified_at] => 
+    [password] => $2y$10$qdKuKY3xRBc6NmkK/18Fw.6ul6.KrsXThp5VTEnqXync3diUWDb5G
+    [phone] => 0693579194
+    [address] => 263, hay eloukhoua
+    [remember_token] => 
+    [created_at] => 
+    [updated_at] => 
+)
+Array
+(
+    [email] => Hamzaaitbouhou75@gmail.com
+    [password] => 1234
+)
+
+Utilisateur trouvé: Array
+(
+    [id] => 6
+    [name] => Hamza Aitbouhou
+    [email] => Hamzaaitbouhou75@gmail.com
+    [email_verified_at] => 
+    [password] => $2y$10$qdKuKY3xRBc6NmkK/18Fw.6ul6.KrsXThp5VTEnqXync3diUWDb5G
+    [phone] => 0693579194
+    [address] => 263, hay eloukhoua
+    [remember_token] => 
+    [created_at] => 
+    [updated_at] => 
+)
+Array
+(
+    [email] => Hamzaaitbouhou75@gmail.com
+    [password] => 1234
+)
+
+Utilisateur trouvé: Array
+(
+    [id] => 6
+    [name] => Hamza Aitbouhou
+    [email] => Hamzaaitbouhou75@gmail.com
+    [email_verified_at] => 
+    [password] => $2y$10$qdKuKY3xRBc6NmkK/18Fw.6ul6.KrsXThp5VTEnqXync3diUWDb5G
+    [phone] => 0693579194
+    [address] => 263, hay eloukhoua
+    [remember_token] => 
+    [created_at] => 
+    [updated_at] => 
+)
+Array
+(
+    [email] => Hamzaaitbouhou75@gmail.com
+    [password] => 1234
+)
+
+Utilisateur trouvé: Array
+(
+    [id] => 6
+    [name] => Hamza Aitbouhou
+    [email] => Hamzaaitbouhou75@gmail.com
+    [email_verified_at] => 
+    [password] => $2y$10$qdKuKY3xRBc6NmkK/18Fw.6ul6.KrsXThp5VTEnqXync3diUWDb5G
+    [phone] => 0693579194
+    [address] => 263, hay eloukhoua
+    [remember_token] => 
+    [created_at] => 
+    [updated_at] => 
+)
+Array
+(
+    [email] => Hamzaaitbouhou75@gmail.com
+    [password] => 1234'
+)
+
+Utilisateur trouvé: Array
+(
+    [id] => 6
+    [name] => Hamza Aitbouhou
+    [email] => Hamzaaitbouhou75@gmail.com
+    [email_verified_at] => 
+    [password] => $2y$10$qdKuKY3xRBc6NmkK/18Fw.6ul6.KrsXThp5VTEnqXync3diUWDb5G
+    [phone] => 0693579194
+    [address] => 263, hay eloukhoua
+    [remember_token] => 
+    [created_at] => 
+    [updated_at] => 
+)
+Array
+(
+    [email] => Hamzaaitbouhou75@gmail.com
+    [password] => 1234
+)
+
+Utilisateur trouvé: Array
+(
+    [id] => 6
+    [name] => Hamza Aitbouhou
+    [email] => Hamzaaitbouhou75@gmail.com
+    [email_verified_at] => 
+    [password] => $2y$10$qdKuKY3xRBc6NmkK/18Fw.6ul6.KrsXThp5VTEnqXync3diUWDb5G
+    [phone] => 0693579194
+    [address] => 263, hay eloukhoua
+    [remember_token] => 
+    [created_at] => 
+    [updated_at] => 
+)
+Array
+(
+    [email] => Hamzaaitbouhou75@gmail.com
+    [password] => 1234
+)
+
+Utilisateur trouvé: Array
+(
+    [id] => 6
+    [name] => Hamza Aitbouhou
+    [email] => Hamzaaitbouhou75@gmail.com
+    [email_verified_at] => 
+    [password] => $2y$10$qdKuKY3xRBc6NmkK/18Fw.6ul6.KrsXThp5VTEnqXync3diUWDb5G
+    [phone] => 0693579194
+    [address] => 263, hay eloukhoua
+    [remember_token] => 
+    [created_at] => 
+    [updated_at] => 
+)
+Array
+(
+    [email] => Hamzaaitbouhou75@gmail.com
+    [password] => 1234
+)
+
+Utilisateur trouvé: Array
+(
+    [id] => 6
+    [name] => Hamza Aitbouhou
+    [email] => Hamzaaitbouhou75@gmail.com
+    [email_verified_at] => 
+    [password] => $2y$10$qdKuKY3xRBc6NmkK/18Fw.6ul6.KrsXThp5VTEnqXync3diUWDb5G
+    [phone] => 0693579194
+    [address] => 263, hay eloukhoua
+    [remember_token] => 
+    [created_at] => 
+    [updated_at] => 
+)
+Array
+(
+    [email] => Hamzaaitbouhou75@gmail.com
+    [password] => 1234
+)
+
+Utilisateur trouvé: Array
+(
+    [id] => 6
+    [name] => Hamza Aitbouhou
+    [email] => Hamzaaitbouhou75@gmail.com
+    [email_verified_at] => 
+    [password] => $2y$10$qdKuKY3xRBc6NmkK/18Fw.6ul6.KrsXThp5VTEnqXync3diUWDb5G
+    [phone] => 0693579194
+    [address] => 263, hay eloukhoua
+    [remember_token] => 
+    [created_at] => 
+    [updated_at] => 
+)
+Array
+(
+    [email] => Hamzaaitbouhou75@gmail.com
+    [password] => 1234
+)
+
+Utilisateur trouvé: Array
+(
+    [id] => 6
+    [name] => Hamza Aitbouhou
+    [email] => Hamzaaitbouhou75@gmail.com
+    [email_verified_at] => 
+    [password] => $2y$10$qdKuKY3xRBc6NmkK/18Fw.6ul6.KrsXThp5VTEnqXync3diUWDb5G
+    [phone] => 0693579194
+    [address] => 263, hay eloukhoua
+    [remember_token] => 
+    [created_at] => 
+    [updated_at] => 
+)
+Array
+(
+    [email] => Hamzaaitbouhou75@gmail.com
+    [password] => 1234
+)
+
+Utilisateur trouvé: Array
+(
+    [id] => 6
+    [name] => Hamza Aitbouhou
+    [email] => Hamzaaitbouhou75@gmail.com
+    [email_verified_at] => 
+    [password] => $2y$10$qdKuKY3xRBc6NmkK/18Fw.6ul6.KrsXThp5VTEnqXync3diUWDb5G
+    [phone] => 0693579194
+    [address] => 263, hay eloukhoua
+    [remember_token] => 
+    [created_at] => 
+    [updated_at] => 
+)
+Array
+(
+    [email] => Hamzaaitbouhou75@gmail.com
+    [password] => 1234
+)
+
+Utilisateur trouvé: Array
+(
+    [id] => 6
+    [name] => Hamza Aitbouhou
+    [email] => Hamzaaitbouhou75@gmail.com
+    [email_verified_at] => 
+    [password] => $2y$10$qdKuKY3xRBc6NmkK/18Fw.6ul6.KrsXThp5VTEnqXync3diUWDb5G
+    [phone] => 0693579194
+    [address] => 263, hay eloukhoua
+    [remember_token] => 
+    [created_at] => 
+    [updated_at] => 
+)
+Array
+(
+    [email] => Hamzaaitbouhou75@gmail.com
+    [password] => 1234
+)
+
+Utilisateur trouvé: Array
+(
+    [id] => 6
+    [name] => Hamza Aitbouhou
+    [email] => Hamzaaitbouhou75@gmail.com
+    [email_verified_at] => 
+    [password] => $2y$10$qdKuKY3xRBc6NmkK/18Fw.6ul6.KrsXThp5VTEnqXync3diUWDb5G
+    [phone] => 0693579194
+    [address] => 263, hay eloukhoua
+    [remember_token] => 
+    [created_at] => 
+    [updated_at] => 
+)
+Array
+(
+    [email] => Hamzaaitbouhou75@gmail.com
+    [password] => 1234
+)
+
+Utilisateur trouvé: Array
+(
+    [id] => 6
+    [name] => Hamza Aitbouhou
+    [email] => Hamzaaitbouhou75@gmail.com
+    [email_verified_at] => 
+    [password] => $2y$10$qdKuKY3xRBc6NmkK/18Fw.6ul6.KrsXThp5VTEnqXync3diUWDb5G
+    [phone] => 0693579194
+    [address] => 263, hay eloukhoua
+    [remember_token] => 
+    [created_at] => 
+    [updated_at] => 
+)
+Array
+(
+    [email] => Hamzaaitbouhou75@gmail.com
+    [password] => 1234
+)
+
+Utilisateur trouvé: Array
+(
+    [id] => 6
+    [name] => Hamza Aitbouhou
+    [email] => Hamzaaitbouhou75@gmail.com
+    [email_verified_at] => 
+    [password] => $2y$10$qdKuKY3xRBc6NmkK/18Fw.6ul6.KrsXThp5VTEnqXync3diUWDb5G
+    [phone] => 0693579194
+    [address] => 263, hay eloukhoua
+    [remember_token] => 
+    [created_at] => 
+    [updated_at] => 
+)

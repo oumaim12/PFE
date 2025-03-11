@@ -2,10 +2,10 @@ import 'dart:convert';
 import 'package:http/http.dart' as http;
 
 class ApiService {
-  // Remplace par l'IP de ton PC
-  static const String baseUrl = "http://192.168.1.2/mon_api";
-  
-  // Fonction pour tester la connexion avec affichage détaillé
+  // Replace with your PC's IP
+  static const String baseUrl = "http://192.168.1.20/mon_api";
+
+  // Function to test connection with detailed output
   static Future<Map<String, dynamic>> testConnexion() async {
     try {
       final response = await http.post(
@@ -13,8 +13,8 @@ class ApiService {
         headers: {"Content-Type": "application/json"},
         body: jsonEncode({"email": "johndoe@example.com", "password": "11111"}),
       );
-      
-      // Capturer toutes les informations utiles pour le débogage
+
+      // Capture all useful information for debugging
       return {
         "statusCode": response.statusCode,
         "headers": response.headers,
@@ -25,61 +25,57 @@ class ApiService {
     }
   }
 
-  // Fonction de login améliorée qui retourne un objet résultat
-  static Future<Map<String, dynamic>> login(String email, String password) async {
+  // Improved login function that returns a result object
+  static Future<Map<String, dynamic>> login(
+    String email,
+    String password,
+  ) async {
     try {
-      print("Tentative de connexion avec: $email / $password");
-      
+      print("Attempting login with: $email / $password");
+
       final response = await http.post(
         Uri.parse("$baseUrl/login.php"),
         headers: {"Content-Type": "application/json"},
         body: jsonEncode({"email": email, "password": password}),
       );
-      
-      print("Réponse API - StatusCode: ${response.statusCode}");
-      print("Réponse API - Body: ${response.body}");
-      
+
+      print("API Response - StatusCode: ${response.statusCode}");
+      print("API Response - Body: ${response.body}");
+
       if (response.statusCode == 200) {
-        // Parser la réponse JSON
+        // Parse the JSON response
         Map<String, dynamic> data = jsonDecode(response.body);
-        return {
-          "success": true,
-          "data": data,
-        };
+        return {"success": true, "data": data};
       } else {
-        String message = "Erreur de connexion: ${response.statusCode}";
+        String message = "Login error: ${response.statusCode}";
         try {
           Map<String, dynamic> errorData = jsonDecode(response.body);
           message = errorData['message'] ?? message;
         } catch (e) {
-          // Si le corps n'est pas du JSON valide, on utilise le message par défaut
+          // If the body is not valid JSON, use the default message
         }
-        return {
-          "success": false,
-          "message": message,
-        };
+        return {"success": false, "message": message};
       }
     } catch (e) {
-      return {
-        "success": false,
-        "message": "Erreur de connexion: $e",
-      };
+      return {"success": false, "message": "Connection error: $e"};
     }
   }
 
-  // Méthode d'inscription modifiée pour inclure phone et address
+  // Updated registration method to include first name, last name, CNI, phone, and address
   static Future<Map<String, dynamic>> register(
-    String name, 
-    String email, 
-    String password, {
+    String firstName,
+    String lastName,
+    String email,
+    String password,
+    String cni, {
     String? phone,
     String? address,
   }) async {
     try {
-      // Afficher les informations de débogage
-      print("Tentative d'inscription avec: $name / $email");
-      
-      // Créer la requête HTTP
+      // Debug information
+      print("Attempting registration with: $firstName $lastName / $email");
+
+      // Create the HTTP request
       final response = await http.post(
         Uri.parse("$baseUrl/register.php"),
         headers: {
@@ -87,56 +83,174 @@ class ApiService {
           "Accept": "application/json",
         },
         body: jsonEncode({
-          "name": name,
+          "first_name": firstName,
+          "last_name": lastName,
           "email": email,
           "password": password,
+          "cni": cni,
           "phone": phone,
           "address": address,
         }),
       );
-      
-      // Afficher les informations de la réponse pour le débogage
-      print("Réponse API - StatusCode: ${response.statusCode}");
-      print("Réponse API - Headers: ${response.headers}");
-      print("Réponse API - Body: '${response.body}'");
-      
-      // Vérifier si la réponse est vide
+
+      // Debug response information
+      print("API Response - StatusCode: ${response.statusCode}");
+      print("API Response - Headers: ${response.headers}");
+      print("API Response - Body: '${response.body}'");
+
+      // Check if the response is empty
       if (response.body.isEmpty) {
         return {
           "success": false,
-          "message": "Réponse vide du serveur (code: ${response.statusCode})",
+          "message": "Empty response from server (code: ${response.statusCode})",
         };
       }
-      
-      // Vérifier si la réponse est au format JSON
+
+      // Check if the response is valid JSON
       try {
         final Map<String, dynamic> data = jsonDecode(response.body);
-        
-        // Renvoyer les données structurées
+
+        // Return structured data
         return {
           "success": data['success'] ?? false,
-          "message": data['message'] ?? "Réponse du serveur sans message",
+          "message": data['message'] ?? "Server response without message",
           "data": data,
         };
       } catch (e) {
-        // Erreur de parsing JSON
+        // JSON parsing error
         return {
           "success": false,
-          "message": "Erreur de format de réponse: ${e.toString()}. Contenu: ${response.body.substring(0, min(100, response.body.length))}...",
+          "message":
+              "Response format error: ${e.toString()}. Content: ${response.body.substring(0, min(100, response.body.length))}...",
         };
       }
     } catch (e) {
-      // Erreur de connexion ou autre erreur
-      print("Erreur complète: $e");
+      // Connection or other error
+      print("Full error: $e");
       return {
         "success": false,
-        "message": "Erreur de connexion: ${e.toString()}",
+        "message": "Connection error: ${e.toString()}",
       };
     }
   }
-  
-  // Fonction utilitaire pour limiter la longueur d'une chaîne
+
+  // Utility function to limit string length
   static int min(int a, int b) {
     return (a < b) ? a : b;
+  }
+
+  // Change password function
+  static Future<Map<String, dynamic>> changePassword(
+    int userId,
+    String currentPassword,
+    String newPassword,
+  ) async {
+    try {
+      final response = await http.put(
+        Uri.parse("$baseUrl/change_password.php"),
+        headers: {"Content-Type": "application/json"},
+        body: jsonEncode({
+          "userId": userId,
+          "currentPassword": currentPassword,
+          "newPassword": newPassword,
+        }),
+      );
+
+      print("API Response - StatusCode: ${response.statusCode}");
+      print("API Response - Body: ${response.body}");
+
+      if (response.statusCode == 200) {
+        final Map<String, dynamic> data = jsonDecode(response.body);
+        return {
+          "success": data['success'] ?? false,
+          "message": data['message'] ?? "Password changed successfully",
+        };
+      } else {
+        return {
+          "success": false,
+          "message": "Failed to change password: ${response.statusCode}",
+        };
+      }
+    } catch (e) {
+      return {"success": false, "message": "Error changing password: $e"};
+    }
+  }
+
+  // Update profile function
+  static Future<Map<String, dynamic>> updateProfile(
+    int userId,
+    String firstName,
+    String lastName,
+    String email, {
+    String? phone,
+    String? address,
+  }) async {
+    try {
+      final response = await http.put(
+        Uri.parse("$baseUrl/update_profile.php"),
+        headers: {"Content-Type": "application/json"},
+        body: jsonEncode({
+          "userId": userId,
+          "first_name": firstName,
+          "last_name": lastName,
+          "email": email,
+          "phone": phone,
+          "address": address,
+        }),
+      );
+
+      print("API Response - StatusCode: ${response.statusCode}");
+      print("API Response - Body: ${response.body}");
+
+      if (response.statusCode == 200) {
+        final Map<String, dynamic> data = jsonDecode(response.body);
+        return {
+          "success": data['success'] ?? false,
+          "message": data['message'] ?? "Profile updated successfully",
+        };
+      } else {
+        return {
+          "success": false,
+          "message": "Failed to update profile: ${response.statusCode}",
+        };
+      }
+    } catch (e) {
+      return {"success": false, "message": "Error updating profile: $e"};
+    }
+  }
+
+  // Delete account function
+  static Future<Map<String, dynamic>> deleteAccount(int userId) async {
+    try {
+      final response = await http.delete(
+        Uri.parse("$baseUrl/delete_account.php"),
+        headers: {"Content-Type": "application/json"},
+        body: jsonEncode({"userId": userId}),
+      );
+
+      print("API Response - StatusCode: ${response.statusCode}");
+      print("API Response - Body: ${response.body}");
+
+      if (response.statusCode == 200) {
+        final Map<String, dynamic> data = jsonDecode(response.body);
+        return {
+          "success": data['success'] ?? false,
+          "message": data['message'] ?? "Account deleted successfully",
+        };
+      } else {
+        return {
+          "success": false,
+          "message": "Failed to delete account: ${response.statusCode}",
+        };
+      }
+    } catch (e) {
+      return {"success": false, "message": "Error deleting account: $e"};
+    }
+  }
+
+  // Get user profile function (to be implemented)
+  static Future<Map<String, dynamic>> getUserProfile(int userId) async {
+    // Implementation goes here
+    return {};
   }
 }

@@ -77,9 +77,15 @@ class _LoginScreenState extends State<LoginScreen> {
   @override
   Widget build(BuildContext context) {
     return Scaffold(
+      backgroundColor: Colors.black,
       appBar: AppBar(
-        title: const Text("Connexion"),
+        backgroundColor: Colors.grey[900],
+        title: const Text(
+          "Connexion",
+          style: TextStyle(color: Colors.white),
+        ),
         centerTitle: true,
+        iconTheme: IconThemeData(color: Colors.red),
       ),
       body: SingleChildScrollView(
         padding: const EdgeInsets.all(20),
@@ -87,6 +93,17 @@ class _LoginScreenState extends State<LoginScreen> {
           crossAxisAlignment: CrossAxisAlignment.stretch,
           children: [
             const SizedBox(height: 20),
+            
+            // Logo ou image de marque
+            Container(
+              alignment: Alignment.center,
+              margin: const EdgeInsets.only(bottom: 30),
+              child: Icon(
+                Icons.motorcycle,
+                size: 80,
+                color: Colors.red,
+              ),
+            ),
 
             // Affichage du message d'erreur
             if (_errorMessage != null)
@@ -94,40 +111,64 @@ class _LoginScreenState extends State<LoginScreen> {
                 padding: const EdgeInsets.all(10),
                 margin: const EdgeInsets.only(bottom: 20),
                 decoration: BoxDecoration(
-                  color: Colors.red.shade100,
+                  color: Colors.red.shade900.withOpacity(0.3),
                   borderRadius: BorderRadius.circular(8),
-                  border: Border.all(color: Colors.red.shade300),
+                  border: Border.all(color: Colors.red.shade800),
                 ),
                 child: Text(
                   _errorMessage!,
-                  style: TextStyle(color: Colors.red.shade800),
+                  style: TextStyle(color: Colors.red.shade200),
                 ),
               ),
 
             // Champ d'email
             TextField(
               controller: emailController,
-              decoration: const InputDecoration(
+              decoration: InputDecoration(
                 labelText: "Email",
-                border: OutlineInputBorder(),
-                prefixIcon: Icon(Icons.email),
+                labelStyle: TextStyle(color: Colors.grey),
+                border: OutlineInputBorder(
+                  borderSide: BorderSide(color: Colors.grey.shade800),
+                ),
+                enabledBorder: OutlineInputBorder(
+                  borderSide: BorderSide(color: Colors.grey.shade800),
+                ),
+                focusedBorder: OutlineInputBorder(
+                  borderSide: BorderSide(color: Colors.red),
+                ),
+                prefixIcon: Icon(Icons.email, color: Colors.red),
+                filled: true,
+                fillColor: Colors.grey[850],
               ),
               keyboardType: TextInputType.emailAddress,
               textInputAction: TextInputAction.next,
+              style: TextStyle(color: Colors.white),
             ),
             const SizedBox(height: 15),
 
             // Champ de mot de passe
             TextField(
               controller: passwordController,
-              decoration: const InputDecoration(
+              decoration: InputDecoration(
                 labelText: "Mot de passe",
-                border: OutlineInputBorder(),
-                prefixIcon: Icon(Icons.lock),
+                labelStyle: TextStyle(color: Colors.grey),
+                border: OutlineInputBorder(
+                  borderSide: BorderSide(color: Colors.grey.shade800),
+                ),
+                enabledBorder: OutlineInputBorder(
+                  borderSide: BorderSide(color: Colors.grey.shade800),
+                ),
+                focusedBorder: OutlineInputBorder(
+                  borderSide: BorderSide(color: Colors.red),
+                ),
+                prefixIcon: Icon(Icons.lock, color: Colors.red),
+                filled: true,
+                fillColor: Colors.grey[850],
               ),
               obscureText: true,
               textInputAction: TextInputAction.done,
               onSubmitted: (_) => _login(),
+              style: TextStyle(color: Colors.white),
             ),
             const SizedBox(height: 25),
 
@@ -135,16 +176,20 @@ class _LoginScreenState extends State<LoginScreen> {
             SizedBox(
               height: 50,
               child: _isLoading
-                  ? const Center(child: CircularProgressIndicator())
+                  ? Center(child: CircularProgressIndicator(color: Colors.red))
                   : ElevatedButton(
                       onPressed: _login,
                       style: ElevatedButton.styleFrom(
-                        backgroundColor: Theme.of(context).primaryColor,
+                        backgroundColor: Colors.red,
                         foregroundColor: Colors.white,
+                        shape: RoundedRectangleBorder(
+                          borderRadius: BorderRadius.circular(8),
+                        ),
+                        elevation: 5,
                       ),
                       child: const Text(
                         "Se connecter",
-                        style: TextStyle(fontSize: 16),
+                        style: TextStyle(fontSize: 16, fontWeight: FontWeight.bold),
                       ),
                     ),
             ),
@@ -158,10 +203,12 @@ class _LoginScreenState extends State<LoginScreen> {
                   MaterialPageRoute(builder: (context) => const RegisterScreen()),
                 );
               },
+              style: TextButton.styleFrom(
+                foregroundColor: Colors.red,
+              ),
               child: const Text(
                 "Pas de compte ? S'inscrire",
                 style: TextStyle(
-                  color: Colors.blue,
                   fontSize: 14,
                 ),
               ),
