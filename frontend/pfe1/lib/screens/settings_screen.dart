@@ -35,11 +35,11 @@ class _SettingsScreenState extends State<SettingsScreen> {
               title: "Changer le mot de passe",
               onTap: () {},
             ),
-            _buildSettingItem(
-              icon: Icons.delete,
-              title: "Supprimer le compte",
-              onTap: _showDeleteAccountDialog,
-            ),
+            // _buildSettingItem(
+            //   icon: Icons.delete,
+            //   title: "Supprimer le compte",
+            //   onTap: _showDeleteAccountDialog,
+            // ),
             const Divider(),
             _buildSectionTitle("Commandes et Paiements"),
             _buildSettingItem(
