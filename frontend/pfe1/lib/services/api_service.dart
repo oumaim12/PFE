@@ -2,10 +2,10 @@ import 'dart:convert';
 import 'package:http/http.dart' as http;
 
 class ApiService {
-  // Remplace par l'IP de ton PC
+  // Replace with your PC's IP
   static const String baseUrl = "http://192.168.1.20/mon_api";
 
-  // Fonction pour tester la connexion avec affichage détaillé
+  // Function to test connection with detailed output
   static Future<Map<String, dynamic>> testConnexion() async {
     try {
       final response = await http.post(
@@ -14,7 +14,7 @@ class ApiService {
         body: jsonEncode({"email": "johndoe@example.com", "password": "11111"}),
       );
 
-      // Capturer toutes les informations utiles pour le débogage
+      // Capture all useful information for debugging
       return {
         "statusCode": response.statusCode,
         "headers": response.headers,
@@ -25,13 +25,13 @@ class ApiService {
     }
   }
 
-  // Fonction de login améliorée qui retourne un objet résultat
+  // Improved login function that returns a result object
   static Future<Map<String, dynamic>> login(
     String email,
     String password,
   ) async {
     try {
-      print("Tentative de connexion avec: $email / $password");
+      print("Attempting login with: $email / $password");
 
       final response = await http.post(
         Uri.parse("$baseUrl/login.php"),
@@ -39,41 +39,43 @@ class ApiService {
         body: jsonEncode({"email": email, "password": password}),
       );
 
-      print("Réponse API - StatusCode: ${response.statusCode}");
-      print("Réponse API - Body: ${response.body}");
+      print("API Response - StatusCode: ${response.statusCode}");
+      print("API Response - Body: ${response.body}");
 
       if (response.statusCode == 200) {
-        // Parser la réponse JSON
+        // Parse the JSON response
         Map<String, dynamic> data = jsonDecode(response.body);
         return {"success": true, "data": data};
       } else {
-        String message = "Erreur de connexion: ${response.statusCode}";
+        String message = "Login error: ${response.statusCode}";
         try {
           Map<String, dynamic> errorData = jsonDecode(response.body);
           message = errorData['message'] ?? message;
         } catch (e) {
-          // Si le corps n'est pas du JSON valide, on utilise le message par défaut
+          // If the body is not valid JSON, use the default message
         }
         return {"success": false, "message": message};
       }
     } catch (e) {
-      return {"success": false, "message": "Erreur de connexion: $e"};
+      return {"success": false, "message": "Connection error: $e"};
     }
   }
 
-  // Méthode d'inscription modifiée pour inclure phone et address
+  // Updated registration method to include first name, last name, CNI, phone, and address
   static Future<Map<String, dynamic>> register(
-    String name,
+    String firstName,
+    String lastName,
     String email,
-    String password, {
+    String password,
+    String cni, {
     String? phone,
     String? address,
   }) async {
     try {
-      // Afficher les informations de débogage
-      print("Tentative d'inscription avec: $name / $email");
+      // Debug information
+      print("Attempting registration with: $firstName $lastName / $email");
 
-      // Créer la requête HTTP
+      // Create the HTTP request
       final response = await http.post(
         Uri.parse("$baseUrl/register.php"),
         headers: {
@@ -81,60 +83,63 @@ class ApiService {
           "Accept": "application/json",
         },
         body: jsonEncode({
-          "name": name,
+          "first_name": firstName,
+          "last_name": lastName,
           "email": email,
           "password": password,
+          "cni": cni,
           "phone": phone,
           "address": address,
         }),
       );
 
-      // Afficher les informations de la réponse pour le débogage
-      print("Réponse API - StatusCode: ${response.statusCode}");
-      print("Réponse API - Headers: ${response.headers}");
-      print("Réponse API - Body: '${response.body}'");
+      // Debug response information
+      print("API Response - StatusCode: ${response.statusCode}");
+      print("API Response - Headers: ${response.headers}");
+      print("API Response - Body: '${response.body}'");
 
-      // Vérifier si la réponse est vide
+      // Check if the response is empty
       if (response.body.isEmpty) {
         return {
           "success": false,
-          "message": "Réponse vide du serveur (code: ${response.statusCode})",
+          "message": "Empty response from server (code: ${response.statusCode})",
         };
       }
 
-      // Vérifier si la réponse est au format JSON
+      // Check if the response is valid JSON
       try {
         final Map<String, dynamic> data = jsonDecode(response.body);
 
-        // Renvoyer les données structurées
+        // Return structured data
         return {
           "success": data['success'] ?? false,
-          "message": data['message'] ?? "Réponse du serveur sans message",
+          "message": data['message'] ?? "Server response without message",
           "data": data,
         };
       } catch (e) {
-        // Erreur de parsing JSON
+        // JSON parsing error
         return {
           "success": false,
           "message":
-              "Erreur de format de réponse: ${e.toString()}. Contenu: ${response.body.substring(0, min(100, response.body.length))}...",
+              "Response format error: ${e.toString()}. Content: ${response.body.substring(0, min(100, response.body.length))}...",
         };
       }
     } catch (e) {
-      // Erreur de connexion ou autre erreur
-      print("Erreur complète: $e");
+      // Connection or other error
+      print("Full error: $e");
       return {
         "success": false,
-        "message": "Erreur de connexion: ${e.toString()}",
+        "message": "Connection error: ${e.toString()}",
       };
     }
   }
 
-  // Fonction utilitaire pour limiter la longueur d'une chaîne
+  // Utility function to limit string length
   static int min(int a, int b) {
     return (a < b) ? a : b;
   }
 
+  // Change password function
   static Future<Map<String, dynamic>> changePassword(
     int userId,
     String currentPassword,
@@ -151,8 +156,8 @@ class ApiService {
         }),
       );
 
-      print("Réponse API - StatusCode: ${response.statusCode}");
-      print("Réponse API - Body: ${response.body}");
+      print("API Response - StatusCode: ${response.statusCode}");
+      print("API Response - Body: ${response.body}");
 
       if (response.statusCode == 200) {
         final Map<String, dynamic> data = jsonDecode(response.body);
@@ -171,9 +176,11 @@ class ApiService {
     }
   }
 
+  // Update profile function
   static Future<Map<String, dynamic>> updateProfile(
     int userId,
-    String name,
+    String firstName,
+    String lastName,
     String email, {
     String? phone,
     String? address,
@@ -184,15 +191,16 @@ class ApiService {
         headers: {"Content-Type": "application/json"},
         body: jsonEncode({
           "userId": userId,
-          "name": name,
+          "first_name": firstName,
+          "last_name": lastName,
           "email": email,
           "phone": phone,
           "address": address,
         }),
       );
 
-      print("Réponse API - StatusCode: ${response.statusCode}");
-      print("Réponse API - Body: ${response.body}");
+      print("API Response - StatusCode: ${response.statusCode}");
+      print("API Response - Body: ${response.body}");
 
       if (response.statusCode == 200) {
         final Map<String, dynamic> data = jsonDecode(response.body);
@@ -211,6 +219,7 @@ class ApiService {
     }
   }
 
+  // Delete account function
   static Future<Map<String, dynamic>> deleteAccount(int userId) async {
     try {
       final response = await http.delete(
@@ -219,8 +228,8 @@ class ApiService {
         body: jsonEncode({"userId": userId}),
       );
 
-      print("Réponse API - StatusCode: ${response.statusCode}");
-      print("Réponse API - Body: ${response.body}");
+      print("API Response - StatusCode: ${response.statusCode}");
+      print("API Response - Body: ${response.body}");
 
       if (response.statusCode == 200) {
         final Map<String, dynamic> data = jsonDecode(response.body);
@@ -237,5 +246,11 @@ class ApiService {
     } catch (e) {
       return {"success": false, "message": "Error deleting account: $e"};
     }
+  }
+
+  // Get user profile function (to be implemented)
+  static Future<Map<String, dynamic>> getUserProfile(int userId) async {
+    // Implementation goes here
+    return {};
   }
 }
