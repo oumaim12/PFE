@@ -1,5 +1,4 @@
 import 'package:flutter/material.dart';
-import 'package:shared_preferences/shared_preferences.dart';
 import '../services/api_service.dart'; // Import your ApiService
 
 class ProfileScreen extends StatefulWidget {
@@ -44,56 +43,45 @@ class _ProfileScreenState extends State<ProfileScreen> {
     _loadUserData();
   }
 
- Future<void> _loadUserData() async {
-  setState(() {
-    _isLoading = true;
-  });
-
-  try {
-    // Obtenir l'ID de l'utilisateur connecté depuis SharedPreferences
-    final prefs = await SharedPreferences.getInstance();
-    final userId = prefs.getInt('userId');
-    
-    if (userId == null) {
-      throw Exception("Aucun utilisateur connecté");
-    }
-    
-    final userData = await ApiService.getUserProfile(userId);
-    
-    if (userData.containsKey('error') && userData['error'].isNotEmpty) {
-      throw Exception(userData['error']);
-    }
-
+  Future<void> _loadUserData() async {
     setState(() {
-      // Utiliser les bonnes clés de l'API
-      _firstName = userData['firstname'] ?? "Prénom non disponible";
-      _lastName = userData['lastname'] ?? "Nom non disponible";
-      _userCni = userData['cni'] ?? "CNI non disponible";
-      _userEmail = userData['email'] ?? "Email non disponible";
-      _userPhone = userData['phone'] ?? "Téléphone non disponible";
-      _userAddress = userData['address'] ?? "Adresse non disponible";
+      _isLoading = true;
+    });
 
-      // Pré-remplir les contrôleurs
-      _firstNameController.text = _firstName;
-      _lastNameController.text = _lastName;
-      _emailController.text = _userEmail;
-      _phoneController.text = _userPhone;
-      _addressController.text = _userAddress;
-      _cniController.text = _userCni;
-    });
-  } catch (e) {
-    ScaffoldMessenger.of(context).showSnackBar(
-      SnackBar(
-        content: Text("Erreur lors du chargement du profil: $e"),
-        backgroundColor: Colors.red,
-      ),
-    );
-  } finally {
-    setState(() {
-      _isLoading = false;
-    });
+    try {
+      // Replace this with actual API call
+      final userData = await ApiService.getUserProfile(1); // Use actual userId
+
+      setState(() {
+        _firstName = userData['first_name'] ?? "Prénom non disponible";
+        _lastName = userData['last_name'] ?? "Nom non disponible";
+        _userEmail = userData['email'] ?? "Email non disponible";
+        _userPhone = userData['phone'] ?? "Téléphone non disponible";
+        _userAddress = userData['address'] ?? "Adresse non disponible";
+        _userCni = userData['cni'] ?? "CNI non disponible"; // Added CNI
+
+        // Pre-fill controllers
+        _firstNameController.text = _firstName;
+        _lastNameController.text = _lastName;
+        _emailController.text = _userEmail;
+        _phoneController.text = _userPhone;
+        _addressController.text = _userAddress;
+        _cniController.text = _userCni; // Pre-fill CNI
+      });
+    } catch (e) {
+      // Handle error
+      ScaffoldMessenger.of(context).showSnackBar(
+        const SnackBar(
+          content: Text("Erreur lors du chargement du profil"),
+          backgroundColor: Colors.red,
+        ),
+      );
+    } finally {
+      setState(() {
+        _isLoading = false;
+      });
+    }
   }
-}
 
   @override
   Widget build(BuildContext context) {
@@ -152,18 +140,18 @@ class _ProfileScreenState extends State<ProfileScreen> {
                     ),
                     _buildUserInfoCard(
                       icon: Icons.person_outline,
-                      title: "Nom",
+                      title: "Nom de famille",
                       value: _lastName,
                     ),
                     _buildUserInfoCard(
                       icon: Icons.email,
-                      title: "CNI",
-                      value: _userCni,
+                      title: "Email",
+                      value: _userEmail,
                     ),
                     _buildUserInfoCard(
                       icon: Icons.credit_card,
-                      title:"Email" ,
-                      value:_userEmail , // Added CNI
+                      title: "CNI",
+                      value: _userCni, // Added CNI
                     ),
                     _buildUserInfoCard(
                       icon: Icons.phone,
