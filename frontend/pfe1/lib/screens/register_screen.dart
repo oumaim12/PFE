@@ -12,12 +12,13 @@ class RegisterScreen extends StatefulWidget {
 class _RegisterScreenState extends State<RegisterScreen> {
   final TextEditingController firstNameController = TextEditingController();
   final TextEditingController lastNameController = TextEditingController();
+   final TextEditingController cinController = TextEditingController();
   final TextEditingController emailController = TextEditingController();
   final TextEditingController passwordController = TextEditingController();
   final TextEditingController confirmPasswordController = TextEditingController();
   final TextEditingController phoneController = TextEditingController();
   final TextEditingController addressController = TextEditingController();
-  final TextEditingController cniController = TextEditingController();
+ 
 
   bool _isLoading = false;
   String? _errorMessage;
@@ -30,16 +31,17 @@ class _RegisterScreenState extends State<RegisterScreen> {
 
     String firstName = firstNameController.text.trim();
     String lastName = lastNameController.text.trim();
+     String cin = cinController.text.trim();
     String email = emailController.text.trim();
     String password = passwordController.text.trim();
     String confirmPassword = confirmPasswordController.text.trim();
     String phone = phoneController.text.trim();
     String address = addressController.text.trim();
-    String cni = cniController.text.trim();
+   
 
     // Client-side validation
     if (firstName.isEmpty || lastName.isEmpty || email.isEmpty || 
-        password.isEmpty || confirmPassword.isEmpty || cni.isEmpty) {
+        password.isEmpty || confirmPassword.isEmpty || cin.isEmpty) {
       setState(() {
         _errorMessage = "Veuillez remplir tous les champs obligatoires";
         _isLoading = false;
@@ -68,9 +70,9 @@ class _RegisterScreenState extends State<RegisterScreen> {
       final result = await ApiService.register(
         firstName,
         lastName,
+        cin,
         email,
         password,
-        cni,
         phone: phone.isNotEmpty ? phone : null,
         address: address.isNotEmpty ? address : null,
       );
@@ -143,12 +145,34 @@ class _RegisterScreenState extends State<RegisterScreen> {
             
             // CNI Field
             TextField(
-              controller: cniController,
+              controller: cinController,
               decoration: _inputDecoration("Numéro CNI *", Icons.credit_card),
               keyboardType: TextInputType.number,
             ),
             const SizedBox(height: 15),
             
+            // Email Field
+            TextField(
+              controller: emailController,
+              decoration: _inputDecoration("Email ", Icons.email),
+              keyboardType: TextInputType.emailAddress,
+            ),  const SizedBox(height: 15),
+
+// Password Field
+            PasswordField(
+              controller: passwordController,
+              label: "Mot de passe *",
+            ),
+            const SizedBox(height: 15),
+            
+            // Confirm Password Field
+            PasswordField(
+              controller: confirmPasswordController,
+              label: "Confirmer le mot de passe *",
+              onSubmitted: (_) => _register(),
+            ),
+            const SizedBox(height: 25),
+
             // Phone Field
             TextField(
               controller: phoneController,
@@ -165,28 +189,8 @@ class _RegisterScreenState extends State<RegisterScreen> {
             ),
             const SizedBox(height: 15),
             
-            // Email Field
-            TextField(
-              controller: emailController,
-              decoration: _inputDecoration("Email ", Icons.email),
-              keyboardType: TextInputType.emailAddress,
-            ),
-            const SizedBox(height: 15),
             
-            // Password Field
-            PasswordField(
-              controller: passwordController,
-              label: "Mot de passe *",
-            ),
-            const SizedBox(height: 15),
             
-            // Confirm Password Field
-            PasswordField(
-              controller: confirmPasswordController,
-              label: "Confirmer le mot de passe *",
-              onSubmitted: (_) => _register(),
-            ),
-            const SizedBox(height: 25),
             
             RegisterButton(
               isLoading: _isLoading,

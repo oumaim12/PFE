@@ -1,73 +1,119 @@
 import 'dart:convert';
 import 'package:http/http.dart' as http;
+import 'package:shared_preferences/shared_preferences.dart';
+
 
 class ApiService {
   // Replace with your PC's IP
-  static const String baseUrl = "http://192.168.1.20/mon_api";
+static const String baseUrl = "http://10.0.2.2:8000/api";
 
   // Function to test connection with detailed output
-  static Future<Map<String, dynamic>> testConnexion() async {
-    try {
-      final response = await http.post(
-        Uri.parse("$baseUrl/login.php"),
-        headers: {"Content-Type": "application/json"},
-        body: jsonEncode({"email": "johndoe@example.com", "password": "11111"}),
-      );
+  // static Future<Map<String, dynamic>> testConnexion() async {
+  //   try {
+  //     final response = await http.post(
+  //       Uri.parse("$baseUrl/login"),
+  //       headers: {"Content-Type": "application/json"},
+  //       body: jsonEncode({"email": "johndoe@example.com", "password": "11111"}),
+  //     );
 
-      // Capture all useful information for debugging
-      return {
-        "statusCode": response.statusCode,
-        "headers": response.headers,
-        "body": response.body,
-      };
-    } catch (e) {
-      return {"error": e.toString()};
-    }
-  }
+  //     // Capture all useful information for debugging
+  //     return {
+  //       "statusCode": response.statusCode,
+  //       "headers": response.headers,
+  //       "body": response.body,
+  //     };
+  //   } catch (e) {
+  //     return {"error": e.toString()};
+  //   }
+  // }
 
+
+  static Future<void> saveUserId(int userId) async {
+  final prefs = await SharedPreferences.getInstance();
+  await prefs.setInt('userId', userId);
+}
+static Future<int?> getUserId() async {
+  final prefs = await SharedPreferences.getInstance();
+  return prefs.getInt('userId');
+}
   // Improved login function that returns a result object
   static Future<Map<String, dynamic>> login(
-    String email,
+    // ignore: non_constant_identifier_names
+    String Cin,
     String password,
   ) async {
     try {
-      print("Attempting login with: $email / $password");
+      print("Attempting login with: $Cin / $password");
 
       final response = await http.post(
-        Uri.parse("$baseUrl/login.php"),
+        Uri.parse("$baseUrl/login"),
         headers: {"Content-Type": "application/json"},
-        body: jsonEncode({"email": email, "password": password}),
+        body: jsonEncode({"cin": Cin, "password": password}),
       );
 
       print("API Response - StatusCode: ${response.statusCode}");
       print("API Response - Body: ${response.body}");
 
       if (response.statusCode == 200) {
-        // Parse the JSON response
-        Map<String, dynamic> data = jsonDecode(response.body);
-        return {"success": true, "data": data};
-      } else {
-        String message = "Login error: ${response.statusCode}";
-        try {
-          Map<String, dynamic> errorData = jsonDecode(response.body);
-          message = errorData['message'] ?? message;
-        } catch (e) {
-          // If the body is not valid JSON, use the default message
+  // Parse the JSON response
+  Map<String, dynamic> data = jsonDecode(response.body);
+
+  if (data['success'] == true) {
+    if (data['user'] != null && data['user']['id'] != null) {
+          await saveUserId(data['user']['id']);
         }
-        return {"success": false, "message": message};
-      }
+    return {
+      "success": true,
+      "message": data['message'],
+      "user": data['user'],
+      "token": data['token'],
+    };
+  } else {
+    return {
+      "success": false,
+      "message": data['message'] ?? "Login failed",
+    };
+  }
+} else {
+  String message = "Login error: ${response.statusCode}";
+  try {
+    Map<String, dynamic> errorData = jsonDecode(response.body);
+    message = errorData['message'] ?? message;
+  } catch (e) {
+    // If the body is not valid JSON, use the default message
+  }
+  return {"success": false, "message": message};
+}
     } catch (e) {
       return {"success": false, "message": "Connection error: $e"};
     }
   }
+// static Future<String?> getToken() async {
+//   final prefs = await SharedPreferences.getInstance();
+//   return prefs.getString('auth_token');
+// }
+
+
+// static Future<void> _saveToken(String token) async {
+//   final prefs = await SharedPreferences.getInstance();
+//   await prefs.setString('auth_token', token);
+// }
+
+
+
+
+
+
+
 
   // Updated registration method to include first name, last name, CNI, phone, and address
   static Future<Map<String, dynamic>> register(
     String firstName,
     String lastName,
+    String cin,
     String email,
     String password,
-    String cni, {
+    {
     String? phone,
     String? address,
   }) async {
@@ -77,17 +123,17 @@ class ApiService {
 
       // Create the HTTP request
       final response = await http.post(
-        Uri.parse("$baseUrl/register.php"),
+        Uri.parse("$baseUrl/register"),
         headers: {
           "Content-Type": "application/json",
           "Accept": "application/json",
         },
         body: jsonEncode({
-          "first_name": firstName,
-          "last_name": lastName,
+          "firstname": firstName,
+          "lastname": lastName,
+          "cin": cin,
           "email": email,
           "password": password,
-          "cni": cni,
           "phone": phone,
           "address": address,
         }),
@@ -147,7 +193,7 @@ class ApiService {
   ) async {
     try {
       final response = await http.put(
-        Uri.parse("$baseUrl/change_password.php"),
+        Uri.parse("$baseUrl/change-password"),
         headers: {"Content-Type": "application/json"},
         body: jsonEncode({
           "userId": userId,
@@ -187,12 +233,12 @@ class ApiService {
   }) async {
     try {
       final response = await http.put(
-        Uri.parse("$baseUrl/update_profile.php"),
+        Uri.parse("$baseUrl/updateProfile"),
         headers: {"Content-Type": "application/json"},
         body: jsonEncode({
           "userId": userId,
-          "first_name": firstName,
-          "last_name": lastName,
+          "firstname": firstName,
+          "lastname": lastName,
           "email": email,
           "phone": phone,
           "address": address,
@@ -219,7 +265,7 @@ class ApiService {
     }
   }
 
-  // Delete account function
+  //supprimer le compte 
   static Future<Map<String, dynamic>> deleteAccount(int userId) async {
     try {
       final response = await http.delete(
@@ -248,9 +294,57 @@ class ApiService {
     }
   }
 
-  // Get user profile function (to be implemented)
-  static Future<Map<String, dynamic>> getUserProfile(int userId) async {
-    // Implementation goes here
-    return {};
+  //recuperer les information
+ static Future<Map<String, dynamic>> getUserProfile(int userId) async {
+  try {
+    final response = await http.get(
+      Uri.parse("$baseUrl/get_user_profile.php?userId=$userId"),
+      headers: {"Content-Type": "application/json"},
+    );
+    
+    print("API Response - StatusCode: ${response.statusCode}");
+    print("API Response - Body: ${response.body}");
+    
+    if (response.statusCode == 200) {
+      final Map<String, dynamic> data = jsonDecode(response.body);
+      
+      if (data['success'] == true && data['user'] != null) {
+        return data['user'];
+      } else {
+        return {
+          "firstname": "",
+          "lastname": "",
+          "cni": "",
+          "email": "",
+          "phone": "",
+          "address": "",
+          
+          "error": data['message'] ?? "Échec de récupération du profil"
+        };
+      }
+    } else {
+      return {
+        "firstname": "",
+        "lastname": "",
+        "cni": "",
+        "email": "",
+        "phone": "",
+        "address": "",
+        
+        "error": "Erreur serveur: ${response.statusCode}"
+      };
+    }
+  } catch (e) {
+    return {
+      "firstname": "",
+      "lastname": "",
+      "cni": "",
+      "email": "",
+      "phone": "",
+      "address": "",
+    
+      "error": "Erreur: $e"
+    };
   }
+}
 }
