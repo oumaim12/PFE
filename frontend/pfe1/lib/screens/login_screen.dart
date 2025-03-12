@@ -12,18 +12,18 @@ class LoginScreen extends StatefulWidget {
 }
 
 class _LoginScreenState extends State<LoginScreen> {
-  final TextEditingController emailController = TextEditingController();
+  final TextEditingController CinController = TextEditingController();
   final TextEditingController passwordController = TextEditingController();
   bool _isLoading = false;
   String? _errorMessage;
 
   // Fonction pour traiter la connexion
   void _login() async {
-    String email = emailController.text.trim();
+    String Cin = CinController.text.trim();
     String password = passwordController.text.trim();
 
     // Validation des champs
-    if (email.isEmpty || password.isEmpty) {
+    if (Cin.isEmpty || password.isEmpty) {
       setState(() {
         _errorMessage = "Veuillez remplir tous les champs";
       });
@@ -37,7 +37,7 @@ class _LoginScreenState extends State<LoginScreen> {
 
     try {
       // Appel à l'API pour la connexion
-      final result = await ApiService.login(email, password);
+      final result = await ApiService.login(Cin, password);
 
       if (result['success'] == true) {
         // Connexion réussie
@@ -123,9 +123,9 @@ class _LoginScreenState extends State<LoginScreen> {
 
             // Champ d'email
             TextField(
-              controller: emailController,
+              controller: CinController,
               decoration: InputDecoration(
-                labelText: "Email",
+                labelText: "CIN",
                 labelStyle: TextStyle(color: Colors.grey),
                 border: OutlineInputBorder(
                   borderSide: BorderSide(color: Colors.grey.shade800),
