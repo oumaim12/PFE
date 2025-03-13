@@ -1,6 +1,6 @@
 import 'dart:convert';
 import 'package:http/http.dart' as http;
-import 'package:shared_preferences/shared_preferences.dart';
+
 
 
 class ApiService {
@@ -28,14 +28,14 @@ static const String baseUrl = "http://10.0.2.2:8000/api";
   // }
 
 
-  static Future<void> saveUserId(int userId) async {
-  final prefs = await SharedPreferences.getInstance();
-  await prefs.setInt('userId', userId);
-}
-static Future<int?> getUserId() async {
-  final prefs = await SharedPreferences.getInstance();
-  return prefs.getInt('userId');
-}
+//   static Future<void> saveUserId(int userId) async {
+//   final prefs = await SharedPreferences.getInstance();
+//   await prefs.setInt('userId', userId);
+// }
+// static Future<int?> getUserId() async {
+//   final prefs = await SharedPreferences.getInstance();
+//   return prefs.getInt('userId');
+// }
   // Improved login function that returns a result object
   static Future<Map<String, dynamic>> login(
     // ignore: non_constant_identifier_names
@@ -43,7 +43,7 @@ static Future<int?> getUserId() async {
     String password,
   ) async {
     try {
-      print("Attempting login with: $Cin / $password");
+      // print("Attempting login with: $Cin / $password");
 
       final response = await http.post(
         Uri.parse("$baseUrl/login"),
@@ -51,17 +51,17 @@ static Future<int?> getUserId() async {
         body: jsonEncode({"cin": Cin, "password": password}),
       );
 
-      print("API Response - StatusCode: ${response.statusCode}");
-      print("API Response - Body: ${response.body}");
+      // print("API Response - StatusCode: ${response.statusCode}");
+      // print("API Response - Body: ${response.body}");
 
       if (response.statusCode == 200) {
   // Parse the JSON response
   Map<String, dynamic> data = jsonDecode(response.body);
 
   if (data['success'] == true) {
-    if (data['user'] != null && data['user']['id'] != null) {
-          await saveUserId(data['user']['id']);
-        }
+    // if (data['user'] != null && data['user']['id'] != null) {
+    //       await saveUserId(data['user']['id']);
+    //     }
     return {
       "success": true,
       "message": data['message'],
@@ -106,7 +106,7 @@ static Future<int?> getUserId() async {
 
 
 
-  // Updated registration method to include first name, last name, CNI, phone, and address
+  // Updated registration method to include first name, last name, CIN, phone, and address
   static Future<Map<String, dynamic>> register(
     String firstName,
     String lastName,
@@ -119,7 +119,7 @@ static Future<int?> getUserId() async {
   }) async {
     try {
       // Debug information
-      print("Attempting registration with: $firstName $lastName / $email");
+      // print("Attempting registration with: $firstName $lastName / $email");
 
       // Create the HTTP request
       final response = await http.post(
@@ -140,9 +140,9 @@ static Future<int?> getUserId() async {
       );
 
       // Debug response information
-      print("API Response - StatusCode: ${response.statusCode}");
-      print("API Response - Headers: ${response.headers}");
-      print("API Response - Body: '${response.body}'");
+      // print("API Response - StatusCode: ${response.statusCode}");
+      // print("API Response - Headers: ${response.headers}");
+      // print("API Response - Body: '${response.body}'");
 
       // Check if the response is empty
       if (response.body.isEmpty) {
@@ -202,8 +202,8 @@ static Future<int?> getUserId() async {
         }),
       );
 
-      print("API Response - StatusCode: ${response.statusCode}");
-      print("API Response - Body: ${response.body}");
+      // print("API Response - StatusCode: ${response.statusCode}");
+      // print("API Response - Body: ${response.body}");
 
       if (response.statusCode == 200) {
         final Map<String, dynamic> data = jsonDecode(response.body);
@@ -245,8 +245,8 @@ static Future<int?> getUserId() async {
         }),
       );
 
-      print("API Response - StatusCode: ${response.statusCode}");
-      print("API Response - Body: ${response.body}");
+      // print("API Response - StatusCode: ${response.statusCode}");
+      // print("API Response - Body: ${response.body}");
 
       if (response.statusCode == 200) {
         final Map<String, dynamic> data = jsonDecode(response.body);
@@ -274,8 +274,8 @@ static Future<int?> getUserId() async {
         body: jsonEncode({"userId": userId}),
       );
 
-      print("API Response - StatusCode: ${response.statusCode}");
-      print("API Response - Body: ${response.body}");
+      // print("API Response - StatusCode: ${response.statusCode}");
+      // print("API Response - Body: ${response.body}");
 
       if (response.statusCode == 200) {
         final Map<String, dynamic> data = jsonDecode(response.body);
@@ -296,55 +296,16 @@ static Future<int?> getUserId() async {
 
   //recuperer les information
  static Future<Map<String, dynamic>> getUserProfile(int userId) async {
-  try {
-    final response = await http.get(
-      Uri.parse("$baseUrl/get_user_profile.php?userId=$userId"),
-      headers: {"Content-Type": "application/json"},
-    );
-    
-    print("API Response - StatusCode: ${response.statusCode}");
-    print("API Response - Body: ${response.body}");
-    
-    if (response.statusCode == 200) {
-      final Map<String, dynamic> data = jsonDecode(response.body);
-      
-      if (data['success'] == true && data['user'] != null) {
-        return data['user'];
-      } else {
-        return {
-          "firstname": "",
-          "lastname": "",
-          "cni": "",
-          "email": "",
-          "phone": "",
-          "address": "",
-          
-          "error": data['message'] ?? "Échec de récupération du profil"
-        };
-      }
-    } else {
-      return {
-        "firstname": "",
-        "lastname": "",
-        "cni": "",
-        "email": "",
-        "phone": "",
-        "address": "",
-        
-        "error": "Erreur serveur: ${response.statusCode}"
-      };
-    }
-  } catch (e) {
-    return {
-      "firstname": "",
-      "lastname": "",
-      "cni": "",
-      "email": "",
-      "phone": "",
-      "address": "",
-    
-      "error": "Erreur: $e"
-    };
-  }
-}
-}
+
+  // Exemple : Appeler une API, interroger une base de données, etc.
+
+  // Retourner un objet Map avec des valeurs par défaut ou vides
+  return {
+    "firstname": "",
+    "lastname": "",
+    "cin": "",
+    "email": "",
+    "phone": "",
+    "address": "",
+  };
+}}

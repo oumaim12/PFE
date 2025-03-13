@@ -1,5 +1,5 @@
 import 'package:flutter/material.dart';
-import '../services/api_service.dart'; // Import your ApiService
+import '../services/api_service.dart';
 
 class ProfileScreen extends StatefulWidget {
   const ProfileScreen({super.key});
@@ -15,7 +15,7 @@ class _ProfileScreenState extends State<ProfileScreen> {
   String _userEmail = "marie.dupont@example.com";
   String _userPhone = "+33 6 12 34 56 78";
   String _userAddress = "123 Rue de Paris, 75001 Paris";
-  String _userCni = "1234567890"; // Added CNI field
+  String _userCin = "1234567890";
   bool _isLoading = false;
 
   // Controllers for profile update
@@ -24,7 +24,7 @@ class _ProfileScreenState extends State<ProfileScreen> {
   final TextEditingController _emailController = TextEditingController();
   final TextEditingController _phoneController = TextEditingController();
   final TextEditingController _addressController = TextEditingController();
-  final TextEditingController _cniController = TextEditingController(); // Added CNI controller
+  final TextEditingController _cinController = TextEditingController();
 
   // Controllers for password change
   final TextEditingController _currentPasswordController = TextEditingController();
@@ -35,6 +35,7 @@ class _ProfileScreenState extends State<ProfileScreen> {
   final Color _backgroundColor = Colors.grey[900]!;
   final Color _cardColor = Colors.grey[850]!;
   final Color _textColor = Colors.white;
+  // ignore: deprecated_member_use
   final Color _dividerColor = Colors.red.withOpacity(0.5);
 
   @override
@@ -43,46 +44,50 @@ class _ProfileScreenState extends State<ProfileScreen> {
     _loadUserData();
   }
 
-  Future<void> _loadUserData() async {
-    setState(() {
-      _isLoading = true;
-    });
+ Future<void> _loadUserData() async {
+  setState(() {
+    _isLoading = true;
+  });
 
-    try {
-      // Replace this with actual API call
-      final userData = await ApiService.getUserProfile(1); // Use actual userId
+  try {
+    // Appeler l'API pour récupérer les données de l'utilisateur
+    final userData = await ApiService.getUserProfile(1); // Remplacez 1 par l'ID de l'utilisateur connecté
 
-      setState(() {
-        _firstName = userData['first_name'] ?? "Prénom non disponible";
-        _lastName = userData['last_name'] ?? "Nom non disponible";
-        _userEmail = userData['email'] ?? "Email non disponible";
-        _userPhone = userData['phone'] ?? "Téléphone non disponible";
-        _userAddress = userData['address'] ?? "Adresse non disponible";
-        _userCni = userData['cni'] ?? "CNI non disponible"; // Added CNI
-
-        // Pre-fill controllers
-        _firstNameController.text = _firstName;
-        _lastNameController.text = _lastName;
-        _emailController.text = _userEmail;
-        _phoneController.text = _userPhone;
-        _addressController.text = _userAddress;
-        _cniController.text = _userCni; // Pre-fill CNI
-      });
-    } catch (e) {
-      // Handle error
-      ScaffoldMessenger.of(context).showSnackBar(
-        const SnackBar(
-          content: Text("Erreur lors du chargement du profil"),
-          backgroundColor: Colors.red,
-        ),
-      );
-    } finally {
-      setState(() {
-        _isLoading = false;
-      });
+    // Vérifier si la réponse contient une erreur
+    if (userData.containsKey("error") && userData['error'].isNotEmpty) {
+      throw Exception(userData['error']);
     }
-  }
 
+    setState(() {
+      // Mettre à jour les informations de l'utilisateur
+      _firstName = userData['firstname'] ?? "Prénom non disponible";
+      _lastName = userData['lastname'] ?? "Nom non disponible";
+      _userCin = userData['cin'] ?? "CIN non disponible";
+      _userEmail = userData['email'] ?? "Email non disponible";
+      _userPhone = userData['phone'] ?? "Téléphone non disponible";
+      _userAddress = userData['address'] ?? "Adresse non disponible";
+
+      // Pré-remplir les contrôleurs pour la mise à jour du profil
+      _firstNameController.text = _firstName;
+      _lastNameController.text = _lastName;
+      _emailController.text = _userEmail;
+      _phoneController.text = _userPhone;
+      _addressController.text = _userAddress;
+      _cinController.text = _userCin;
+    });
+  } catch (e) {
+    ScaffoldMessenger.of(context).showSnackBar(
+      SnackBar(
+        content: Text("Erreur lors du chargement du profil: $e"),
+        backgroundColor: Colors.red,
+      ),
+    );
+  } finally {
+    setState(() {
+      _isLoading = false;
+    });
+  }
+}
   @override
   Widget build(BuildContext context) {
     return Theme(
@@ -92,6 +97,7 @@ class _ProfileScreenState extends State<ProfileScreen> {
           primary: _primaryColor,
           secondary: _primaryColor,
           surface: _cardColor,
+          // ignore: deprecated_member_use
           background: _backgroundColor,
         ),
         scaffoldBackgroundColor: _backgroundColor,
@@ -140,18 +146,18 @@ class _ProfileScreenState extends State<ProfileScreen> {
                     ),
                     _buildUserInfoCard(
                       icon: Icons.person_outline,
-                      title: "Nom de famille",
+                      title: "Nom",
                       value: _lastName,
                     ),
                     _buildUserInfoCard(
                       icon: Icons.email,
-                      title: "Email",
-                      value: _userEmail,
+                      title: "CIN",
+                      value: _userCin,
                     ),
                     _buildUserInfoCard(
                       icon: Icons.credit_card,
-                      title: "CNI",
-                      value: _userCni, // Added CNI
+                      title:"Email" ,
+                      value:_userEmail , // Added CIN
                     ),
                     _buildUserInfoCard(
                       icon: Icons.phone,
@@ -318,7 +324,7 @@ class _ProfileScreenState extends State<ProfileScreen> {
     _emailController.text = _userEmail;
     _phoneController.text = _userPhone;
     _addressController.text = _userAddress;
-    _cniController.text = _userCni; // Pre-fill CNI
+    _cinController.text = _userCin; // Pre-fill CIN
 
     showDialog(
       context: context,
@@ -348,8 +354,8 @@ class _ProfileScreenState extends State<ProfileScreen> {
                 ),
                 const SizedBox(height: 16),
                 TextField(
-                  controller: _cniController,
-                  decoration: const InputDecoration(labelText: 'CNI'),
+                  controller: _cinController,
+                  decoration: const InputDecoration(labelText: 'CIN'),
                 ),
                 const SizedBox(height: 16),
                 TextField(
@@ -393,9 +399,10 @@ class _ProfileScreenState extends State<ProfileScreen> {
                     _userEmail = _emailController.text;
                     _userPhone = _phoneController.text;
                     _userAddress = _addressController.text;
-                    _userCni = _cniController.text; // Update CNI
+                    _userCin = _cinController.text; // Update CIN
                   });
 
+         
                   ScaffoldMessenger.of(context).showSnackBar(
                     const SnackBar(
                       content: Text("Profil mis à jour avec succès"),

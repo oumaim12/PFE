@@ -143,10 +143,10 @@ class _RegisterScreenState extends State<RegisterScreen> {
             ),
             const SizedBox(height: 15),
             
-            // CNI Field
+            // CIN Field
             TextField(
               controller: cinController,
-              decoration: _inputDecoration("Numéro CNI *", Icons.credit_card),
+              decoration: _inputDecoration("Numéro CIN *", Icons.credit_card),
               keyboardType: TextInputType.number,
             ),
             const SizedBox(height: 15),
