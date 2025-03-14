@@ -6,7 +6,10 @@ class MesMotosScreen extends StatefulWidget {
 }
 
 class _MesMotosScreenState extends State<MesMotosScreen> {
-  // Liste fictive de motos
+  // Ajouter cette variable pour stocker le contexte global
+  late BuildContext _scaffoldContext;
+  
+  // Liste fictive de motos reste inchangée
   final List<Map<String, dynamic>> _motos = [
     {
       'marque': 'Kawasaki',
@@ -33,6 +36,9 @@ class _MesMotosScreenState extends State<MesMotosScreen> {
 
   @override
   Widget build(BuildContext context) {
+    // Stocker le contexte pour une utilisation ultérieure
+    _scaffoldContext = context;
+    
     return Scaffold(
       backgroundColor: Colors.black,
       body: SingleChildScrollView(
@@ -215,7 +221,7 @@ class _MesMotosScreenState extends State<MesMotosScreen> {
   void _showAddMotoDialog() {
     // Implémentation du dialogue d'ajout
     showDialog(
-      context: context,
+      context: _scaffoldContext,
       builder: (context) => AlertDialog(
         backgroundColor: Colors.grey[900],
         title: Text('Ajouter une moto', style: TextStyle(color: Colors.white)),
@@ -280,7 +286,8 @@ class _MesMotosScreenState extends State<MesMotosScreen> {
             onPressed: () {
               // Logique d'ajout de moto ici
               Navigator.pop(context);
-              ScaffoldMessenger.of(context).showSnackBar(
+              // Utiliser _scaffoldContext pour accéder au ScaffoldMessenger
+              ScaffoldMessenger.of(_scaffoldContext).showSnackBar(
                 SnackBar(
                   content: Text('Moto ajoutée avec succès'),
                   backgroundColor: Colors.green,
@@ -298,7 +305,7 @@ class _MesMotosScreenState extends State<MesMotosScreen> {
     // Implémentation du dialogue de modification
     final moto = _motos[index];
     showDialog(
-      context: context,
+      context: _scaffoldContext,
       builder: (context) => AlertDialog(
         backgroundColor: Colors.grey[900],
         title: Text('Modifier la moto', style: TextStyle(color: Colors.white)),
@@ -366,7 +373,8 @@ class _MesMotosScreenState extends State<MesMotosScreen> {
             onPressed: () {
               // Logique de mise à jour
               Navigator.pop(context);
-              ScaffoldMessenger.of(context).showSnackBar(
+              // Utiliser _scaffoldContext pour accéder au ScaffoldMessenger
+              ScaffoldMessenger.of(_scaffoldContext).showSnackBar(
                 SnackBar(
                   content: Text('Moto mise à jour avec succès'),
                   backgroundColor: Colors.green,
@@ -383,7 +391,7 @@ class _MesMotosScreenState extends State<MesMotosScreen> {
   void _showDeleteConfirmation(int index) {
     final moto = _motos[index];
     showDialog(
-      context: context,
+      context: _scaffoldContext,
       builder: (context) => AlertDialog(
         backgroundColor: Colors.grey[900],
         title: Text('Supprimer la moto', style: TextStyle(color: Colors.white)),
@@ -406,7 +414,8 @@ class _MesMotosScreenState extends State<MesMotosScreen> {
                 _motos.removeAt(index);
               });
               Navigator.pop(context);
-              ScaffoldMessenger.of(context).showSnackBar(
+              // Utiliser _scaffoldContext pour accéder au ScaffoldMessenger
+              ScaffoldMessenger.of(_scaffoldContext).showSnackBar(
                 SnackBar(
                   content: Text('Moto supprimée avec succès'),
                   backgroundColor: Colors.green,
@@ -423,7 +432,8 @@ class _MesMotosScreenState extends State<MesMotosScreen> {
   void _navigateToParts(int index) {
     // Implémentation de la navigation vers les pièces compatibles
     final moto = _motos[index];
-    ScaffoldMessenger.of(context).showSnackBar(
+    // Utiliser _scaffoldContext pour accéder au ScaffoldMessenger
+    ScaffoldMessenger.of(_scaffoldContext).showSnackBar(
       SnackBar(
         content: Text('Affichage des pièces compatibles pour ${moto['marque']} ${moto['modele']}'),
       ),

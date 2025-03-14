@@ -1,22 +1,24 @@
+// ignore_for_file: use_build_context_synchronously
+
 import 'package:flutter/material.dart';
-import 'package:shared_preferences/shared_preferences.dart';
 import '../services/api_service.dart'; // Import your ApiService
 
 class ProfileScreen extends StatefulWidget {
   const ProfileScreen({super.key});
 
   @override
+  // ignore: library_private_types_in_public_api
   _ProfileScreenState createState() => _ProfileScreenState();
 }
 
 class _ProfileScreenState extends State<ProfileScreen> {
   // User information
-  String _firstName = "Marie";
-  String _lastName = "Dupont";
-  String _userEmail = "marie.dupont@example.com";
-  String _userPhone = "+33 6 12 34 56 78";
-  String _userAddress = "123 Rue de Paris, 75001 Paris";
-  String _userCni = "1234567890"; // Added CNI field
+  String _firstName = "";
+  String _lastName = "";
+  String _userEmail = "";
+  String _userPhone = "";
+  String _userAddress = "";
+  String _userCni = "";
   bool _isLoading = false;
 
   // Controllers for profile update
@@ -25,7 +27,7 @@ class _ProfileScreenState extends State<ProfileScreen> {
   final TextEditingController _emailController = TextEditingController();
   final TextEditingController _phoneController = TextEditingController();
   final TextEditingController _addressController = TextEditingController();
-  final TextEditingController _cniController = TextEditingController(); // Added CNI controller
+  final TextEditingController _cniController = TextEditingController();
 
   // Controllers for password change
   final TextEditingController _currentPasswordController = TextEditingController();
@@ -36,6 +38,7 @@ class _ProfileScreenState extends State<ProfileScreen> {
   final Color _backgroundColor = Colors.grey[900]!;
   final Color _cardColor = Colors.grey[850]!;
   final Color _textColor = Colors.white;
+  // ignore: deprecated_member_use
   final Color _dividerColor = Colors.red.withOpacity(0.5);
 
   @override
@@ -44,56 +47,96 @@ class _ProfileScreenState extends State<ProfileScreen> {
     _loadUserData();
   }
 
- Future<void> _loadUserData() async {
-  setState(() {
-    _isLoading = true;
-  });
-
-  try {
-    // Obtenir l'ID de l'utilisateur connecté depuis SharedPreferences
-    final prefs = await SharedPreferences.getInstance();
-    final userId = prefs.getInt('userId');
-    
-    if (userId == null) {
-      throw Exception("Aucun utilisateur connecté");
-    }
-    
-    final userData = await ApiService.getUserProfile(userId);
-    
-    if (userData.containsKey('error') && userData['error'].isNotEmpty) {
-      throw Exception(userData['error']);
-    }
-
-    setState(() {
-      // Utiliser les bonnes clés de l'API
-      _firstName = userData['firstname'] ?? "Prénom non disponible";
-      _lastName = userData['lastname'] ?? "Nom non disponible";
-      _userCni = userData['cni'] ?? "CNI non disponible";
-      _userEmail = userData['email'] ?? "Email non disponible";
-      _userPhone = userData['phone'] ?? "Téléphone non disponible";
-      _userAddress = userData['address'] ?? "Adresse non disponible";
-
-      // Pré-remplir les contrôleurs
-      _firstNameController.text = _firstName;
-      _lastNameController.text = _lastName;
-      _emailController.text = _userEmail;
-      _phoneController.text = _userPhone;
-      _addressController.text = _userAddress;
-      _cniController.text = _userCni;
-    });
-  } catch (e) {
-    ScaffoldMessenger.of(context).showSnackBar(
-      SnackBar(
-        content: Text("Erreur lors du chargement du profil: $e"),
-        backgroundColor: Colors.red,
-      ),
-    );
-  } finally {
-    setState(() {
-      _isLoading = false;
-    });
+  @override
+  void didChangeDependencies() {
+    super.didChangeDependencies();
+    // Recharger les données à chaque fois que l'écran est affiché
+    _loadUserData();
   }
-}
+
+  Future<void> _loadUserData() async {
+    if (!mounted) return;
+    
+    setState(() {
+      _isLoading = true;
+    });
+
+    try {
+      // Toujours récupérer les données les plus récentes depuis l'API
+      Map<String, dynamic>? currentUser = ApiService.getCurrentUser();
+      
+      if (currentUser != null) {
+        int userId = currentUser['id'] ?? 1;
+        final userData = await ApiService.getUserProfile(userId);
+        
+        if (userData.containsKey("error")) {
+          throw Exception(userData['error']);
+        }
+        
+        // Mettre à jour l'état avec les données récentes
+        if (mounted) {
+          setState(() {
+            _firstName = userData['firstname'] ?? "";
+            _lastName = userData['lastname'] ?? "";
+            _userCni = userData['cin'] ?? "";
+            _userEmail = userData['email'] ?? "";
+            _userPhone = userData['phone'] ?? "";
+            _userAddress = userData['address'] ?? "";
+
+            // Pré-remplir les contrôleurs
+            _firstNameController.text = _firstName;
+            _lastNameController.text = _lastName;
+            _emailController.text = _userEmail;
+            _phoneController.text = _userPhone;
+            _addressController.text = _userAddress;
+            _cniController.text = _userCni;
+          });
+        }
+      } else {
+        // L'utilisateur n'est pas connecté, gérer cette situation
+        if (mounted) {
+          ScaffoldMessenger.of(context).showSnackBar(
+            const SnackBar(
+              content: Text("Aucun utilisateur connecté"),
+              backgroundColor: Colors.orange,
+            ),
+          );
+          
+          // Réinitialiser tous les champs
+          setState(() {
+            _firstName = "";
+            _lastName = "";
+            _userCni = "";
+            _userEmail = "";
+            _userPhone = "";
+            _userAddress = "";
+            
+            _firstNameController.clear();
+            _lastNameController.clear();
+            _emailController.clear();
+            _phoneController.clear();
+            _addressController.clear();
+            _cniController.clear();
+          });
+        }
+      }
+    } catch (e) {
+      if (mounted) {
+        ScaffoldMessenger.of(context).showSnackBar(
+          SnackBar(
+            content: Text("Erreur lors du chargement du profil: $e"),
+            backgroundColor: Colors.red,
+          ),
+        );
+      }
+    } finally {
+      if (mounted) {
+        setState(() {
+          _isLoading = false;
+        });
+      }
+    }
+  }
 
   @override
   Widget build(BuildContext context) {
@@ -133,6 +176,13 @@ class _ProfileScreenState extends State<ProfileScreen> {
         appBar: AppBar(
           title: const Text("Profil"),
           centerTitle: true,
+          actions: [
+            // Bouton de rafraîchissement pour forcer le rechargement des données
+            IconButton(
+              icon: const Icon(Icons.refresh),
+              onPressed: _loadUserData,
+            ),
+          ],
         ),
         body: _isLoading
             ? const Center(child: CircularProgressIndicator())
@@ -156,14 +206,14 @@ class _ProfileScreenState extends State<ProfileScreen> {
                       value: _lastName,
                     ),
                     _buildUserInfoCard(
-                      icon: Icons.email,
+                      icon: Icons.credit_card,
                       title: "CNI",
                       value: _userCni,
                     ),
                     _buildUserInfoCard(
-                      icon: Icons.credit_card,
-                      title:"Email" ,
-                      value:_userEmail , // Added CNI
+                      icon: Icons.email,
+                      title: "Email",
+                      value: _userEmail,
                     ),
                     _buildUserInfoCard(
                       icon: Icons.phone,
@@ -187,11 +237,7 @@ class _ProfileScreenState extends State<ProfileScreen> {
                       title: "Changer le mot de passe",
                       onTap: _showChangePasswordDialog,
                     ),
-                    _buildSettingItem(
-                      icon: Icons.delete,
-                      title: "Supprimer le compte",
-                      onTap: _showDeleteAccountDialog,
-                    ),
+                    
                   ],
                 ),
               ),
@@ -269,7 +315,7 @@ class _ProfileScreenState extends State<ProfileScreen> {
                   ),
                   const SizedBox(height: 4),
                   Text(
-                    value,
+                    value.isEmpty ? "Non renseigné" : value,
                     style: const TextStyle(fontSize: 16),
                   ),
                 ],
@@ -330,7 +376,7 @@ class _ProfileScreenState extends State<ProfileScreen> {
     _emailController.text = _userEmail;
     _phoneController.text = _userPhone;
     _addressController.text = _userAddress;
-    _cniController.text = _userCni; // Pre-fill CNI
+    _cniController.text = _userCni;
 
     showDialog(
       context: context,
@@ -388,26 +434,24 @@ class _ProfileScreenState extends State<ProfileScreen> {
                 backgroundColor: _primaryColor,
               ),
               onPressed: () async {
+                // Récupérer l'ID de l'utilisateur actuel
+                final currentUser = ApiService.getCurrentUser();
+                final userId = currentUser?['id'] ?? 1;
+                
                 final result = await ApiService.updateProfile(
-                  1, // Replace with actual userId
+                  userId,
                   _firstNameController.text,
                   _lastNameController.text,
                   _emailController.text,
                   phone: _phoneController.text,
                   address: _addressController.text,
+                  // cin: _cniController.text,
                 );
 
                 if (result["success"]) {
-                  // Update the local state
-                  setState(() {
-                    _firstName = _firstNameController.text;
-                    _lastName = _lastNameController.text;
-                    _userEmail = _emailController.text;
-                    _userPhone = _phoneController.text;
-                    _userAddress = _addressController.text;
-                    _userCni = _cniController.text; // Update CNI
-                  });
-
+                  // Recharger les données du profil depuis l'API
+                  await _loadUserData();
+                  
                   ScaffoldMessenger.of(context).showSnackBar(
                     const SnackBar(
                       content: Text("Profil mis à jour avec succès"),
@@ -481,8 +525,11 @@ class _ProfileScreenState extends State<ProfileScreen> {
                 backgroundColor: _primaryColor,
               ),
               onPressed: () async {
+                final currentUser = ApiService.getCurrentUser();
+                final userId = currentUser?['id'] ?? 1;
+
                 final result = await ApiService.changePassword(
-                  1, // Replace with actual userId
+                  userId,
                   _currentPasswordController.text,
                   _newPasswordController.text,
                 );
@@ -514,65 +561,5 @@ class _ProfileScreenState extends State<ProfileScreen> {
       },
     );
   }
-
-  // Show dialog for deleting account
-  void _showDeleteAccountDialog() {
-    showDialog(
-      context: context,
-      builder: (BuildContext context) {
-        return AlertDialog(
-          title: const Text(
-            "Supprimer le compte",
-            style: TextStyle(color: Colors.red),
-          ),
-          content: const Text(
-            "Êtes-vous sûr de vouloir supprimer votre compte ? Cette action est irréversible.",
-          ),
-          actions: [
-            TextButton(
-              onPressed: () {
-                Navigator.of(context).pop();
-              },
-              child: Text("Annuler", style: TextStyle(color: Colors.grey[400])),
-            ),
-            ElevatedButton(
-              style: ElevatedButton.styleFrom(
-                backgroundColor: Colors.red,
-              ),
-              onPressed: () async {
-                final result = await ApiService.deleteAccount(
-                  1, // Replace with actual userId
-                );
-
-                if (result["success"]) {
-                  ScaffoldMessenger.of(context).showSnackBar(
-                    const SnackBar(
-                      content: Text("Compte supprimé avec succès"),
-                      backgroundColor: Colors.green,
-                    ),
-                  );
-                  // Navigate to login screen or perform logout
-                } else {
-                  ScaffoldMessenger.of(context).showSnackBar(
-                    SnackBar(
-                      content: Text(
-                        "Échec de la suppression: ${result["message"]}",
-                      ),
-                      backgroundColor: Colors.red,
-                    ),
-                  );
-                }
-
-                Navigator.of(context).pop();
-              },
-              child: const Text(
-                "Supprimer",
-                style: TextStyle(color: Colors.white),
-              ),
-            ),
-          ],
-        );
-      },
-    );
-  }
 }
+  
