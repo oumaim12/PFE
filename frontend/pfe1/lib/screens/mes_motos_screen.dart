@@ -15,61 +15,72 @@ class _MesMotosScreenState extends State<MesMotosScreen> {
       'marque': 'Kawasaki',
       'modele': 'Ninja ZX-10R',
       'annee': '2022',
-      'image': 'https://via.placeholder.com/150',
+      'image': 'assets/images/Moto.jpg',
       'pieces_compatibles': 15,
     },
     {
       'marque': 'Honda',
       'modele': 'CBR1000RR',
       'annee': '2021',
-      'image': 'https://via.placeholder.com/150',
+      'image': 'assets/images/Moto.jpg',
       'pieces_compatibles': 23,
     },
     {
       'marque': 'Yamaha',
       'modele': 'MT-09',
       'annee': '2023',
-      'image': 'https://via.placeholder.com/150',
+      'image': 'assets/images/Moto.jpg',
       'pieces_compatibles': 18,
     },
   ];
 
   @override
   Widget build(BuildContext context) {
+<<<<<<< HEAD
     // Stocker le contexte pour une utilisation ultérieure
     _scaffoldContext = context;
     
+=======
+    // Get screen dimensions
+    final screenWidth = MediaQuery.of(context).size.width;
+    final screenHeight = MediaQuery.of(context).size.height;
+
+>>>>>>> 481dd02d7d022e5330a0e2a32354ff0cbe1de8ce
     return Scaffold(
       backgroundColor: Colors.black,
       body: SingleChildScrollView(
-        padding: EdgeInsets.all(16.0),
+        padding: EdgeInsets.all(screenWidth * 0.04),
         child: Column(
           crossAxisAlignment: CrossAxisAlignment.start,
           children: [
             Text(
               'Mes Motos',
               style: TextStyle(
-                fontSize: 24,
+                fontSize: screenWidth * 0.06,
                 fontWeight: FontWeight.bold,
                 color: Colors.white,
               ),
             ),
-            SizedBox(height: 10),
+            SizedBox(height: screenHeight * 0.01),
             Text(
               'Gérez vos motos pour trouver rapidement des pièces compatibles',
               style: TextStyle(
-                fontSize: 14,
+                fontSize: screenWidth * 0.035,
                 color: Colors.grey[400],
               ),
             ),
-            SizedBox(height: 20),
+            SizedBox(height: screenHeight * 0.02),
             if (_motos.isEmpty)
               Center(
                 child: Column(
                   mainAxisAlignment: MainAxisAlignment.center,
                   children: [
-                    Icon(Icons.motorcycle, size: 80, color: Colors.grey),
-                    SizedBox(height: 16),
+                    Icon(
+                      Icons.motorcycle,
+                      size: screenWidth * 0.3,
+                      color: Colors.grey,
+                    ),
+                    SizedBox(height: screenHeight * 0.02),
                     Text(
                       'Vous n\'avez pas encore ajouté de moto',
                       style: TextStyle(color: Colors.grey),
@@ -81,36 +92,43 @@ class _MesMotosScreenState extends State<MesMotosScreen> {
               ListView.builder(
                 shrinkWrap: true,
                 physics: NeverScrollableScrollPhysics(),
-                itemCount: _motos.length + 1, // +1 pour la carte d'ajout
+                itemCount: _motos.length + 1, // +1 for the add card
                 itemBuilder: (context, index) {
                   if (index == _motos.length) {
-                    // Carte pour ajouter une nouvelle moto
+                    // Card for adding a new motorcycle
                     return Card(
                       color: Colors.grey[900],
                       shape: RoundedRectangleBorder(
                         borderRadius: BorderRadius.circular(10),
-                        side: BorderSide(color: Colors.red.withOpacity(0.5), width: 1),
+                        side: BorderSide(
+                          color: Colors.red.withOpacity(0.5),
+                          width: 1,
+                        ),
+                      ),
+                      margin: EdgeInsets.symmetric(
+                        vertical: screenHeight * 0.01,
+                        horizontal: screenWidth * 0.02,
                       ),
                       child: InkWell(
                         onTap: () {
                           _showAddMotoDialog();
                         },
                         child: Padding(
-                          padding: const EdgeInsets.all(16.0),
+                          padding: EdgeInsets.all(screenWidth * 0.04),
                           child: Column(
                             mainAxisAlignment: MainAxisAlignment.center,
                             children: [
                               Icon(
                                 Icons.add_circle,
-                                size: 50,
+                                size: screenWidth * 0.13,
                                 color: Colors.red,
                               ),
-                              SizedBox(height: 8),
+                              SizedBox(height: screenHeight * 0.01),
                               Text(
                                 'Ajouter une moto',
                                 style: TextStyle(
                                   color: Colors.white,
-                                  fontSize: 16,
+                                  fontSize: screenWidth * 0.04,
                                 ),
                               ),
                             ],
@@ -119,85 +137,111 @@ class _MesMotosScreenState extends State<MesMotosScreen> {
                       ),
                     );
                   }
-                  
-                  // Carte pour chaque moto
+
+                  // Card for each motorcycle
                   final moto = _motos[index];
                   return Card(
                     color: Colors.grey[900],
                     shape: RoundedRectangleBorder(
                       borderRadius: BorderRadius.circular(10),
                     ),
-                    margin: EdgeInsets.only(bottom: 16),
+                    margin: EdgeInsets.symmetric(
+                      vertical: screenHeight * 0.01,
+                      horizontal: screenWidth * 0.02,
+                    ),
                     child: Padding(
-                      padding: const EdgeInsets.all(16.0),
+                      padding: EdgeInsets.all(screenWidth * 0.04),
                       child: Row(
                         children: [
                           ClipRRect(
                             borderRadius: BorderRadius.circular(8),
-                            child: Image.network(
+                            child: Image.asset(
                               moto['image'],
-                              width: 80,
-                              height: 80,
+                              width: screenWidth * 0.25,
+                              height: screenWidth * 0.25,
                               fit: BoxFit.cover,
                             ),
+                                  
                           ),
-                          SizedBox(width: 16),
-                          Expanded(
+                          SizedBox(width: screenWidth * 0.04),
+                          // Wrap the text in a Flexible widget so it doesn't force overflow
+                          Flexible(
                             child: Column(
                               crossAxisAlignment: CrossAxisAlignment.start,
                               children: [
                                 Text(
                                   '${moto['marque']} ${moto['modele']}',
                                   style: TextStyle(
-                                    fontSize: 18,
+                                    fontSize: screenWidth * 0.05,
                                     fontWeight: FontWeight.bold,
                                     color: Colors.white,
                                   ),
+                                  maxLines: 2,
+                                  overflow: TextOverflow.ellipsis,
                                 ),
-                                SizedBox(height: 4),
+                                SizedBox(height: screenHeight * 0.005),
                                 Text(
                                   'Année: ${moto['annee']}',
                                   style: TextStyle(
+                                    fontSize: screenWidth * 0.04,
                                     color: Colors.grey[400],
                                   ),
+                                  maxLines: 1,
+                                  overflow: TextOverflow.ellipsis,
                                 ),
-                                SizedBox(height: 8),
+                                SizedBox(height: screenHeight * 0.01),
                                 Text(
                                   '${moto['pieces_compatibles']} pièces compatibles',
                                   style: TextStyle(
+                                    fontSize: screenWidth * 0.04,
                                     color: Colors.red,
                                     fontWeight: FontWeight.bold,
                                   ),
+                                  maxLines: 1,
+                                  overflow: TextOverflow.ellipsis,
                                 ),
                               ],
                             ),
                           ),
-                          PopupMenuButton<String>(
-                            icon: Icon(Icons.more_vert, color: Colors.white),
-                            color: Colors.grey[800],
-                            onSelected: (value) {
-                              if (value == 'edit') {
-                                _showEditMotoDialog(index);
-                              } else if (value == 'delete') {
-                                _showDeleteConfirmation(index);
-                              } else if (value == 'parts') {
-                                _navigateToParts(index);
-                              }
-                            },
-                            itemBuilder: (context) => [
-                              PopupMenuItem(
-                                value: 'parts',
-                                child: Text('Voir les pièces compatibles', style: TextStyle(color: Colors.white)),
-                              ),
-                              PopupMenuItem(
-                                value: 'edit',
-                                child: Text('Modifier', style: TextStyle(color: Colors.white)),
-                              ),
-                              PopupMenuItem(
-                                value: 'delete',
-                                child: Text('Supprimer', style: TextStyle(color: Colors.red)),
-                              ),
-                            ],
+                          // Constrain the PopupMenuButton with a SizedBox
+                          SizedBox(
+                            width: screenWidth * 0.1,
+                            child: PopupMenuButton<String>(
+                              icon: Icon(Icons.more_vert, color: Colors.white),
+                              color: Colors.grey[800],
+                              onSelected: (value) {
+                                if (value == 'edit') {
+                                  _showEditMotoDialog(index);
+                                } else if (value == 'delete') {
+                                  _showDeleteConfirmation(index);
+                                } else if (value == 'parts') {
+                                  _navigateToParts(index);
+                                }
+                              },
+                              itemBuilder: (context) => [
+                                PopupMenuItem(
+                                  value: 'parts',
+                                  child: Text(
+                                    'Voir les pièces compatibles',
+                                    style: TextStyle(color: Colors.white),
+                                  ),
+                                ),
+                                PopupMenuItem(
+                                  value: 'edit',
+                                  child: Text(
+                                    'Modifier',
+                                    style: TextStyle(color: Colors.white),
+                                  ),
+                                ),
+                                PopupMenuItem(
+                                  value: 'delete',
+                                  child: Text(
+                                    'Supprimer',
+                                    style: TextStyle(color: Colors.red),
+                                  ),
+                                ),
+                              ],
+                            ),
                           ),
                         ],
                       ),
@@ -219,7 +263,7 @@ class _MesMotosScreenState extends State<MesMotosScreen> {
   }
 
   void _showAddMotoDialog() {
-    // Implémentation du dialogue d'ajout
+    // Implementation for adding a motorcycle
     showDialog(
       context: _scaffoldContext,
       builder: (context) => AlertDialog(
@@ -280,11 +324,8 @@ class _MesMotosScreenState extends State<MesMotosScreen> {
             child: Text('Annuler', style: TextStyle(color: Colors.grey)),
           ),
           ElevatedButton(
-            style: ElevatedButton.styleFrom(
-              backgroundColor: Colors.red,
-            ),
+            style: ElevatedButton.styleFrom(backgroundColor: Colors.red),
             onPressed: () {
-              // Logique d'ajout de moto ici
               Navigator.pop(context);
               // Utiliser _scaffoldContext pour accéder au ScaffoldMessenger
               ScaffoldMessenger.of(_scaffoldContext).showSnackBar(
@@ -302,7 +343,6 @@ class _MesMotosScreenState extends State<MesMotosScreen> {
   }
 
   void _showEditMotoDialog(int index) {
-    // Implémentation du dialogue de modification
     final moto = _motos[index];
     showDialog(
       context: _scaffoldContext,
@@ -367,11 +407,8 @@ class _MesMotosScreenState extends State<MesMotosScreen> {
             child: Text('Annuler', style: TextStyle(color: Colors.grey)),
           ),
           ElevatedButton(
-            style: ElevatedButton.styleFrom(
-              backgroundColor: Colors.red,
-            ),
+            style: ElevatedButton.styleFrom(backgroundColor: Colors.red),
             onPressed: () {
-              // Logique de mise à jour
               Navigator.pop(context);
               // Utiliser _scaffoldContext pour accéder au ScaffoldMessenger
               ScaffoldMessenger.of(_scaffoldContext).showSnackBar(
@@ -405,11 +442,8 @@ class _MesMotosScreenState extends State<MesMotosScreen> {
             child: Text('Annuler', style: TextStyle(color: Colors.grey)),
           ),
           ElevatedButton(
-            style: ElevatedButton.styleFrom(
-              backgroundColor: Colors.red,
-            ),
+            style: ElevatedButton.styleFrom(backgroundColor: Colors.red),
             onPressed: () {
-              // Logique de suppression
               setState(() {
                 _motos.removeAt(index);
               });
@@ -430,12 +464,13 @@ class _MesMotosScreenState extends State<MesMotosScreen> {
   }
 
   void _navigateToParts(int index) {
-    // Implémentation de la navigation vers les pièces compatibles
     final moto = _motos[index];
     // Utiliser _scaffoldContext pour accéder au ScaffoldMessenger
     ScaffoldMessenger.of(_scaffoldContext).showSnackBar(
       SnackBar(
-        content: Text('Affichage des pièces compatibles pour ${moto['marque']} ${moto['modele']}'),
+        content: Text(
+          'Affichage des pièces compatibles pour ${moto['marque']} ${moto['modele']}',
+        ),
       ),
     );
   }

@@ -1,5 +1,10 @@
 import 'dart:convert';
 import 'package:http/http.dart' as http;
+<<<<<<< HEAD
+=======
+
+
+>>>>>>> 481dd02d7d022e5330a0e2a32354ff0cbe1de8ce
 
 class ApiService {
   // Replace with your PC's IP
@@ -8,6 +13,29 @@ class ApiService {
   static Map<String, dynamic>? currentUser;
   static String? accessToken;
 
+<<<<<<< HEAD
+=======
+  //     // Capture all useful information for debugging
+  //     return {
+  //       "statusCode": response.statusCode,
+  //       "headers": response.headers,
+  //       "body": response.body,
+  //     };
+  //   } catch (e) {
+  //     return {"error": e.toString()};
+  //   }
+  // }
+
+
+//   static Future<void> saveUserId(int userId) async {
+//   final prefs = await SharedPreferences.getInstance();
+//   await prefs.setInt('userId', userId);
+// }
+// static Future<int?> getUserId() async {
+//   final prefs = await SharedPreferences.getInstance();
+//   return prefs.getInt('userId');
+// }
+>>>>>>> 481dd02d7d022e5330a0e2a32354ff0cbe1de8ce
   // Improved login function that returns a result object
   static Future<Map<String, dynamic>> login(
     // ignore: non_constant_identifier_names
@@ -15,10 +43,14 @@ class ApiService {
     String password,
   ) async {
     try {
+<<<<<<< HEAD
       // Assurez-vous que currentUser est nul avant la connexion
       // Cette ligne est importante pour effacer les données d'un utilisateur précédent
       currentUser = null;
       accessToken = null;
+=======
+      // print("Attempting login with: $Cin / $password");
+>>>>>>> 481dd02d7d022e5330a0e2a32354ff0cbe1de8ce
 
       final response = await http.post(
         Uri.parse("$baseUrl/login"),
@@ -26,10 +58,17 @@ class ApiService {
         body: jsonEncode({"cin": Cin, "password": password}),
       );
 
+<<<<<<< HEAD
+=======
+      // print("API Response - StatusCode: ${response.statusCode}");
+      // print("API Response - Body: ${response.body}");
+
+>>>>>>> 481dd02d7d022e5330a0e2a32354ff0cbe1de8ce
       if (response.statusCode == 200) {
         // Parse the JSON response
         Map<String, dynamic> data = jsonDecode(response.body);
 
+<<<<<<< HEAD
         if (data['success'] == true) {
           currentUser = data['user'];
           accessToken = data['access_token'];
@@ -56,6 +95,34 @@ class ApiService {
         }
         return {"success": false, "message": message};
       }
+=======
+  if (data['success'] == true) {
+    // if (data['user'] != null && data['user']['id'] != null) {
+    //       await saveUserId(data['user']['id']);
+    //     }
+    return {
+      "success": true,
+      "message": data['message'],
+      "user": data['user'],
+      "token": data['token'],
+    };
+  } else {
+    return {
+      "success": false,
+      "message": data['message'] ?? "Login failed",
+    };
+  }
+} else {
+  String message = "Login error: ${response.statusCode}";
+  try {
+    Map<String, dynamic> errorData = jsonDecode(response.body);
+    message = errorData['message'] ?? message;
+  } catch (e) {
+    // If the body is not valid JSON, use the default message
+  }
+  return {"success": false, "message": message};
+}
+>>>>>>> 481dd02d7d022e5330a0e2a32354ff0cbe1de8ce
     } catch (e) {
       return {"success": false, "message": "Connection error: $e"};
     }
@@ -183,7 +250,12 @@ class ApiService {
     }
   }
 
+<<<<<<< HEAD
 // Updated registration method to include first name, last name, CNI, phone, and address
+=======
+
+  // Updated registration method to include first name, last name, CIN, phone, and address
+>>>>>>> 481dd02d7d022e5330a0e2a32354ff0cbe1de8ce
   static Future<Map<String, dynamic>> register(
     String firstName,
     String lastName,
@@ -299,4 +371,94 @@ static Future<Map<String, dynamic>> changePassword(
     } catch (e) {
       return {"success": false, "message": "Error changing password: $e"};
 
+<<<<<<< HEAD
     }}}
+=======
+  // Update profile function
+  static Future<Map<String, dynamic>> updateProfile(
+    int userId,
+    String firstName,
+    String lastName,
+    String email, {
+    String? phone,
+    String? address,
+  }) async {
+    try {
+      final response = await http.put(
+        Uri.parse("$baseUrl/updateProfile"),
+        headers: {"Content-Type": "application/json"},
+        body: jsonEncode({
+          "userId": userId,
+          "firstname": firstName,
+          "lastname": lastName,
+          "email": email,
+          "phone": phone,
+          "address": address,
+        }),
+      );
+
+      // print("API Response - StatusCode: ${response.statusCode}");
+      // print("API Response - Body: ${response.body}");
+
+      if (response.statusCode == 200) {
+        final Map<String, dynamic> data = jsonDecode(response.body);
+        return {
+          "success": data['success'] ?? false,
+          "message": data['message'] ?? "Profile updated successfully",
+        };
+      } else {
+        return {
+          "success": false,
+          "message": "Failed to update profile: ${response.statusCode}",
+        };
+      }
+    } catch (e) {
+      return {"success": false, "message": "Error updating profile: $e"};
+    }
+  }
+
+  //supprimer le compte 
+  static Future<Map<String, dynamic>> deleteAccount(int userId) async {
+    try {
+      final response = await http.delete(
+        Uri.parse("$baseUrl/delete_account.php"),
+        headers: {"Content-Type": "application/json"},
+        body: jsonEncode({"userId": userId}),
+      );
+
+      // print("API Response - StatusCode: ${response.statusCode}");
+      // print("API Response - Body: ${response.body}");
+
+      if (response.statusCode == 200) {
+        final Map<String, dynamic> data = jsonDecode(response.body);
+        return {
+          "success": data['success'] ?? false,
+          "message": data['message'] ?? "Account deleted successfully",
+        };
+      } else {
+        return {
+          "success": false,
+          "message": "Failed to delete account: ${response.statusCode}",
+        };
+      }
+    } catch (e) {
+      return {"success": false, "message": "Error deleting account: $e"};
+    }
+  }
+
+  //recuperer les information
+ static Future<Map<String, dynamic>> getUserProfile(int userId) async {
+
+  // Exemple : Appeler une API, interroger une base de données, etc.
+
+  // Retourner un objet Map avec des valeurs par défaut ou vides
+  return {
+    "firstname": "",
+    "lastname": "",
+    "cin": "",
+    "email": "",
+    "phone": "",
+    "address": "",
+  };
+}}
+>>>>>>> 481dd02d7d022e5330a0e2a32354ff0cbe1de8ce

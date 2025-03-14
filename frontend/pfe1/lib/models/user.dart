@@ -5,7 +5,7 @@ class User {
   final String email;
   final String? phone;
   final String? address;
-  final String? cni;
+  final String? cin;
   final String? token;
 
   User({
@@ -15,7 +15,7 @@ class User {
     required this.email,
     this.phone,
     this.address,
-    this.cni,
+    this.cin,
     this.token,
   });
 
@@ -27,7 +27,7 @@ class User {
       email: json['email'] ?? "",
       phone: json['phone'],
       address: json['address'],
-      cni: json['cni'],
+      cin: json['cin'],
       token: json['token'],
     );
   }
@@ -40,7 +40,7 @@ class User {
       'email': email,
       'phone': phone,
       'address': address,
-      'cni': cni,
+      'cin': cin,
       'token': token,
     };
   }
