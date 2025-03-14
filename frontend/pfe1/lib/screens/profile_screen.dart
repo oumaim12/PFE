@@ -1,11 +1,7 @@
 // ignore_for_file: use_build_context_synchronously
 
 import 'package:flutter/material.dart';
-<<<<<<< HEAD
 import '../services/api_service.dart'; // Import your ApiService
-=======
-import '../services/api_service.dart';
->>>>>>> 481dd02d7d022e5330a0e2a32354ff0cbe1de8ce
 
 class ProfileScreen extends StatefulWidget {
   const ProfileScreen({super.key});
@@ -17,21 +13,12 @@ class ProfileScreen extends StatefulWidget {
 
 class _ProfileScreenState extends State<ProfileScreen> {
   // User information
-<<<<<<< HEAD
   String _firstName = "";
   String _lastName = "";
   String _userEmail = "";
   String _userPhone = "";
   String _userAddress = "";
   String _userCni = "";
-=======
-  String _firstName = "Marie";
-  String _lastName = "Dupont";
-  String _userEmail = "marie.dupont@example.com";
-  String _userPhone = "+33 6 12 34 56 78";
-  String _userAddress = "123 Rue de Paris, 75001 Paris";
-  String _userCin = "1234567890";
->>>>>>> 481dd02d7d022e5330a0e2a32354ff0cbe1de8ce
   bool _isLoading = false;
 
   // Controllers for profile update
@@ -40,11 +27,7 @@ class _ProfileScreenState extends State<ProfileScreen> {
   final TextEditingController _emailController = TextEditingController();
   final TextEditingController _phoneController = TextEditingController();
   final TextEditingController _addressController = TextEditingController();
-<<<<<<< HEAD
   final TextEditingController _cniController = TextEditingController();
-=======
-  final TextEditingController _cinController = TextEditingController();
->>>>>>> 481dd02d7d022e5330a0e2a32354ff0cbe1de8ce
 
   // Controllers for password change
   final TextEditingController _currentPasswordController = TextEditingController();
@@ -64,7 +47,6 @@ class _ProfileScreenState extends State<ProfileScreen> {
     _loadUserData();
   }
 
-<<<<<<< HEAD
   @override
   void didChangeDependencies() {
     super.didChangeDependencies();
@@ -156,52 +138,6 @@ class _ProfileScreenState extends State<ProfileScreen> {
     }
   }
 
-=======
- Future<void> _loadUserData() async {
-  setState(() {
-    _isLoading = true;
-  });
-
-  try {
-    // Appeler l'API pour récupérer les données de l'utilisateur
-    final userData = await ApiService.getUserProfile(1); // Remplacez 1 par l'ID de l'utilisateur connecté
-
-    // Vérifier si la réponse contient une erreur
-    if (userData.containsKey("error") && userData['error'].isNotEmpty) {
-      throw Exception(userData['error']);
-    }
-
-    setState(() {
-      // Mettre à jour les informations de l'utilisateur
-      _firstName = userData['firstname'] ?? "Prénom non disponible";
-      _lastName = userData['lastname'] ?? "Nom non disponible";
-      _userCin = userData['cin'] ?? "CIN non disponible";
-      _userEmail = userData['email'] ?? "Email non disponible";
-      _userPhone = userData['phone'] ?? "Téléphone non disponible";
-      _userAddress = userData['address'] ?? "Adresse non disponible";
-
-      // Pré-remplir les contrôleurs pour la mise à jour du profil
-      _firstNameController.text = _firstName;
-      _lastNameController.text = _lastName;
-      _emailController.text = _userEmail;
-      _phoneController.text = _userPhone;
-      _addressController.text = _userAddress;
-      _cinController.text = _userCin;
-    });
-  } catch (e) {
-    ScaffoldMessenger.of(context).showSnackBar(
-      SnackBar(
-        content: Text("Erreur lors du chargement du profil: $e"),
-        backgroundColor: Colors.red,
-      ),
-    );
-  } finally {
-    setState(() {
-      _isLoading = false;
-    });
-  }
-}
->>>>>>> 481dd02d7d022e5330a0e2a32354ff0cbe1de8ce
   @override
   Widget build(BuildContext context) {
     return Theme(
@@ -271,7 +207,6 @@ class _ProfileScreenState extends State<ProfileScreen> {
                       value: _lastName,
                     ),
                     _buildUserInfoCard(
-<<<<<<< HEAD
                       icon: Icons.credit_card,
                       title: "CNI",
                       value: _userCni,
@@ -280,16 +215,6 @@ class _ProfileScreenState extends State<ProfileScreen> {
                       icon: Icons.email,
                       title: "Email",
                       value: _userEmail,
-=======
-                      icon: Icons.email,
-                      title: "CIN",
-                      value: _userCin,
-                    ),
-                    _buildUserInfoCard(
-                      icon: Icons.credit_card,
-                      title:"Email" ,
-                      value:_userEmail , // Added CIN
->>>>>>> 481dd02d7d022e5330a0e2a32354ff0cbe1de8ce
                     ),
                     _buildUserInfoCard(
                       icon: Icons.phone,
@@ -452,11 +377,7 @@ class _ProfileScreenState extends State<ProfileScreen> {
     _emailController.text = _userEmail;
     _phoneController.text = _userPhone;
     _addressController.text = _userAddress;
-<<<<<<< HEAD
     _cniController.text = _userCni;
-=======
-    _cinController.text = _userCin; // Pre-fill CIN
->>>>>>> 481dd02d7d022e5330a0e2a32354ff0cbe1de8ce
 
     showDialog(
       context: context,
@@ -486,7 +407,7 @@ class _ProfileScreenState extends State<ProfileScreen> {
                 ),
                 const SizedBox(height: 16),
                 TextField(
-                  controller: _cinController,
+                  controller: _cniController,
                   decoration: const InputDecoration(labelText: 'CIN'),
                 ),
                 const SizedBox(height: 16),
@@ -529,23 +450,9 @@ class _ProfileScreenState extends State<ProfileScreen> {
                 );
 
                 if (result["success"]) {
-<<<<<<< HEAD
                   // Recharger les données du profil depuis l'API
                   await _loadUserData();
                   
-=======
-                  // Update the local state
-                  setState(() {
-                    _firstName = _firstNameController.text;
-                    _lastName = _lastNameController.text;
-                    _userEmail = _emailController.text;
-                    _userPhone = _phoneController.text;
-                    _userAddress = _addressController.text;
-                    _userCin = _cinController.text; // Update CIN
-                  });
-
-         
->>>>>>> 481dd02d7d022e5330a0e2a32354ff0cbe1de8ce
                   ScaffoldMessenger.of(context).showSnackBar(
                     const SnackBar(
                       content: Text("Profil mis à jour avec succès"),
@@ -655,70 +562,5 @@ class _ProfileScreenState extends State<ProfileScreen> {
       },
     );
   }
-<<<<<<< HEAD
 }
   
-=======
-
-  // Show dialog for deleting account
-  void _showDeleteAccountDialog() {
-    showDialog(
-      context: context,
-      builder: (BuildContext context) {
-        return AlertDialog(
-          title: const Text(
-            "Supprimer le compte",
-            style: TextStyle(color: Colors.red),
-          ),
-          content: const Text(
-            "Êtes-vous sûr de vouloir supprimer votre compte ? Cette action est irréversible.",
-          ),
-          actions: [
-            TextButton(
-              onPressed: () {
-                Navigator.of(context).pop();
-              },
-              child: Text("Annuler", style: TextStyle(color: Colors.grey[400])),
-            ),
-            ElevatedButton(
-              style: ElevatedButton.styleFrom(
-                backgroundColor: Colors.red,
-              ),
-              onPressed: () async {
-                final result = await ApiService.deleteAccount(
-                  1, // Replace with actual userId
-                );
-
-                if (result["success"]) {
-                  ScaffoldMessenger.of(context).showSnackBar(
-                    const SnackBar(
-                      content: Text("Compte supprimé avec succès"),
-                      backgroundColor: Colors.green,
-                    ),
-                  );
-                  // Navigate to login screen or perform logout
-                } else {
-                  ScaffoldMessenger.of(context).showSnackBar(
-                    SnackBar(
-                      content: Text(
-                        "Échec de la suppression: ${result["message"]}",
-                      ),
-                      backgroundColor: Colors.red,
-                    ),
-                  );
-                }
-
-                Navigator.of(context).pop();
-              },
-              child: const Text(
-                "Supprimer",
-                style: TextStyle(color: Colors.white),
-              ),
-            ),
-          ],
-        );
-      },
-    );
-  }
-}
->>>>>>> 481dd02d7d022e5330a0e2a32354ff0cbe1de8ce

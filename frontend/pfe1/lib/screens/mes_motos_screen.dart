@@ -36,16 +36,10 @@ class _MesMotosScreenState extends State<MesMotosScreen> {
 
   @override
   Widget build(BuildContext context) {
-<<<<<<< HEAD
-    // Stocker le contexte pour une utilisation ultérieure
-    _scaffoldContext = context;
-    
-=======
     // Get screen dimensions
     final screenWidth = MediaQuery.of(context).size.width;
     final screenHeight = MediaQuery.of(context).size.height;
 
->>>>>>> 481dd02d7d022e5330a0e2a32354ff0cbe1de8ce
     return Scaffold(
       backgroundColor: Colors.black,
       body: SingleChildScrollView(
