@@ -134,6 +134,7 @@ class _RegisterScreenState extends State<RegisterScreen> {
             TextField(
               controller: firstNameController,
               decoration: _inputDecoration("Prénom *", Icons.person),
+              style: TextStyle(color: Colors.white),
             ),
             const SizedBox(height: 15),
             
@@ -141,6 +142,7 @@ class _RegisterScreenState extends State<RegisterScreen> {
             TextField(
               controller: lastNameController,
               decoration: _inputDecoration("Nom de famille *", Icons.person_outline),
+              style: TextStyle(color: Colors.white),
             ),
             const SizedBox(height: 15),
             
@@ -149,6 +151,7 @@ class _RegisterScreenState extends State<RegisterScreen> {
               controller: cinController,
               decoration: _inputDecoration("Numéro CIN *", Icons.credit_card),
               keyboardType: TextInputType.number,
+              style: TextStyle(color: Colors.white),
             ),
             const SizedBox(height: 15),
             
@@ -157,6 +160,7 @@ class _RegisterScreenState extends State<RegisterScreen> {
               controller: emailController,
               decoration: _inputDecoration("Email ", Icons.email),
               keyboardType: TextInputType.emailAddress,
+              style: TextStyle(color: Colors.white),
             ),  const SizedBox(height: 15),
 
 // Password Field
@@ -179,6 +183,7 @@ class _RegisterScreenState extends State<RegisterScreen> {
               controller: phoneController,
               decoration: _inputDecoration("Téléphone", Icons.phone),
               keyboardType: TextInputType.phone,
+              style: TextStyle(color: Colors.white),
             ),
             const SizedBox(height: 15),
             
@@ -187,6 +192,7 @@ class _RegisterScreenState extends State<RegisterScreen> {
               controller: addressController,
               decoration: _inputDecoration("Adresse", Icons.location_on),
               keyboardType: TextInputType.streetAddress,
+              style: TextStyle(color: Colors.white),
             ),
             const SizedBox(height: 15),
             

@@ -16,9 +16,9 @@ Route::post('/login', [AuthController::class, 'login']);
 
 Route::put('/change-password', [AuthController::class, 'changePassword']);
 
-Route::put('/update_profile.php', [AuthController::class, 'updateProfile']);
+Route::put('/updateProfile', [AuthController::class, 'updateProfile']);
 
-Route::get('/get_user_profile.php', [AuthController::class, 'getUserProfile']);
+Route::get('/get_user_profile', [AuthController::class, 'getUserProfile']);
 
 Route::post('/login', [AuthController::class, 'login']);
 Route::middleware('auth:sanctum')->post('/logout', [AuthController::class, 'logout']);

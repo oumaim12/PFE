@@ -164,80 +164,88 @@ class AuthController extends Controller
 
 
     public function updateProfile(Request $request)
-{
-    $validator = Validator::make($request->all(), [
-        'userId' => 'required|integer|exists:users,id',
-        'first_name' => 'required|string|max:255',
-        'last_name' => 'required|string|max:255',
-        'email' => 'required|string|email|max:255|unique:users,email,' . $request->userId,
-        'phone' => 'nullable|string|max:20',
-        'address' => 'nullable|string|max:255',
-    ]);
-
-    if ($validator->fails()) {
-        return response()->json([
-            'success' => false,
-            'message' => 'Validation error',
-            'errors' => $validator->errors(),
-        ], 422);
-    }
-
-    try {
-        // Trouver l'utilisateur
-        $user = User::findOrFail($request->userId);
-        
-        // Mettre à jour les informations
-        $user->first_name = $request->first_name;
-        $user->last_name = $request->last_name;
-        $user->email = $request->email;
-        $user->phone = $request->phone;
-        $user->address = $request->address;
-        $user->save();
-
-        return response()->json([
-            'success' => true,
-            'message' => 'Profile updated successfully',
+    {
+        $validator = Validator::make($request->all(), [
+            'userId' => 'required|integer|exists:users,id',
+            'firstname' => 'required|string|max:255',
+            'lastname' => 'required|string|max:255',
+            'email' => 'required|string|email|max:255|unique:users,email,' . $request->userId,
+            'phone' => 'nullable|string|max:20',
+            'address' => 'nullable|string|max:255',
+            'cin' => 'nullable|string|max:20|unique:users,cin,' . $request->userId,
         ]);
-    } catch (\Exception $e) {
-        return response()->json([
-            'success' => false,
-            'message' => 'Failed to update profile: ' . $e->getMessage(),
-        ], 500);
+
+        if ($validator->fails()) {
+            return response()->json([
+                'success' => false,
+                'message' => 'Validation error',
+                'errors' => $validator->errors()
+            ], 422);
+        }
+
+        try {
+            $user = User::findOrFail($request->userId);
+            
+            // Update user information
+            $user->firstname = $request->firstname;
+            $user->lastname = $request->lastname;
+            $user->email = $request->email;
+            
+            // Mettre à jour les champs optionnels seulement s'ils sont présents
+            if ($request->has('phone')) {
+                $user->phone = $request->phone;
+            }
+            
+            if ($request->has('address')) {
+                $user->address = $request->address;
+            }
+            
+            if ($request->has('cin')) {
+                $user->cin = $request->cin;
+            }
+            
+            $user->save();
+            
+            return response()->json([
+                'success' => true,
+                'message' => 'Profile updated successfully',
+                'user' => $user
+            ], 200);
+        } catch (\Exception $e) {
+            return response()->json([
+                'success' => false,
+                'message' => 'Error updating profile: ' . $e->getMessage()
+            ], 500);
+        }
     }
-}
-
-public function getUserProfile(Request $request)
-{
-    $validator = Validator::make($request->all(), [
-        'userId' => 'required|integer|exists:users,id',
-    ]);
-
-    if ($validator->fails()) {
-        return response()->json([
-            'success' => false,
-            'message' => 'ID utilisateur invalide ou non trouvé',
-        ], 422);
-    }
-
-    try {
-        $user = User::findOrFail($request->userId);
+    
+    /**
+ 
+     */
+    public function getProfile(Request $request)
+    {
+        // Récupérer l'ID de l'utilisateur soit depuis la requête, soit depuis l'utilisateur authentifié
+        $userId = $request->userId ?? $request->user()->id ?? null;
         
-        return response()->json([
-            'success' => true,
-            'user' => [
-                'first_name' => $user->first_name,
-                'last_name' => $user->last_name,
-                'email' => $user->email,
-                'phone' => $user->phone,
-                'address' => $user->address,
-                'cin' => $user->cin,  // Notez que vous utilisez 'cin' en base de données mais 'cni' côté client
-            ]
-        ]);
-    } catch (\Exception $e) {
-        return response()->json([
-            'success' => false,
-            'message' => 'Erreur lors de la récupération du profil: ' . $e->getMessage()
-        ], 500);
+        if (!$userId) {
+            return response()->json([
+                'success' => false,
+                'message' => 'User ID not provided'
+            ], 400);
+        }
+
+        try {
+            $user = User::findOrFail($userId);
+            
+            return response()->json([
+                'success' => true,
+                'user' => $user
+            ], 200);
+        } catch (\Exception $e) {
+            return response()->json([
+                'success' => false,
+                'message' => 'Error fetching profile: ' . $e->getMessage()
+            ], 500);
+        }
     }
-}
 }
