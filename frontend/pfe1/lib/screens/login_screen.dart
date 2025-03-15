@@ -121,7 +121,6 @@ class _LoginScreenState extends State<LoginScreen> {
                 ),
               ),
 
-            // Champ d'email
             TextField(
               controller: CinController,
               decoration: InputDecoration(
@@ -136,7 +135,7 @@ class _LoginScreenState extends State<LoginScreen> {
                 focusedBorder: OutlineInputBorder(
                   borderSide: BorderSide(color: Colors.red),
                 ),
-                prefixIcon: Icon(Icons.email, color: Colors.red),
+                prefixIcon: Icon(Icons.credit_card, color: Colors.red),
                 filled: true,
                 fillColor: Colors.grey[850],
               ),
