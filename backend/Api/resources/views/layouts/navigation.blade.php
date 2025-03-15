@@ -2,15 +2,12 @@
     <!-- Primary Navigation Menu -->
     <div class="max-w-7xl mx-auto px-4 sm:px-6 lg:px-8">
         <div class="flex justify-between h-16">
-            <div class="flex">
-                <!-- Logo -->
-                
-                <!-- Navigation Links -->
-                <div class="hidden space-x-6 sm:-my-px sm:ms-8 sm:flex">
-                    <x-nav-link :href="route('dashboard')" :active="request()->routeIs('dashboard')" class="nav-link">
-                        {{ __('Dashboard') }}
-                    </x-nav-link>
-                </div>
+            <!-- Left Side Links -->
+            <div class="flex space-x-4 items-center">
+                <a href="{{ route('dashboard') }}" class="nav-link {{ request()->routeIs('dashboard') ? 'active' : '' }}">Table de Bord</a>
+                <a href="{{ route('pieces.detachees') }}" class="nav-link {{ request()->routeIs('pieces.detachees') ? 'active' : '' }}">Pièces Détachées</a>
+                <a href="{{ route('commandes') }}" class="nav-link {{ request()->routeIs('commandes') ? 'active' : '' }}">Commandes</a>
+                <a href="{{ route('clients') }}" class="nav-link {{ request()->routeIs('clients') ? 'active' : '' }}">Clients</a>
             </div>
 
             <!-- Settings Dropdown -->
@@ -19,7 +16,6 @@
                     <x-slot name="trigger">
                         <button class="inline-flex items-center px-3 py-2 text-sm leading-4 font-medium rounded-md text-polished-chrome bg-transparent border border-carbon-fiber hover:text-white focus:outline-none transition ease-in-out duration-150 rider-profile-button">
                             <div>{{ Auth::user()->name }}</div>
-
                             <div class="ms-1">
                                 <svg class="fill-current h-4 w-4" xmlns="http://www.w3.org/2000/svg" viewBox="0 0 20 20">
                                     <path fill-rule="evenodd" d="M5.293 7.293a1 1 0 011.414 0L10 10.586l3.293-3.293a1 1 0 111.414 1.414l-4 4a1 1 0 01-1.414 0l-4-4a1 1 0 010-1.414z" clip-rule="evenodd" />
@@ -32,14 +28,11 @@
                         <x-dropdown-link :href="route('profile.edit')" class="dropdown-item">
                             {{ __('Profile') }}
                         </x-dropdown-link>
-
                         <!-- Authentication -->
                         <form method="POST" action="{{ route('logout') }}">
                             @csrf
-
                             <x-dropdown-link :href="route('logout')"
-                                    onclick="event.preventDefault();
-                                                this.closest('form').submit();" class="dropdown-item">
+                                    onclick="event.preventDefault(); this.closest('form').submit();" class="dropdown-item">
                                 {{ __('Log Out') }}
                             </x-dropdown-link>
                         </form>
@@ -47,7 +40,7 @@
                 </x-dropdown>
             </div>
 
-            <!-- Hamburger -->
+            <!-- Hamburger (Mobile) -->
             <div class="-me-2 flex items-center sm:hidden">
                 <button @click="open = ! open" class="inline-flex items-center justify-center p-2 rounded-md text-polished-chrome hover:text-white hover:bg-carbon-fiber focus:outline-none focus:bg-carbon-fiber focus:text-white transition duration-150 ease-in-out moto-nav-toggler">
                     <svg class="h-6 w-6" stroke="currentColor" fill="none" viewBox="0 0 24 24">
@@ -63,7 +56,16 @@
     <div :class="{'block': open, 'hidden': ! open}" class="hidden sm:hidden mobile-nav">
         <div class="pt-2 pb-3 space-y-1">
             <x-responsive-nav-link :href="route('dashboard')" :active="request()->routeIs('dashboard')" class="mobile-nav-link">
-                {{ __('Dashboard') }}
+                {{ __('Table de Bord') }}
+            </x-responsive-nav-link>
+            <x-responsive-nav-link :href="route('pieces.detachees')" :active="request()->routeIs('pieces.detachees')" class="mobile-nav-link">
+                {{ __('Pièces Détachées') }}
+            </x-responsive-nav-link>
+            <x-responsive-nav-link :href="route('commandes')" :active="request()->routeIs('commandes')" class="mobile-nav-link">
+                {{ __('Commandes') }}
+            </x-responsive-nav-link>
+            <x-responsive-nav-link :href="route('clients')" :active="request()->routeIs('clients')" class="mobile-nav-link">
+                {{ __('Clients') }}
             </x-responsive-nav-link>
         </div>
 
@@ -82,10 +84,8 @@
                 <!-- Authentication -->
                 <form method="POST" action="{{ route('logout') }}">
                     @csrf
-
                     <x-responsive-nav-link :href="route('logout')"
-                            onclick="event.preventDefault();
-                                        this.closest('form').submit();" class="mobile-nav-link">
+                            onclick="event.preventDefault(); this.closest('form').submit();" class="mobile-nav-link">
                         {{ __('Log Out') }}
                     </x-responsive-nav-link>
                 </form>
@@ -93,6 +93,7 @@
         </div>
     </div>
 </nav>
+
 
 <style>
     /* Navigation styling */
