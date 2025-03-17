@@ -1,5 +1,5 @@
 <x-app-layout>
-    <!-- Custom CSS -->
+   {{--  <!-- Custom CSS -->
     <style>
         :root {
             --primary-color: #d9232d;
@@ -649,5 +649,5 @@
                 }
             }
         });
-    </script>
-</x-app-layout>
+    </script> --}}
+</x-app-layout> 

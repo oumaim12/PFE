@@ -1,5 +1,5 @@
 <x-app-layout>
-    <!-- Custom CSS for Dark Mode -->
+    {{--  <!-- Custom CSS for Dark Mode -->
     <style>
         :root {
             --primary-color: #d9232d;
@@ -526,5 +526,5 @@
                 </div>
             </div>
         </div>
-    </div>
-</x-app-layout>
+    </div> --}}
+</x-app-layout> 
