@@ -25,15 +25,15 @@ class AuthenticatedSessionController extends Controller
     public function store(Request $request): RedirectResponse
     {
         $request->validate([
-            'cin'       => ['required', 'string'],
+            'email'       => ['required', 'string'],
             'password'  => ['required', 'string'],
         ]);
 
-        $credentials = $request->only('cin', 'password');
+        $credentials = $request->only('email', 'password');
 
         if (!Auth::attempt($credentials, $request->boolean('remember'))) {
             return back()->withErrors([
-                'cin' => __('auth.failed'),
+                'email' => __('auth.failed'),
             ]);
         }
 
