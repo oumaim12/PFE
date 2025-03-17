@@ -181,7 +181,7 @@
                     <h1>Ajouter une pièce détachée</h1>
                 </div>
                 <div class="col-md-6 text-md-end">
-                    <a href="{{ route('products.index') }}" class="btn btn-secondary">
+                    <a href="{{ route('pieces.detachees') }}" class="btn btn-secondary">
                         <i class="fas fa-arrow-left"></i> Retour à la liste
                     </a>
                 </div>
@@ -189,7 +189,7 @@
 
             <div class="card">
                 <div class="card-body">
-                    <form action="{{ route('products.store') }}" method="POST" enctype="multipart/form-data">
+                    <form action="{{ route('pieces.detachees.store') }}" method="POST" enctype="multipart/form-data">
                         @csrf
                         
                         <div class="row">
@@ -269,7 +269,7 @@
                                 <button type="submit" class="btn btn-primary">
                                     <i class="fas fa-save"></i> Enregistrer
                                 </button>
-                                <a href="{{ route('products.index') }}" class="btn btn-secondary">
+                                <a href="{{ route('pieces.detachees') }}" class="btn btn-secondary">
                                     <i class="fas fa-times"></i> Annuler
                                 </a>
                             </div>

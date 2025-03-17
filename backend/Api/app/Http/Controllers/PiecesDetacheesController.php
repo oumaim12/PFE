@@ -11,4 +11,9 @@ class PiecesDetacheesController extends Controller
         // Return the pieces détachées view (adjust the view path as needed)
         return view('pieces-detachees.index');
     }
+    
+    public function store()
+    {
+        return view('pieces-detachees.store');
+    }
 }

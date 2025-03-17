@@ -360,7 +360,7 @@
                     <div class="card">
                         <div class="card-header d-flex justify-content-between align-items-center">
                             <span>Commandes récentes</span>
-                            <a href="{{ route('orders.index') }}" class="btn btn-sm btn-primary">
+                            <a href="{{ route('commandes') }}" class="btn btn-sm btn-primary">
                                 Voir toutes
                             </a>
                         </div>
@@ -379,7 +379,7 @@
                                     <tbody>
                                         <tr>
                                             <td>
-                                                <a href="{{ route('orders.show', 'CMD-001-2458') }}" class="text-primary fw-bold">
+                                                <a href="{{ route('commandes') }}?cmd=CMD-001-2458" class="text-primary fw-bold">
                                                     CMD-001-2458
                                                 </a>
                                             </td>
@@ -392,7 +392,7 @@
                                         </tr>
                                         <tr>
                                             <td>
-                                                <a href="{{ route('orders.show', 'CMD-002-1789') }}" class="text-primary fw-bold">
+                                                <a href="{{ route('commandes') }}?cmd=CMD-002-1789" class="text-primary fw-bold">
                                                     CMD-002-1789
                                                 </a>
                                             </td>
@@ -405,7 +405,7 @@
                                         </tr>
                                         <tr>
                                             <td>
-                                                <a href="{{ route('orders.show', 'CMD-003-3569') }}" class="text-primary fw-bold">
+                                                <a href="{{ route('commandes') }}?cmd=CMD-003-3569" class="text-primary fw-bold">
                                                     CMD-003-3569
                                                 </a>
                                             </td>
@@ -418,7 +418,7 @@
                                         </tr>
                                         <tr>
                                             <td>
-                                                <a href="{{ route('orders.show', 'CMD-004-7895') }}" class="text-primary fw-bold">
+                                                <a href="{{ route('commandes') }}?cmd=CMD-004-7895" class="text-primary fw-bold">
                                                     CMD-004-7895
                                                 </a>
                                             </td>
@@ -431,7 +431,7 @@
                                         </tr>
                                         <tr>
                                             <td>
-                                                <a href="{{ route('orders.show', 'CMD-005-4562') }}" class="text-primary fw-bold">
+                                                <a href="{{ route('commandes') }}?cmd=CMD-005-4562" class="text-primary fw-bold">
                                                     CMD-005-4562
                                                 </a>
                                             </td>
@@ -445,208 +445,209 @@
                                     </tbody>
                                 </table>
                             </div>
-                        </div></div>
+                        </div>
                     </div>
+                </div>
                     
-                    <!-- Popular Products -->
-                    <div class="col-md-6">
-                        <div class="card">
-                            <div class="card-header d-flex justify-content-between align-items-center">
-                                <span>Produits populaires</span>
-                                <a href="{{ route('products.index') }}" class="btn btn-sm btn-primary">
-                                    Voir tous
-                                </a>
-                            </div>
-                            <div class="card-body p-0">
-                                <div class="table-responsive">
-                                    <table class="table table-hover mb-0">
-                                        <thead>
-                                            <tr>
-                                                <th>Produit</th>
-                                                <th>Référence</th>
-                                                <th>Prix</th>
-                                                <th>Vendus</th>
-                                                <th>Stock</th>
-                                            </tr>
-                                        </thead>
-                                        <tbody>
-                                            <tr>
-                                                <td>
-                                                    <a href="{{ route('products.edit', 'PLQ-AV-001') }}" class="text-primary fw-bold">
-                                                        Plaquettes de frein avant
-                                                    </a>
-                                                </td>
-                                                <td>PLQ-AV-001</td>
-                                                <td>45,90 €</td>
-                                                <td><span class="badge bg-success">152</span></td>
-                                                <td>
-                                                    <span class="badge bg-success">48</span>
-                                                </td>
-                                            </tr>
-                                            <tr>
-                                                <td>
-                                                    <a href="{{ route('products.edit', 'FILT-H-002') }}" class="text-primary fw-bold">
-                                                        Filtre à huile
-                                                    </a>
-                                                </td>
-                                                <td>FILT-H-002</td>
-                                                <td>12,50 €</td>
-                                                <td><span class="badge bg-success">138</span></td>
-                                                <td>
-                                                    <span class="badge bg-warning">8</span>
-                                                </td>
-                                            </tr>
-                                            <tr>
-                                                <td>
-                                                    <a href="{{ route('products.edit', 'KIT-CH-003') }}" class="text-primary fw-bold">
-                                                        Kit chaîne
-                                                    </a>
-                                                </td>
-                                                <td>KIT-CH-003</td>
-                                                <td>89,99 €</td>
-                                                <td><span class="badge bg-success">94</span></td>
-                                                <td>
-                                                    <span class="badge bg-success">26</span>
-                                                </td>
-                                            </tr>
-                                            <tr>
-                                                <td>
-                                                    <a href="{{ route('products.edit', 'DSQ-AR-004') }}" class="text-primary fw-bold">
-                                                        Disque de frein arrière
-                                                    </a>
-                                                </td>
-                                                <td>DSQ-AR-004</td>
-                                                <td>75,00 €</td>
-                                                <td><span class="badge bg-success">87</span></td>
-                                                <td>
-                                                    <span class="badge bg-danger">0</span>
-                                                </td>
-                                            </tr>
-                                            <tr>
-                                                <td>
-                                                    <a href="{{ route('products.edit', 'BAT-12V-005') }}" class="text-primary fw-bold">
-                                                        Batterie 12V
-                                                    </a>
-                                                </td>
-                                                <td>BAT-12V-005</td>
-                                                <td>69,90 €</td>
-                                                <td><span class="badge bg-success">76</span></td>
-                                                <td>
-                                                    <span class="badge bg-success">15</span>
-                                                </td>
-                                            </tr>
-                                        </tbody>
-                                    </table>
-                                </div>
+                <!-- Popular Products -->
+                <div class="col-md-6">
+                    <div class="card">
+                        <div class="card-header d-flex justify-content-between align-items-center">
+                            <span>Produits populaires</span>
+                            <a href="{{ route('pieces.detachees') }}" class="btn btn-sm btn-primary">
+                                Voir tous
+                            </a>
+                        </div>
+                        <div class="card-body p-0">
+                            <div class="table-responsive">
+                                <table class="table table-hover mb-0">
+                                    <thead>
+                                        <tr>
+                                            <th>Produit</th>
+                                            <th>Référence</th>
+                                            <th>Prix</th>
+                                            <th>Vendus</th>
+                                            <th>Stock</th>
+                                        </tr>
+                                    </thead>
+                                    <tbody>
+                                        <tr>
+                                            <td>
+                                                <a href="{{ route('pieces.detachees') }}?ref=PLQ-AV-001" class="text-primary fw-bold">
+                                                    Plaquettes de frein avant
+                                                </a>
+                                            </td>
+                                            <td>PLQ-AV-001</td>
+                                            <td>45,90 €</td>
+                                            <td><span class="badge bg-success">152</span></td>
+                                            <td>
+                                                <span class="badge bg-success">48</span>
+                                            </td>
+                                        </tr>
+                                        <tr>
+                                            <td>
+                                                <a href="{{ route('pieces.detachees') }}?ref=FILT-H-002" class="text-primary fw-bold">
+                                                    Filtre à huile
+                                                </a>
+                                            </td>
+                                            <td>FILT-H-002</td>
+                                            <td>12,50 €</td>
+                                            <td><span class="badge bg-success">138</span></td>
+                                            <td>
+                                                <span class="badge bg-warning">8</span>
+                                            </td>
+                                        </tr>
+                                        <tr>
+                                            <td>
+                                                <a href="{{ route('pieces.detachees') }}?ref=KIT-CH-003" class="text-primary fw-bold">
+                                                    Kit chaîne
+                                                </a>
+                                            </td>
+                                            <td>KIT-CH-003</td>
+                                            <td>89,99 €</td>
+                                            <td><span class="badge bg-success">94</span></td>
+                                            <td>
+                                                <span class="badge bg-success">26</span>
+                                            </td>
+                                        </tr>
+                                        <tr>
+                                            <td>
+                                                <a href="{{ route('pieces.detachees') }}?ref=DSQ-AR-004" class="text-primary fw-bold">
+                                                    Disque de frein arrière
+                                                </a>
+                                            </td>
+                                            <td>DSQ-AR-004</td>
+                                            <td>75,00 €</td>
+                                            <td><span class="badge bg-success">87</span></td>
+                                            <td>
+                                                <span class="badge bg-danger">0</span>
+                                            </td>
+                                        </tr>
+                                        <tr>
+                                            <td>
+                                                <a href="{{ route('pieces.detachees') }}?ref=BAT-12V-005" class="text-primary fw-bold">
+                                                    Batterie 12V
+                                                </a>
+                                            </td>
+                                            <td>BAT-12V-005</td>
+                                            <td>69,90 €</td>
+                                            <td><span class="badge bg-success">76</span></td>
+                                            <td>
+                                                <span class="badge bg-success">15</span>
+                                            </td>
+                                        </tr>
+                                    </tbody>
+                                </table>
                             </div>
                         </div>
                     </div>
                 </div>
             </div>
         </div>
+    </div>
     
-        <!-- Scripts -->
-        <script src="https://code.jquery.com/jquery-3.6.0.min.js"></script>
-        <script src="https://cdn.jsdelivr.net/npm/bootstrap@5.2.3/dist/js/bootstrap.bundle.min.js"></script>
-        <script src="https://cdn.datatables.net/1.13.4/js/jquery.dataTables.min.js"></script>
-        <script src="https://cdn.datatables.net/1.13.4/js/dataTables.bootstrap5.min.js"></script>
-        <script src="https://cdn.jsdelivr.net/npm/chart.js@3.9.1/dist/chart.min.js"></script>
+    <!-- Scripts -->
+    <script src="https://code.jquery.com/jquery-3.6.0.min.js"></script>
+    <script src="https://cdn.jsdelivr.net/npm/bootstrap@5.2.3/dist/js/bootstrap.bundle.min.js"></script>
+    <script src="https://cdn.datatables.net/1.13.4/js/jquery.dataTables.min.js"></script>
+    <script src="https://cdn.datatables.net/1.13.4/js/dataTables.bootstrap5.min.js"></script>
+    <script src="https://cdn.jsdelivr.net/npm/chart.js@3.9.1/dist/chart.min.js"></script>
+    
+    <script>
+        $(document).ready(function() {
+            // Initialize DataTables
+            $('.datatable').DataTable({
+                language: {
+                    url: '//cdn.datatables.net/plug-ins/1.13.4/i18n/fr-FR.json',
+                },
+                responsive: true
+            });
+        });
         
-        <script>
-            $(document).ready(function() {
-                // Initialize DataTables
-                $('.datatable').DataTable({
-                    language: {
-                        url: '//cdn.datatables.net/plug-ins/1.13.4/i18n/fr-FR.json',
+        // Sales Chart
+        const salesCtx = document.getElementById('salesChart').getContext('2d');
+        const salesChart = new Chart(salesCtx, {
+            type: 'line',
+            data: {
+                labels: ['Oct', 'Nov', 'Déc', 'Jan', 'Fév', 'Mar'],
+                datasets: [{
+                    label: 'Ventes (€)',
+                    data: [6500, 5900, 8000, 8100, 7200, 7500],
+                    backgroundColor: 'rgba(217, 35, 45, 0.1)',
+                    borderColor: '#d9232d',
+                    borderWidth: 3,
+                    pointBackgroundColor: '#d9232d',
+                    pointBorderColor: '#fff',
+                    pointRadius: 4,
+                    tension: 0.3,
+                    fill: true
+                }]
+            },
+            options: {
+                responsive: true,
+                maintainAspectRatio: false,
+                plugins: {
+                    legend: {
+                        display: false
                     },
-                    responsive: true
-                });
-            });
-            
-            // Sales Chart
-            const salesCtx = document.getElementById('salesChart').getContext('2d');
-            const salesChart = new Chart(salesCtx, {
-                type: 'line',
-                data: {
-                    labels: ['Oct', 'Nov', 'Déc', 'Jan', 'Fév', 'Mar'],
-                    datasets: [{
-                        label: 'Ventes (€)',
-                        data: [6500, 5900, 8000, 8100, 7200, 7500],
-                        backgroundColor: 'rgba(217, 35, 45, 0.1)',
-                        borderColor: '#d9232d',
-                        borderWidth: 3,
-                        pointBackgroundColor: '#d9232d',
-                        pointBorderColor: '#fff',
-                        pointRadius: 4,
-                        tension: 0.3,
-                        fill: true
-                    }]
-                },
-                options: {
-                    responsive: true,
-                    maintainAspectRatio: false,
-                    plugins: {
-                        legend: {
-                            display: false
-                        },
-                        tooltip: {
-                            mode: 'index',
-                            intersect: false,
-                            callbacks: {
-                                label: function(context) {
-                                    let label = context.dataset.label || '';
-                                    if (label) {
-                                        label += ': ';
-                                    }
-                                    if (context.parsed.y !== null) {
-                                        label += new Intl.NumberFormat('fr-FR', { style: 'currency', currency: 'EUR' }).format(context.parsed.y);
-                                    }
-                                    return label;
+                    tooltip: {
+                        mode: 'index',
+                        intersect: false,
+                        callbacks: {
+                            label: function(context) {
+                                let label = context.dataset.label || '';
+                                if (label) {
+                                    label += ': ';
                                 }
+                                if (context.parsed.y !== null) {
+                                    label += new Intl.NumberFormat('fr-FR', { style: 'currency', currency: 'EUR' }).format(context.parsed.y);
+                                }
+                                return label;
                             }
                         }
-                    },
-                    scales: {
-                        y: {
-                            beginAtZero: true,
-                            ticks: {
-                                callback: function(value) {
-                                    return value + ' €';
-                                }
+                    }
+                },
+                scales: {
+                    y: {
+                        beginAtZero: true,
+                        ticks: {
+                            callback: function(value) {
+                                return value + ' €';
                             }
                         }
                     }
                 }
-            });
-    
-            // Order Status Chart
-            const statusCtx = document.getElementById('orderStatusChart').getContext('2d');
-            const orderStatusChart = new Chart(statusCtx, {
-                type: 'doughnut',
-                data: {
-                    labels: ['En attente', 'Validée', 'En cours', 'Livrée', 'Annulée'],
-                    datasets: [{
-                        data: [42, 85, 68, 120, 31],
-                        backgroundColor: [
-                            '#ffc107',
-                            '#17a2b8',
-                            '#007bff',
-                            '#28a745',
-                            '#dc3545'
-                        ],
-                        borderWidth: 1
-                    }]
-                },
-                options: {
-                    responsive: true,
-                    maintainAspectRatio: false,
-                    cutout: '65%',
-                    plugins: {
-                        legend: {
-                            position: 'bottom'
-                        }
+            }
+        });
+
+        // Order Status Chart
+        const statusCtx = document.getElementById('orderStatusChart').getContext('2d');
+        const orderStatusChart = new Chart(statusCtx, {
+            type: 'doughnut',
+            data: {
+                labels: ['En attente', 'Validée', 'En cours', 'Livrée', 'Annulée'],
+                datasets: [{
+                    data: [42, 85, 68, 120, 31],
+                    backgroundColor: [
+                        '#ffc107',
+                        '#17a2b8',
+                        '#007bff',
+                        '#28a745',
+                        '#dc3545'
+                    ],
+                    borderWidth: 1
+                }]
+            },
+            options: {
+                responsive: true,
+                maintainAspectRatio: false,
+                cutout: '65%',
+                plugins: {
+                    legend: {
+                        position: 'bottom'
                     }
                 }
-            });
-        </script>
-    </x-app-layout>
+            }
+        });
+    </script>
+</x-app-layout>

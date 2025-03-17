@@ -2,6 +2,18 @@
     <form method="POST" action="{{ route('register') }}">
         @csrf
 
+                <!-- First Name -->
+        <div>
+            <label for="firstname">First Name</label>
+            <input type="text" name="firstname" id="firstname" required autofocus>
+        </div>
+
+        <!-- Last Name -->
+        <div>
+            <label for="lastname">Last Name</label>
+            <input type="text" name="lastname" id="lastname" required>
+        </div>
+        
         <!-- CIN Field -->
         <div>
             <x-input-label for="cin" :value="__('CIN')" />

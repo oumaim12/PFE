@@ -16,8 +16,10 @@ Route::middleware(['auth'])->group(function () {
     Route::get('/dashboard', [DashboardController::class, 'index'])->name('dashboard');
     
     Route::get('/pieces-detachees', [PiecesDetacheesController::class, 'index'])->name('pieces.detachees');
+    Route::post('/pieces-detachees', [PiecesDetacheesController::class, 'store'])->name('pieces.detachees.store');
 
-    Route::get('/commandes', [CommandesController::class, 'index'])->name('commandes');
+    Route::get('/commandes', [CommandesController::class, 'index'])->name('commandes.index');
+    Route::get('/commandes/export', [CommandeExportController::class, 'export'])->name('commandes.export');
 
     Route::get('/clients', [ClientsController::class, 'index'])->name('clients');
 
