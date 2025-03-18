@@ -3,7 +3,7 @@
 namespace App\Http\Controllers\API;
 
 use App\Http\Controllers\Controller;
-use App\Models\User;
+use App\Models\Client; // Changé de User à Client
 use Illuminate\Http\Request;
 use Illuminate\Support\Facades\Auth;
 use Illuminate\Support\Facades\Hash;
@@ -19,7 +19,7 @@ class AuthController extends Controller
         $validator = Validator::make($request->all(), [
             'firstname' => 'required|string',
             'lastname' => 'required|string',
-            'cin' => 'required|string|unique:users',
+            'cin' => 'required|string|unique:clients', // Changé de users à clients
             'email' => 'string|email',
             'password' => 'required|string|min:8',
             'phone' => 'nullable|string|max:20',
@@ -34,7 +34,7 @@ class AuthController extends Controller
             ], 422);
         }
 
-        $user = User::create([
+        $client = Client::create([ // Changé de User à Client
             'firstname' => $request->firstname,
             'lastname' => $request->lastname,
             'cin' => $request->cin,
@@ -44,12 +44,12 @@ class AuthController extends Controller
             'address' => $request->address,
         ]);
 
-        $token = $user->createToken('auth_token')->plainTextToken;
+        $token = $client->createToken('auth_token')->plainTextToken; // Changé de $user à $client
 
         return response()->json([
             'success' => true,
             'message' => 'Utilisateur créé avec succès',
-            'user' => $user,
+            'user' => $client, // Vous pouvez garder 'user' comme clé ou changer à 'client'
             'access_token' => $token,
             'token_type' => 'Bearer',
         ], 201);
@@ -73,6 +73,9 @@ class AuthController extends Controller
             ], 422);
         }
 
+        // Configurer le garde auth pour utiliser la table clients
+        config(['auth.providers.users.model' => Client::class]);
+        
         // Vérification des identifiants
         if (!Auth::attempt($request->only('cin', 'password'))) {
             return response()->json([
@@ -81,13 +84,13 @@ class AuthController extends Controller
             ], 401);
         }
 
-        $user = User::where('cin', $request->cin)->first();
-        $token = $user->createToken('auth_token')->plainTextToken;
+        $client = Client::where('cin', $request->cin)->first(); // Changé de User à Client
+        $token = $client->createToken('auth_token')->plainTextToken;
 
         return response()->json([
             'success' => true,
             'message' => 'Connexion réussie',
-            'user' => $user,
+            'user' => $client, // Vous pouvez garder 'user' comme clé ou changer à 'client'
             'access_token' => $token,
             'token_type' => 'Bearer',
         ]);
@@ -116,10 +119,11 @@ class AuthController extends Controller
             'user' => $request->user(),
         ]);
     }
+    
     public function changePassword(Request $request)
     {
         $validator = Validator::make($request->all(), [
-            'userId' => 'required|integer|exists:users,id',
+            'userId' => 'required|integer|exists:clients,id', // Changé de users à clients
             'currentPassword' => 'required|string',
             'newPassword' => 'required|string|min:8',
         ]);
@@ -134,10 +138,10 @@ class AuthController extends Controller
     
         try {
             // Find the user
-            $user = User::findOrFail($request->userId);
+            $client = Client::findOrFail($request->userId); // Changé de User à Client
             
             // Check if current password matches
-            if (!Hash::check($request->currentPassword, $user->password)) {
+            if (!Hash::check($request->currentPassword, $client->password)) { // Changé de $user à $client
                 return response()->json([
                     'success' => false,
                     'message' => 'Current password is incorrect',
@@ -145,8 +149,8 @@ class AuthController extends Controller
             }
             
             // Update password
-            $user->password = Hash::make($request->newPassword);
-            $user->save();
+            $client->password = Hash::make($request->newPassword); // Changé de $user à $client
+            $client->save();
             
             return response()->json([
                 'success' => true,
@@ -160,19 +164,16 @@ class AuthController extends Controller
         }
     }
 
-
-
-
     public function updateProfile(Request $request)
     {
         $validator = Validator::make($request->all(), [
-            'userId' => 'required|integer|exists:users,id',
+            'userId' => 'required|integer|exists:clients,id', // Changé de users à clients
             'firstname' => 'required|string|max:255',
             'lastname' => 'required|string|max:255',
-            'email' => 'required|string|email|max:255|unique:users,email,' . $request->userId,
+            'email' => 'required|string|email|max:255|unique:clients,email,' . $request->userId, // Changé de users à clients
             'phone' => 'nullable|string|max:20',
             'address' => 'nullable|string|max:255',
-            'cin' => 'nullable|string|max:20|unique:users,cin,' . $request->userId,
+            'cin' => 'nullable|string|max:20|unique:clients,cin,' . $request->userId, // Changé de users à clients
         ]);
 
         if ($validator->fails()) {
@@ -184,32 +185,32 @@ class AuthController extends Controller
         }
 
         try {
-            $user = User::findOrFail($request->userId);
+            $client = Client::findOrFail($request->userId); // Changé de User à Client
             
             // Update user information
-            $user->firstname = $request->firstname;
-            $user->lastname = $request->lastname;
-            $user->email = $request->email;
+            $client->firstname = $request->firstname; // Changé de $user à $client
+            $client->lastname = $request->lastname;
+            $client->email = $request->email;
             
             // Mettre à jour les champs optionnels seulement s'ils sont présents
             if ($request->has('phone')) {
-                $user->phone = $request->phone;
+                $client->phone = $request->phone;
             }
             
             if ($request->has('address')) {
-                $user->address = $request->address;
+                $client->address = $request->address;
             }
             
             if ($request->has('cin')) {
-                $user->cin = $request->cin;
+                $client->cin = $request->cin;
             }
             
-            $user->save();
+            $client->save();
             
             return response()->json([
                 'success' => true,
                 'message' => 'Profile updated successfully',
-                'user' => $user
+                'user' => $client // Vous pouvez garder 'user' comme clé ou changer à 'client'
             ], 200);
         } catch (\Exception $e) {
             return response()->json([
@@ -220,7 +221,7 @@ class AuthController extends Controller
     }
     
     /**
- 
+     * Récupérer le profil d'un utilisateur
      */
     public function getProfile(Request $request)
     {
@@ -235,11 +236,11 @@ class AuthController extends Controller
         }
 
         try {
-            $user = User::findOrFail($userId);
+            $client = Client::findOrFail($userId); // Changé de User à Client
             
             return response()->json([
                 'success' => true,
-                'user' => $user
+                'user' => $client // Vous pouvez garder 'user' comme clé ou changer à 'client'
             ], 200);
         } catch (\Exception $e) {
             return response()->json([
