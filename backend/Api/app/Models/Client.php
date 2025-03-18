@@ -52,4 +52,24 @@ class Client extends Authenticatable
         'email_verified_at' => 'datetime',
         'password' => 'hashed',
     ];
+
+    /**
+     * Relation avec les commandes du client
+     * 
+     * @return \Illuminate\Database\Eloquent\Relations\HasMany
+     */
+    public function commandes()
+    {
+        return $this->hasMany(Commande::class);
+    }
+
+    /**
+     * Récupère le nom complet du client
+     * 
+     * @return string
+     */
+    public function getFullNameAttribute()
+    {
+        return "{$this->firstname} {$this->lastname}";
+    }
 }

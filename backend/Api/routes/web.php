@@ -17,12 +17,29 @@ Route::get('/', function () {
     
     // Routes pour les schemas (pièces détachées)
     Route::resource('schemas', SchemaController::class);
+    Route::get('/schemas-arborescence', [SchemaController::class, 'arborescence'])
+        ->name('schemas.arborescence');
+    Route::get('/schemas-search', [SchemaController::class, 'search'])
+        ->name('schemas.search');
     
     // Routes pour les clients
     Route::resource('clients', ClientsController::class);
+    Route::resource('clients', ClientsController::class);
+    Route::get('/clients-export', [ClientsController::class, 'export'])
+        ->name('clients.export');
     
     // Routes pour les commandes
     Route::resource('commandes', CommandesController::class);
+    Route::get('/commandes', [CommandesController::class, 'index'])->name('commandes.index');
+    Route::get('/commandes/{commande}', [CommandesController::class, 'show'])->name('commandes.show');
+    Route::get('/commandes/{commande}/edit', [CommandesController::class, 'edit'])->name('commandes.edit');
+    Route::put('/commandes/{commande}', [CommandesController::class, 'update'])->name('commandes.update');
+    Route::post('/commandes/{commande}/update-status', [CommandesController::class, 'updateStatus'])
+        ->name('commandes.updateStatus');
+    Route::get('/commandes-export', [CommandesController::class, 'export'])
+        ->name('commandes.export');
+    Route::get('/commandes-dashboard', [CommandesController::class, 'dashboard'])
+        ->name('commandes.dashboard');
 
 
 Route::middleware('auth')->group(function () {
