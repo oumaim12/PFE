@@ -5,9 +5,9 @@
             <!-- Left Side Links -->
             <div class="flex space-x-4 items-center">
                 <a href="{{ route('dashboard') }}" class="nav-link {{ request()->routeIs('dashboard') ? 'active' : '' }}">Table de Bord</a>
-                <a href="{{ route('pieces.detachees') }}" class="nav-link {{ request()->routeIs('pieces.detachees') ? 'active' : '' }}">Pièces Détachées</a>
-                <a href="{{ route('commandes') }}" class="nav-link {{ request()->routeIs('commandes') ? 'active' : '' }}">Commandes</a>
-                <a href="{{ route('clients') }}" class="nav-link {{ request()->routeIs('clients') ? 'active' : '' }}">Clients</a>
+                <a href="{{ route('schemas.index') }}" class="nav-link {{ request()->routeIs('schemas.*') ? 'active' : '' }}">Pièces Détachées</a>
+                <a href="{{ route('commandes.index') }}" class="nav-link {{ request()->routeIs('commandes.*') ? 'active' : '' }}">Commandes</a>
+                <a href="{{ route('clients.index') }}" class="nav-link {{ request()->routeIs('clients.*') ? 'active' : '' }}">Clients</a>
             </div>
 
             <!-- Settings Dropdown -->
@@ -55,19 +55,19 @@
     <!-- Responsive Navigation Menu -->
     <div :class="{'block': open, 'hidden': ! open}" class="hidden sm:hidden mobile-nav">
         <div class="pt-2 pb-3 space-y-1">
-            <x-responsive-nav-link :href="route('dashboard')" :active="request()->routeIs('dashboard')" class="mobile-nav-link">
-                {{ __('Table de Bord') }}
-            </x-responsive-nav-link>
-            <x-responsive-nav-link :href="route('pieces.detachees')" :active="request()->routeIs('pieces.detachees')" class="mobile-nav-link">
-                {{ __('Pièces Détachées') }}
-            </x-responsive-nav-link>
-            <x-responsive-nav-link :href="route('commandes')" :active="request()->routeIs('commandes')" class="mobile-nav-link">
-                {{ __('Commandes') }}
-            </x-responsive-nav-link>
-            <x-responsive-nav-link :href="route('clients')" :active="request()->routeIs('clients')" class="mobile-nav-link">
-                {{ __('Clients') }}
-            </x-responsive-nav-link>
-        </div>
+    <x-responsive-nav-link :href="route('dashboard')" :active="request()->routeIs('dashboard')" class="mobile-nav-link">
+        {{ __('Table de Bord') }}
+    </x-responsive-nav-link>
+    <x-responsive-nav-link :href="route('schemas.index')" :active="request()->routeIs('schemas.*')" class="mobile-nav-link">
+        {{ __('Pièces Détachées') }}
+    </x-responsive-nav-link>
+    <x-responsive-nav-link :href="route('commandes.index')" :active="request()->routeIs('commandes.*')" class="mobile-nav-link">
+        {{ __('Commandes') }}
+    </x-responsive-nav-link>
+    <x-responsive-nav-link :href="route('clients.index')" :active="request()->routeIs('clients.*')" class="mobile-nav-link">
+        {{ __('Clients') }}
+    </x-responsive-nav-link>
+</div>
 
         <!-- Responsive Settings Options -->
         <div class="pt-4 pb-1 border-t border-carbon-fiber">

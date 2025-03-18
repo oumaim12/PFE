@@ -13,13 +13,6 @@
             <label for="lastname">Last Name</label>
             <input type="text" name="lastname" id="lastname" required>
         </div>
-        
-        <!-- CIN Field -->
-        <div>
-            <x-input-label for="cin" :value="__('CIN')" />
-            <x-text-input id="cin" class="block mt-1 w-full" type="text" name="cin" :value="old('cin')" required autofocus />
-            <x-input-error :messages="$errors->get('cin')" class="mt-2" />
-        </div>
 
         <!-- Email Field -->
         <div class="mt-4">
