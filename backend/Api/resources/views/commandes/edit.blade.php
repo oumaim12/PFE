@@ -105,11 +105,11 @@
                                 </div>
                                 <div class="flex items-center p-2 rounded bg-blue-900/20 border border-blue-900/30">
                                     <div class="w-3 h-3 rounded-full bg-blue-500 mr-2"></div>
-                                    <span class="text-polished-chrome text-sm">En traitement - Préparation de la commande</span>
+                                    <span class="text-polished-chrome text-sm">En cours - Préparation de la commande</span>
                                 </div>
                                 <div class="flex items-center p-2 rounded bg-indigo-900/20 border border-indigo-900/30">
                                     <div class="w-3 h-3 rounded-full bg-indigo-500 mr-2"></div>
-                                    <span class="text-polished-chrome text-sm">Expédiée - La commande a été envoyée</span>
+                                    <span class="text-polished-chrome text-sm">Confirmée - La commande a été envoyée</span>
                                 </div>
                                 <div class="flex items-center p-2 rounded bg-green-900/20 border border-green-900/30">
                                     <div class="w-3 h-3 rounded-full bg-green-500 mr-2"></div>

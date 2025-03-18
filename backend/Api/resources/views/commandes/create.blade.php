@@ -108,8 +108,8 @@
                             <p class="text-polished-chrome text-sm mb-2">Étapes typiques d'une commande :</p>
                             <ol class="list-decimal list-inside text-polished-chrome text-xs space-y-1 pl-2">
                                 <li>Création de la commande (<span class="text-yellow-500">En attente</span>)</li>
-                                <li>Vérification et préparation (<span class="text-blue-500">En traitement</span>)</li>
-                                <li>Envoi au client (<span class="text-indigo-500">Expédiée</span>)</li>
+                                <li>Vérification et préparation (<span class="text-blue-500">En Cours</span>)</li>
+                                <li>Envoi au client (<span class="text-indigo-500">Confirmée</span>)</li>
                                 <li>Réception confirmée (<span class="text-green-500">Livrée</span>)</li>
                             </ol>
                         </div>

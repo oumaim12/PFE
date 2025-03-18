@@ -68,13 +68,13 @@
                                         <span class="inline-flex items-center px-2.5 py-0.5 rounded-full text-xs font-medium bg-yellow-200 text-yellow-800">
                                             En attente
                                         </span>
-                                    @elseif($commande->status == 'en_traitement')
+                                    @elseif($commande->status == 'en_cours')
                                         <span class="inline-flex items-center px-2.5 py-0.5 rounded-full text-xs font-medium bg-blue-200 text-blue-800">
-                                            En traitement
+                                            En cours
                                         </span>
-                                    @elseif($commande->status == 'expediee')
+                                    @elseif($commande->status == 'confirmee')
                                         <span class="inline-flex items-center px-2.5 py-0.5 rounded-full text-xs font-medium bg-indigo-200 text-indigo-800">
-                                            Expédiée
+                                            Confirmée
                                         </span>
                                     @elseif($commande->status == 'livree')
                                         <span class="inline-flex items-center px-2.5 py-0.5 rounded-full text-xs font-medium bg-green-200 text-green-800">
@@ -129,8 +129,8 @@
                                 <div class="flex flex-wrap gap-4">
                                     <select name="status" class="form-input w-full sm:w-auto">
                                         <option value="en_attente" {{ $commande->status == 'en_attente' ? 'selected' : '' }}>En attente</option>
-                                        <option value="en_traitement" {{ $commande->status == 'en_traitement' ? 'selected' : '' }}>En traitement</option>
-                                        <option value="expediee" {{ $commande->status == 'expediee' ? 'selected' : '' }}>Expédiée</option>
+                                        <option value="en_traitement" {{ $commande->status == 'en_cours' ? 'selected' : '' }}>En cours</option>
+                                        <option value="expediee" {{ $commande->status == 'confirmee' ? 'selected' : '' }}>Confirmée</option>
                                         <option value="livree" {{ $commande->status == 'livree' ? 'selected' : '' }}>Livrée</option>
                                         <option value="annulee" {{ $commande->status == 'annulee' ? 'selected' : '' }}>Annulée</option>
                                     </select>

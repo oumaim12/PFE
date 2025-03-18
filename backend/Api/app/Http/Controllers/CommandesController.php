@@ -71,8 +71,8 @@ class CommandesController extends Controller
         $schemas = Schema::orderBy('nom')->get();
         $statuses = [
             'en_attente' => 'En attente',
-            'en_traitement' => 'En traitement',
-            'expediee' => 'Expédiée',
+            'en_cours' => 'En cours',
+            'confirmee' => 'confirmée',
             'livree' => 'Livrée',
             'annulee' => 'Annulée'
         ];
@@ -80,8 +80,8 @@ class CommandesController extends Controller
         // Statistiques pour le tableau de bord
         $totalCommandes = Commande::count();
         $commandesEnAttente = Commande::where('status', 'en_attente')->count();
-        $commandesEnTraitement = Commande::where('status', 'en_traitement')->count();
-        $commandesExpediees = Commande::where('status', 'expediee')->count();
+        $commandesEnTraitement = Commande::where('status', 'en_cours')->count();
+        $commandesExpediees = Commande::where('status', 'confirmee')->count();
         $commandesLivrees = Commande::where('status', 'livree')->count();
         $commandesAnnulees = Commande::where('status', 'annulee')->count();
 
@@ -111,8 +111,8 @@ class CommandesController extends Controller
         
         $statuses = [
             'en_attente' => 'En attente',
-            'en_traitement' => 'En traitement',
-            'expediee' => 'Expédiée',
+            'en_cours' => 'En cours',
+            'confirmee' => 'Confirmée',
             'livree' => 'Livrée',
             'annulee' => 'Annulée'
         ];
@@ -132,7 +132,7 @@ class CommandesController extends Controller
             'client_id' => 'required|exists:clients,id',
             'schema_id' => 'required|exists:schemas,id',
             'quantite' => 'required|integer|min:1',
-            'status' => 'required|in:en_attente,en_traitement,expediee,livree,annulee',
+            'status' => 'required|in:en_attente,en_cours,confirmee,livree,annulee',
         ]);
 
         if ($validator->fails()) {
@@ -181,8 +181,8 @@ class CommandesController extends Controller
         
         $statuses = [
             'en_attente' => 'En attente',
-            'en_traitement' => 'En traitement',
-            'expediee' => 'Expédiée',
+            'en_cours' => 'En cours',
+            'confirmee' => 'Confirmée',
             'livree' => 'Livrée',
             'annulee' => 'Annulée'
         ];
@@ -203,7 +203,7 @@ class CommandesController extends Controller
             'client_id' => 'required|exists:clients,id',
             'schema_id' => 'required|exists:schemas,id',
             'quantite' => 'required|integer|min:1',
-            'status' => 'required|in:en_attente,en_traitement,expediee,livree,annulee',
+            'status' => 'required|in:en_attente,en_cours,confirmee,livree,annulee',
         ]);
 
         if ($validator->fails()) {
@@ -262,7 +262,7 @@ class CommandesController extends Controller
     public function updateStatus(Request $request, Commande $commande)
     {
         $validator = Validator::make($request->all(), [
-            'status' => 'required|in:en_attente,en_traitement,expediee,livree,annulee',
+            'status' => 'required|in:en_attente,en_cours,confirmee,livree,annulee',
         ]);
 
         if ($validator->fails()) {
@@ -344,8 +344,8 @@ class CommandesController extends Controller
             foreach ($commandes as $commande) {
                 $statuts = [
                     'en_attente' => 'En attente',
-                    'en_traitement' => 'En traitement',
-                    'expediee' => 'Expédiée',
+                    'en_cours' => 'En cours',
+                    'Confirmee' => 'Confirmée',
                     'livree' => 'Livrée',
                     'annulee' => 'Annulée'
                 ];
@@ -379,8 +379,8 @@ class CommandesController extends Controller
         $stats = [
             'total' => Commande::count(),
             'en_attente' => Commande::where('status', 'en_attente')->count(),
-            'en_traitement' => Commande::where('status', 'en_traitement')->count(),
-            'expediees' => Commande::where('status', 'expediee')->count(),
+            'en_cours' => Commande::where('status', 'en_cours')->count(),
+            'confirmees' => Commande::where('status', 'confirmee')->count(),
             'livrees' => Commande::where('status', 'livree')->count(),
             'annulees' => Commande::where('status', 'annulee')->count()
         ];
