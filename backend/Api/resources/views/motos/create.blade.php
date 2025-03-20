@@ -42,6 +42,19 @@
                             <p class="text-polished-chrome/70 text-xs mt-1">Sélectionnez le modèle de la moto.</p>
                         </div>
 
+                        <div class="mb-4">
+                            <label for="client_id" class="block text-polished-chrome text-sm font-medium mb-1">Client</label>
+                            <select name="client_id" id="client_id" class="form-input">
+                                <option value="">Aucun client associé</option>
+                                @foreach($clients as $client)
+                                    <option value="{{ $client->id }}" {{ old('client_id') == $client->id ? 'selected' : '' }}>
+                                        {{ $client->firstname }} {{ $client->lastname }} - {{ $client->email }}
+                                    </option>
+                                @endforeach
+                            </select>
+                            <p class="text-polished-chrome/70 text-xs mt-1">Sélectionnez le client propriétaire de la moto (optionnel).</p>
+                        </div>
+                        
                         <!-- Si vous avez des attributs supplémentaires spécifiques aux motos, ajoutez-les ici -->
                         
                         <div class="mt-6">
@@ -75,6 +88,12 @@
                                     <path stroke-linecap="round" stroke-linejoin="round" stroke-width="2" d="M13 10V3L4 14h7v7l9-11h-7z" />
                                 </svg>
                                 <span class="text-polished-chrome text-sm">Une moto ajoutée pourra ensuite être <strong class="text-white">associée à des pièces détachées</strong> spécifiques.</span>
+                            </li>
+                            <li class="flex items-start">
+                                <svg xmlns="http://www.w3.org/2000/svg" class="h-5 w-5 text-exhaust-blue mr-2 flex-shrink-0 mt-0.5" fill="none" viewBox="0 0 24 24" stroke="currentColor">
+                                    <path stroke-linecap="round" stroke-linejoin="round" stroke-width="2" d="M13 10V3L4 14h7v7l9-11h-7z" />
+                                </svg>
+                                <span class="text-polished-chrome text-sm">Associer un <strong class="text-white">client</strong> à une moto permettra de suivre la propriété et les interventions plus facilement.</span>
                             </li>
                         </ul>
 

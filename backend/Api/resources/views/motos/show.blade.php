@@ -60,6 +60,17 @@
                                     <span class="block text-polished-chrome/70 text-sm">Dernière mise à jour</span>
                                     <span class="text-white font-medium">{{ $moto->updated_at->format('d/m/Y H:i') }}</span>
                                 </div>
+                                <div class="mb-3">
+                                    <span class="block text-polished-chrome/70 text-sm">Client propriétaire</span>
+                                    @if($moto->client)
+                                        <a href="{{ route('clients.show', $moto->client->id) }}" class="text-exhaust-blue hover:text-white transition-colors">
+                                            {{ $moto->client->firstname }} {{ $moto->client->lastname }}
+                                        </a>
+                                        <span class="block text-polished-chrome/50 text-xs mt-1">{{ $moto->client->email }}</span>
+                                    @else
+                                        <span class="text-polished-chrome">Aucun client assigné</span>
+                                    @endif
+                                </div>
                                 <!-- Ajoutez ici d'autres attributs pertinents de votre modèle Moto -->
                             </div>
                         </div>
@@ -124,6 +135,38 @@
                             <p class="text-polished-chrome">{{ $moto->model->marque }} - {{ $moto->model->annee }}</p>
                         </div>
                     </div>
+
+                    @if($moto->client)
+                    <div class="bg-deep-metal rounded-lg p-4 mb-6">
+                        <h4 class="text-white font-bold text-lg mb-4">Informations du client</h4>
+                        <div class="flex items-center mb-4">
+                            <div class="w-12 h-12 rounded-full bg-carbon-fiber flex items-center justify-center mr-3">
+                                <span class="text-white font-bold">{{ substr($moto->client->firstname, 0, 1) }}{{ substr($moto->client->lastname, 0, 1) }}</span>
+                            </div>
+                            <div>
+                                <h5 class="text-white font-medium">{{ $moto->client->firstname }} {{ $moto->client->lastname }}</h5>
+                                <span class="text-polished-chrome/70 text-sm">{{ $moto->client->email }}</span>
+                            </div>
+                        </div>
+                        <div class="space-y-2">
+                            <div class="bg-carbon-fiber rounded p-2 flex justify-between items-center">
+                                <span class="text-polished-chrome text-sm">Téléphone</span>
+                                <span class="text-white">{{ $moto->client->phone }}</span>
+                            </div>
+                            @if($moto->client->address)
+                            <div class="bg-carbon-fiber rounded p-2">
+                                <span class="block text-polished-chrome text-sm mb-1">Adresse</span>
+                                <span class="text-white text-sm">{{ $moto->client->address }}</span>
+                            </div>
+                            @endif
+                        </div>
+                        <div class="mt-4">
+                            <a href="{{ route('clients.show', $moto->client->id) }}" class="block w-full bg-exhaust-blue hover:bg-blue-700 text-white rounded py-2 px-3 text-sm text-center transition-colors">
+                                Voir le profil complet
+                            </a>
+                        </div>
+                    </div>
+                    @endif
 
                     <div class="bg-deep-metal rounded-lg p-4">
                         <h4 class="text-white font-bold text-lg mb-4">Actions rapides</h4>

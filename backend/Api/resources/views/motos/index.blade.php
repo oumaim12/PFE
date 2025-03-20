@@ -54,6 +54,16 @@
                                 @endforeach
                             </select>
                         </div>
+                        <div class="sm:w-[200px]">
+                            <label for="client_id" class="block text-polished-chrome text-sm font-medium mb-1">Client</label>
+                            <select name="client_id" id="client_id" class="form-input">
+                                <option value="">Tous les clients</option>
+                                <option value="none" {{ request('client_id') === 'none' ? 'selected' : '' }}>Sans client</option>
+                                @foreach($clients as $client)
+                                    <option value="{{ $client->id }}" {{ request('client_id') == $client->id ? 'selected' : '' }}>{{ $client->firstname }} {{ $client->lastname }}</option>
+                                @endforeach
+                            </select>
+                        </div>
                         <div class="flex items-end gap-2">
                             <button type="submit" class="moto-button py-2 px-4 flex items-center">
                                 <svg xmlns="http://www.w3.org/2000/svg" class="h-5 w-5 mr-1" fill="none" viewBox="0 0 24 24" stroke="currentColor">
@@ -61,7 +71,7 @@
                                 </svg>
                                 Filtrer
                             </button>
-                            @if(request()->anyFilled(['search', 'marque', 'annee', 'model_id']))
+                            @if(request()->anyFilled(['search', 'marque', 'annee', 'model_id', 'client_id']))
                                 <a href="{{ route('motos.index') }}" class="bg-carbon-fiber hover:bg-gray-700 text-polished-chrome py-2 px-4 rounded flex items-center transition-colors">
                                     <svg xmlns="http://www.w3.org/2000/svg" class="h-5 w-5 mr-1" fill="none" viewBox="0 0 24 24" stroke="currentColor">
                                         <path stroke-linecap="round" stroke-linejoin="round" stroke-width="2" d="M6 18L18 6M6 6l12 12" />
@@ -112,6 +122,7 @@
                             <th class="text-left">ID</th>
                             <th class="text-left">Marque</th>
                             <th class="text-left">Année</th>
+                            <th class="text-left">Client</th>
                             <th class="text-center">Date d'ajout</th>
                             <th class="text-right">Actions</th>
                         </tr>
@@ -122,6 +133,15 @@
                                 <td class="font-medium">#{{ $moto->id }}</td>
                                 <td>{{ $moto->model->marque }}</td>
                                 <td>{{ $moto->model->annee }}</td>
+                                <td>
+                                    @if($moto->client)
+                                        <a href="{{ route('clients.show', $moto->client->id) }}" class="text-exhaust-blue hover:text-white transition-colors">
+                                            {{ $moto->client->firstname }} {{ $moto->client->lastname }}
+                                        </a>
+                                    @else
+                                        <span class="text-polished-chrome/50 text-sm">Non assigné</span>
+                                    @endif
+                                </td>
                                 <td class="text-center">{{ $moto->created_at->format('d/m/Y') }}</td>
                                 <td>
                                     <div class="flex justify-end space-x-2">
@@ -150,13 +170,13 @@
                             </tr>
                         @empty
                             <tr>
-                                <td colspan="5" class="text-center py-8">
+                                <td colspan="6" class="text-center py-8">
                                     <div class="flex flex-col items-center justify-center">
                                         <svg xmlns="http://www.w3.org/2000/svg" class="h-12 w-12 text-polished-chrome/30 mb-4" fill="none" viewBox="0 0 24 24" stroke="currentColor">
                                             <path stroke-linecap="round" stroke-linejoin="round" stroke-width="1" d="M5 17H4a2 2 0 01-2-2V5a2 2 0 012-2h16a2 2 0 012 2v10a2 2 0 01-2 2h-1m-6 0a2 2 0 002 2h6a2 2 0 002-2v-3a2 2 0 00-2-2h-6a2 2 0 00-2 2v3zm-7-7h4v4H4v-4z" />
                                         </svg>
                                         <span class="text-polished-chrome/70">Aucune moto trouvée</span>
-                                        @if(request()->anyFilled(['search', 'marque', 'annee', 'model_id']))
+                                        @if(request()->anyFilled(['search', 'marque', 'annee', 'model_id', 'client_id']))
                                             <a href="{{ route('motos.index') }}" class="text-engine-red hover:text-white mt-2 flex items-center">
                                                 <svg xmlns="http://www.w3.org/2000/svg" class="h-4 w-4 mr-1" fill="none" viewBox="0 0 24 24" stroke="currentColor">
                                                     <path stroke-linecap="round" stroke-linejoin="round" stroke-width="2" d="M6 18L18 6M6 6l12 12" />
@@ -204,7 +224,7 @@
                         </div>
                         <h4 class="text-white text-lg font-bold">Filtrage avancé</h4>
                     </div>
-                    <p class="text-polished-chrome">Utilisez les filtres pour retrouver rapidement les motos par marque, année ou modèle spécifique.</p>
+                    <p class="text-polished-chrome">Utilisez les filtres pour retrouver rapidement les motos par marque, année, modèle ou client spécifique.</p>
                 </div>
                 <div class="bg-carbon-fiber p-4 rounded-lg">
                     <div class="flex items-start mb-3">

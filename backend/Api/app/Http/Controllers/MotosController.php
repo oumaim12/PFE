@@ -4,6 +4,7 @@ namespace App\Http\Controllers;
 
 use App\Models\Moto;
 use App\Models\MotoModel;
+use App\Models\Client;
 use Illuminate\Http\Request;
 use Illuminate\Support\Facades\Validator;
 use Illuminate\Support\Facades\DB;
@@ -18,11 +19,20 @@ class MotosController extends Controller
      */
     public function index(Request $request)
     {
-        $query = Moto::with('model');
+        $query = Moto::with('model', 'client');
 
         // Filtre par modèle
         if ($request->has('model_id')) {
             $query->where('model_id', $request->input('model_id'));
+        }
+        
+        // Filtre par client
+        if ($request->has('client_id')) {
+            if ($request->input('client_id') === 'none') {
+                $query->whereNull('client_id');
+            } else if ($request->input('client_id')) {
+                $query->where('client_id', $request->input('client_id'));
+            }
         }
 
         // Filtre par marque (via la relation model)
@@ -44,8 +54,15 @@ class MotosController extends Controller
         // Recherche générale
         if ($request->has('search')) {
             $search = $request->input('search');
-            $query->whereHas('model', function($q) use ($search) {
-                $q->where('marque', 'LIKE', "%{$search}%");
+            $query->where(function($q) use ($search) {
+                $q->whereHas('model', function($subq) use ($search) {
+                    $subq->where('marque', 'LIKE', "%{$search}%");
+                })
+                ->orWhereHas('client', function($subq) use ($search) {
+                    $subq->where('firstname', 'LIKE', "%{$search}%")
+                         ->orWhere('lastname', 'LIKE', "%{$search}%")
+                         ->orWhere('email', 'LIKE', "%{$search}%");
+                });
             });
         }
 
@@ -66,6 +83,9 @@ class MotosController extends Controller
 
         // Récupérer les modèles pour le filtre
         $models = MotoModel::orderBy('marque')->orderBy('annee', 'desc')->get();
+
+        // Récupérer les clients pour le filtre
+        $clients = Client::orderBy('lastname')->orderBy('firstname')->get();
 
         // Récupérer les marques distinctes pour le filtre
         $marques = MotoModel::select('marque')
@@ -91,6 +111,7 @@ class MotosController extends Controller
         return view('motos.index', compact(
             'motos',
             'models',
+            'clients',
             'marques',
             'annees',
             'totalMotos',
@@ -106,7 +127,8 @@ class MotosController extends Controller
     public function create()
     {
         $models = MotoModel::orderBy('marque')->orderBy('annee', 'desc')->get();
-        return view('motos.create', compact('models'));
+        $clients = Client::orderBy('lastname')->orderBy('firstname')->get();
+        return view('motos.create', compact('models', 'clients'));
     }
 
     /**
@@ -119,6 +141,7 @@ class MotosController extends Controller
     {
         $validator = Validator::make($request->all(), [
             'model_id' => 'required|exists:models,id',
+            'client_id' => 'nullable|exists:clients,id',
             // Ajoutez d'autres champs spécifiques à votre modèle Moto ici
         ]);
 
@@ -130,6 +153,7 @@ class MotosController extends Controller
 
         Moto::create([
             'model_id' => $request->model_id,
+            'client_id' => $request->client_id,
             // Ajoutez d'autres champs ici si nécessaire
         ]);
 
@@ -145,7 +169,7 @@ class MotosController extends Controller
      */
     public function show(Moto $moto)
     {
-        $moto->load('model');
+        $moto->load('model', 'client');
         
         // Récupérer les pièces compatibles avec ce modèle de moto
         // Cette fonctionnalité dépendra de votre structure de données
@@ -163,7 +187,8 @@ class MotosController extends Controller
     public function edit(Moto $moto)
     {
         $models = MotoModel::orderBy('marque')->orderBy('annee', 'desc')->get();
-        return view('motos.edit', compact('moto', 'models'));
+        $clients = Client::orderBy('lastname')->orderBy('firstname')->get();
+        return view('motos.edit', compact('moto', 'models', 'clients'));
     }
 
     /**
@@ -177,6 +202,7 @@ class MotosController extends Controller
     {
         $validator = Validator::make($request->all(), [
             'model_id' => 'required|exists:models,id',
+            'client_id' => 'nullable|exists:clients,id',
             // Ajoutez d'autres champs spécifiques à votre modèle Moto ici
         ]);
 
@@ -188,6 +214,7 @@ class MotosController extends Controller
 
         $moto->update([
             'model_id' => $request->model_id,
+            'client_id' => $request->client_id,
             // Ajoutez d'autres champs ici si nécessaire
         ]);
 
@@ -229,7 +256,7 @@ class MotosController extends Controller
         );
 
         // Construire la requête en fonction des filtres
-        $query = Moto::with('model');
+        $query = Moto::with(['model', 'client']);
 
         // Appliquer les filtres si présents
         if ($request->filled('model_id')) {
@@ -250,9 +277,17 @@ class MotosController extends Controller
             });
         }
 
+        if ($request->filled('client_id')) {
+            if ($request->input('client_id') === 'none') {
+                $query->whereNull('client_id');
+            } else {
+                $query->where('client_id', $request->input('client_id'));
+            }
+        }
+
         $motos = $query->get();
 
-        $columns = array('ID', 'Marque', 'Modèle', 'Année', 'Date d\'ajout');
+        $columns = array('ID', 'Marque', 'Modèle', 'Année', 'Client', 'Email Client', 'Téléphone Client', 'Date d\'ajout');
 
         $callback = function() use ($motos, $columns) {
             $file = fopen('php://output', 'w');
@@ -264,6 +299,9 @@ class MotosController extends Controller
                     $moto->model->marque,
                     $moto->model->nom ?? 'N/A', // Si vous avez un champ 'nom' dans votre modèle
                     $moto->model->annee,
+                    $moto->client ? $moto->client->firstname . ' ' . $moto->client->lastname : 'N/A',
+                    $moto->client ? $moto->client->email : 'N/A',
+                    $moto->client ? $moto->client->phone : 'N/A',
                     $moto->created_at->format('d/m/Y H:i:s')
                 ]);
             }

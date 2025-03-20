@@ -43,6 +43,19 @@
                             <p class="text-polished-chrome/70 text-xs mt-1">Sélectionnez le modèle de la moto.</p>
                         </div>
 
+                        <div class="mb-4">
+                            <label for="client_id" class="block text-polished-chrome text-sm font-medium mb-1">Client</label>
+                            <select name="client_id" id="client_id" class="form-input">
+                                <option value="">Aucun client associé</option>
+                                @foreach($clients as $client)
+                                    <option value="{{ $client->id }}" {{ old('client_id', $moto->client_id) == $client->id ? 'selected' : '' }}>
+                                        {{ $client->firstname }} {{ $client->lastname }} - {{ $client->email }}
+                                    </option>
+                                @endforeach
+                            </select>
+                            <p class="text-polished-chrome/70 text-xs mt-1">Sélectionnez le client propriétaire de la moto (optionnel).</p>
+                        </div>
+                        
                         <!-- Si vous avez des attributs supplémentaires spécifiques aux motos, ajoutez-les ici -->
                         
                         <div class="mt-6">
@@ -72,6 +85,12 @@
                                     <span class="block text-polished-chrome/70 text-xs">Modèle actuel</span>
                                     <span class="text-white text-sm">{{ $moto->model->marque }} ({{ $moto->model->annee }})</span>
                                 </div>
+                                @if($moto->client)
+                                <div>
+                                    <span class="block text-polished-chrome/70 text-xs">Client actuel</span>
+                                    <span class="text-white text-sm">{{ $moto->client->firstname }} {{ $moto->client->lastname }}</span>
+                                </div>
+                                @endif
                             </div>
                         </div>
 
