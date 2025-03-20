@@ -24,19 +24,3 @@ class MotoModel extends Model
         return $this->hasMany(Moto::class, 'model_id');
     }
 }
-
-// Modèle pour les motos
-class Moto extends Model
-{
-    use HasFactory;
-
-    protected $fillable = [
-        'model_id',
-    ];
-
-    // Relation avec le modèle de moto
-    public function model()
-    {
-        return $this->belongsTo(MotoModel::class, 'model_id');
-    }
-}

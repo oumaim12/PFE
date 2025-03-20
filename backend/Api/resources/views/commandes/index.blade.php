@@ -44,6 +44,14 @@
                             <label for="date_to" class="block text-polished-chrome text-sm font-medium mb-1">Date fin</label>
                             <input type="date" name="date_to" id="date_to" value="{{ request('date_to') }}" class="form-input">
                         </div>
+                        <div class="sm:w-[180px]">
+                            <label for="min_total" class="block text-polished-chrome text-sm font-medium mb-1">Montant min</label>
+                            <input type="number" step="0.01" name="min_total" id="min_total" value="{{ request('min_total') }}" class="form-input">
+                        </div>
+                        <div class="sm:w-[180px]">
+                            <label for="max_total" class="block text-polished-chrome text-sm font-medium mb-1">Montant max</label>
+                            <input type="number" step="0.01" name="max_total" id="max_total" value="{{ request('max_total') }}" class="form-input">
+                        </div>
                         <div class="flex items-end gap-2">
                             <button type="submit" class="moto-button py-2 px-4 flex items-center">
                                 <svg xmlns="http://www.w3.org/2000/svg" class="h-5 w-5 mr-1" fill="none" viewBox="0 0 24 24" stroke="currentColor">
@@ -51,7 +59,7 @@
                                 </svg>
                                 Filtrer
                             </button>
-                            @if(request()->anyFilled(['search', 'status', 'date_from', 'date_to', 'client_id', 'schema_id']))
+                            @if(request()->anyFilled(['search', 'status', 'date_from', 'date_to', 'min_total', 'max_total', 'client_id', 'schema_id']))
                                 <a href="{{ route('commandes.index') }}" class="bg-carbon-fiber hover:bg-gray-700 text-polished-chrome py-2 px-4 rounded flex items-center transition-colors">
                                     <svg xmlns="http://www.w3.org/2000/svg" class="h-5 w-5 mr-1" fill="none" viewBox="0 0 24 24" stroke="currentColor">
                                         <path stroke-linecap="round" stroke-linejoin="round" stroke-width="2" d="M6 18L18 6M6 6l12 12" />
@@ -70,6 +78,18 @@
                                 <span class="text-polished-chrome">Total commandes</span>
                                 <span class="font-bold text-white">{{ $totalCommandes }}</span>
                             </div>
+                            @isset($totalRevenu)
+                            <div class="flex justify-between items-center p-2 rounded bg-green-900/20 border border-green-900/30">
+                                <span class="text-polished-chrome">Revenu total</span>
+                                <span class="font-bold text-green-500">{{ number_format($totalRevenu, 2) }} €</span>
+                            </div>
+                            @endisset
+                            @isset($revenuMensuel)
+                            <div class="flex justify-between items-center p-2 rounded bg-green-900/20 border border-green-900/30">
+                                <span class="text-polished-chrome">Revenu mensuel</span>
+                                <span class="font-bold text-green-500">{{ number_format($revenuMensuel, 2) }} €</span>
+                            </div>
+                            @endisset
                         </div>
                         <div class="grid grid-cols-2 gap-2">
                             <div class="flex justify-between items-center p-2 rounded bg-yellow-900/20 border border-yellow-900/30">
@@ -109,7 +129,9 @@
                             <th class="text-left">ID</th>
                             <th class="text-left">Client</th>
                             <th class="text-left">Pièce</th>
+                            <th class="text-center">Prix unitaire</th>
                             <th class="text-center">Quantité</th>
+                            <th class="text-center">Total</th>
                             <th class="text-center">Date</th>
                             <th class="text-center">Statut</th>
                             <th class="text-right">Actions</th>
@@ -130,7 +152,9 @@
                                     </a>
                                     <span class="text-polished-chrome/70 text-xs">({{ $commande->schema->version }})</span>
                                 </td>
+                                <td class="text-center">{{ number_format($commande->schema->price, 2) }} €</td>
                                 <td class="text-center">{{ $commande->quantite }}</td>
+                                <td class="text-center font-semibold text-green-500">{{ number_format($commande->total, 2) }} €</td>
                                 <td class="text-center">{{ $commande->created_at->format('d/m/Y') }}</td>
                                 <td class="text-center">
                                     @if($commande->status == 'en_attente')
@@ -182,13 +206,13 @@
                             </tr>
                         @empty
                             <tr>
-                                <td colspan="7" class="text-center py-8">
+                                <td colspan="9" class="text-center py-8">
                                     <div class="flex flex-col items-center justify-center">
                                         <svg xmlns="http://www.w3.org/2000/svg" class="h-12 w-12 text-polished-chrome/30 mb-4" fill="none" viewBox="0 0 24 24" stroke="currentColor">
                                             <path stroke-linecap="round" stroke-linejoin="round" stroke-width="1" d="M16 11V7a4 4 0 00-8 0v4M5 9h14l1 12H4L5 9z" />
                                         </svg>
                                         <span class="text-polished-chrome/70">Aucune commande trouvée</span>
-                                        @if(request()->anyFilled(['search', 'status', 'date_from', 'date_to', 'client_id', 'schema_id']))
+                                        @if(request()->anyFilled(['search', 'status', 'date_from', 'date_to', 'min_total', 'max_total', 'client_id', 'schema_id']))
                                             <a href="{{ route('commandes.index') }}" class="text-engine-red hover:text-white mt-2 flex items-center">
                                                 <svg xmlns="http://www.w3.org/2000/svg" class="h-4 w-4 mr-1" fill="none" viewBox="0 0 24 24" stroke="currentColor">
                                                     <path stroke-linecap="round" stroke-linejoin="round" stroke-width="2" d="M6 18L18 6M6 6l12 12" />

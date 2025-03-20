@@ -12,8 +12,13 @@ class Commande extends Model
     protected $fillable = [
         'schema_id',
         'quantite',
+        'total',     // Ajout du montant total
         'client_id',
         'status',
+    ];
+
+    protected $casts = [
+        'total' => 'decimal:2',
     ];
 
     // Relation avec le client
@@ -26,5 +31,14 @@ class Commande extends Model
     public function schema()
     {
         return $this->belongsTo(Schema::class);
+    }
+
+    // Méthode pour calculer automatiquement le total
+    public function calculateTotal()
+    {
+        if ($this->schema && $this->quantite) {
+            $this->total = $this->schema->price * $this->quantite;
+        }
+        return $this->total;
     }
 }

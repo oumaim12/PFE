@@ -3,6 +3,8 @@
 use App\Http\Controllers\ProfileController;
 use App\Http\Controllers\DashboardController;
 use App\Http\Controllers\PiecesDetacheesController;
+use App\Http\Controllers\MotosController;
+use App\Http\Controllers\ModelsController;
 use App\Http\Controllers\CommandesController;
 use App\Http\Controllers\ClientsController;
 use App\Http\Controllers\SchemaController;
@@ -15,6 +17,19 @@ Route::get('/', function () {
 
     Route::get('/dashboard', [\App\Http\Controllers\Admin\DashboardController::class, 'index'])->name('dashboard');
     
+    Route::resource('models', ModelsController::class);
+    Route::get('/models-export', [ModelsController::class, 'export'])
+    ->name('models.export');
+    Route::get('/models-search', [ModelsController::class, 'search'])
+    ->name('models.search');
+
+    // Routes pour les motos
+    Route::resource('motos', MotosController::class);
+    Route::get('/motos-export', [MotosController::class, 'export'])
+    ->name('motos.export');
+    Route::get('/motos-search', [MotosController::class, 'search'])
+    ->name('motos.search');
+
     // Routes pour les schemas (pièces détachées)
     Route::resource('schemas', SchemaController::class);
     Route::get('/schemas-arborescence', [SchemaController::class, 'arborescence'])

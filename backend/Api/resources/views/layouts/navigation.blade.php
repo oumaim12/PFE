@@ -5,6 +5,8 @@
             <!-- Left Side Links -->
             <div class="flex space-x-4 items-center">
                 <a href="{{ route('dashboard') }}" class="nav-link {{ request()->routeIs('dashboard') ? 'active' : '' }}">Table de Bord</a>
+                <a href="{{ route('models.index') }}" class="nav-link {{ request()->routeIs('models.*') ? 'active' : '' }}">Modeles</a>
+                <a href="{{ route('motos.index') }}" class="nav-link {{ request()->routeIs('motos.*') ? 'active' : '' }}">Motos</a>
                 <a href="{{ route('schemas.index') }}" class="nav-link {{ request()->routeIs('schemas.*') ? 'active' : '' }}">Pièces Détachées</a>
                 <a href="{{ route('commandes.index') }}" class="nav-link {{ request()->routeIs('commandes.*') ? 'active' : '' }}">Commandes</a>
                 <a href="{{ route('clients.index') }}" class="nav-link {{ request()->routeIs('clients.*') ? 'active' : '' }}">Clients</a>
@@ -57,6 +59,12 @@
         <div class="pt-2 pb-3 space-y-1">
     <x-responsive-nav-link :href="route('dashboard')" :active="request()->routeIs('dashboard')" class="mobile-nav-link">
         {{ __('Table de Bord') }}
+    </x-responsive-nav-link>
+    <x-responsive-nav-link :href="route('models.index')" :active="request()->routeIs('models.*')" class="mobile-nav-link">
+        {{ __('Models') }}
+    </x-responsive-nav-link>
+    <x-responsive-nav-link :href="route('motos.index')" :active="request()->routeIs('motos.*')" class="mobile-nav-link">
+        {{ __('Motos') }}
     </x-responsive-nav-link>
     <x-responsive-nav-link :href="route('schemas.index')" :active="request()->routeIs('schemas.*')" class="mobile-nav-link">
         {{ __('Pièces Détachées') }}

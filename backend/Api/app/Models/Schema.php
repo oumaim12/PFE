@@ -5,7 +5,6 @@ namespace App\Models;
 use Illuminate\Database\Eloquent\Factories\HasFactory;
 use Illuminate\Database\Eloquent\Model;
 
-// Modèle pour les pièces de rechange (Schema)
 class Schema extends Model
 {
     use HasFactory;
@@ -14,6 +13,12 @@ class Schema extends Model
         'nom',
         'parent_id',
         'version',
+        'price',    // Ajout du prix
+        'moto_id',  // Ajout de la relation avec les motos
+    ];
+
+    protected $casts = [
+        'price' => 'decimal:2',
     ];
 
     // Relation avec la pièce parente
@@ -32,5 +37,11 @@ class Schema extends Model
     public function commandes()
     {
         return $this->hasMany(Commande::class);
+    }
+
+    // Relation avec la moto
+    public function moto()
+    {
+        return $this->belongsTo(Moto::class);
     }
 }

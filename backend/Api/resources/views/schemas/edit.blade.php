@@ -43,6 +43,12 @@
                         </div>
 
                         <div class="mb-4">
+                            <label for="price" class="block text-polished-chrome text-sm font-medium mb-1">Prix <span class="text-engine-red">*</span></label>
+                            <input type="number" name="price" id="price" value="{{ old('price', $schema->price) }}" step="0.01" min="0" required class="form-input" placeholder="0.00">
+                            <p class="text-polished-chrome/70 text-xs mt-1">Indiquez le prix unitaire de la pièce (en €).</p>
+                        </div>
+
+                        <div class="mb-4">
                             <label for="parent_id" class="block text-polished-chrome text-sm font-medium mb-1">Pièce parente</label>
                             <select name="parent_id" id="parent_id" class="form-input">
                                 <option value="">Aucune (pièce racine)</option>
@@ -53,6 +59,22 @@
                                 @endforeach
                             </select>
                             <p class="text-polished-chrome/70 text-xs mt-1">Sélectionnez la pièce parente si cette pièce est un composant d'une autre pièce.</p>
+                        </div>
+
+                        <div class="mb-4">
+                            <label for="moto_id" class="block text-polished-chrome text-sm font-medium mb-1">Associer à une moto</label>
+                            <select name="moto_id" id="moto_id" class="form-input">
+                                <option value="">Aucune association</option>
+                                @foreach($motos as $moto)
+                                    <option value="{{ $moto->id }}" {{ old('moto_id', $schema->moto_id) == $moto->id ? 'selected' : '' }}>
+                                        {{ $moto->model->marque }} ({{ $moto->model->annee }})
+                                        @if($moto->client)
+                                            - {{ $moto->client->firstname }} {{ $moto->client->lastname }}
+                                        @endif
+                                    </option>
+                                @endforeach
+                            </select>
+                            <p class="text-polished-chrome/70 text-xs mt-1">Associez cette pièce à un modèle de moto spécifique si applicable.</p>
                         </div>
 
                         <div class="mt-6 bg-engine-red/10 border border-engine-red/20 rounded-md p-3">
@@ -86,6 +108,23 @@
                                     <span class="block text-polished-chrome/70 text-xs">Dernière modification</span>
                                     <span class="text-white text-sm">{{ $schema->updated_at->format('d/m/Y H:i') }}</span>
                                 </div>
+                                <div>
+                                    <span class="block text-polished-chrome/70 text-xs">Prix actuel</span>
+                                    <span class="text-white text-sm font-bold">{{ number_format($schema->price, 2) }} €</span>
+                                </div>
+                                <div>
+                                    <span class="block text-polished-chrome/70 text-xs">Moto associée actuelle</span>
+                                    <span class="text-white text-sm">
+                                        @if($schema->moto)
+                                            {{ $schema->moto->model->marque }} ({{ $schema->moto->model->annee }})
+                                            @if($schema->moto->client)
+                                                - {{ $schema->moto->client->firstname }} {{ $schema->moto->client->lastname }}
+                                            @endif
+                                        @else
+                                            Aucune association
+                                        @endif
+                                    </span>
+                                </div>
                             </div>
                         </div>
 
@@ -96,6 +135,7 @@
                                     @foreach($schema->enfants as $enfant)
                                         <li class="flex items-center justify-between bg-deep-metal p-2 rounded">
                                             <span class="text-polished-chrome text-sm">{{ $enfant->nom }} ({{ $enfant->version }})</span>
+                                            <span class="text-green-500 text-sm">{{ number_format($enfant->price, 2) }} €</span>
                                             <a href="{{ route('schemas.show', $enfant->id) }}" class="text-exhaust-blue hover:text-white text-xs transition-colors">
                                                 Voir
                                             </a>
@@ -116,7 +156,14 @@
                                         <span class="text-polished-chrome text-sm">Cette pièce est utilisée dans <strong class="text-white">{{ $schema->commandes->count() }}</strong> commande(s).</span>
                                     </div>
                                 </div>
-                                <p class="text-polished-chrome/70 text-xs mt-1">Toute modification affectera les commandes existantes. Assurez-vous que les changements sont appropriés.</p>
+                                <div class="bg-yellow-900/20 border border-yellow-900/30 rounded p-2">
+                                    <div class="flex items-center">
+                                        <svg xmlns="http://www.w3.org/2000/svg" class="h-5 w-5 text-yellow-500 mr-2" fill="none" viewBox="0 0 24 24" stroke="currentColor">
+                                            <path stroke-linecap="round" stroke-linejoin="round" stroke-width="2" d="M13 16h-1v-4h-1m1-4h.01M21 12a9 9 0 11-18 0 9 9 0 0118 0z" />
+                                        </svg>
+                                        <span class="text-polished-chrome text-sm">La modification du prix mettra à jour le total de toutes les commandes associées.</span>
+                                    </div>
+                                </div>
                             </div>
                         @endif
                     </div>

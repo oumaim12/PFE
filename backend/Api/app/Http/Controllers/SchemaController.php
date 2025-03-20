@@ -3,6 +3,7 @@
 namespace App\Http\Controllers;
 
 use App\Models\Schema;
+use App\Models\Moto;
 use Illuminate\Http\Request;
 use Illuminate\Support\Facades\DB;
 use Illuminate\Support\Facades\Validator;
@@ -34,8 +35,22 @@ class SchemaController extends Controller
             $query->where('parent_id', $request->input('parent_id'));
         }
 
+        // Filtre par moto_id si spécifié
+        if ($request->has('moto_id')) {
+            $query->where('moto_id', $request->input('moto_id'));
+        }
+
+        // Filtre par plage de prix
+        if ($request->has('min_price')) {
+            $query->where('price', '>=', $request->input('min_price'));
+        }
+
+        if ($request->has('max_price')) {
+            $query->where('price', '<=', $request->input('max_price'));
+        }
+
         // Récupération des pièces avec pagination
-        $schemas = $query->with('parent', 'enfants')
+        $schemas = $query->with('parent', 'enfants', 'moto')
             ->orderBy('nom')
             ->paginate(15);
 
@@ -50,6 +65,9 @@ class SchemaController extends Controller
             ->orderBy('nom')
             ->get();
 
+        // Récupération des motos pour les filtres
+        $motos = Moto::with('model')->get();
+
         // Stats pour le tableau de bord
         $totalSchemas = Schema::count();
         $topSchemas = DB::table('commandes')
@@ -60,7 +78,7 @@ class SchemaController extends Controller
             ->take(5)
             ->get();
 
-        return view('schemas.index', compact('schemas', 'versions', 'parents', 'totalSchemas', 'topSchemas'));
+        return view('schemas.index', compact('schemas', 'versions', 'parents', 'motos', 'totalSchemas', 'topSchemas'));
     }
 
     /**
@@ -73,7 +91,10 @@ class SchemaController extends Controller
         // Récupération des pièces qui peuvent être parentes
         $parentSchemas = Schema::orderBy('nom')->get();
         
-        return view('schemas.create', compact('parentSchemas'));
+        // Récupération des motos pour l'association
+        $motos = Moto::with('model')->get();
+        
+        return view('schemas.create', compact('parentSchemas', 'motos'));
     }
 
     /**
@@ -88,7 +109,9 @@ class SchemaController extends Controller
         $validator = Validator::make($request->all(), [
             'nom' => 'required|string|max:255',
             'version' => 'required|string|max:50',
-            'parent_id' => 'nullable|exists:schemas,id'
+            'parent_id' => 'nullable|exists:schemas,id',
+            'price' => 'required|numeric|min:0',
+            'moto_id' => 'nullable|exists:motos,id'
         ]);
 
         if ($validator->fails()) {
@@ -101,7 +124,9 @@ class SchemaController extends Controller
         Schema::create([
             'nom' => $request->nom,
             'version' => $request->version,
-            'parent_id' => $request->parent_id
+            'parent_id' => $request->parent_id,
+            'price' => $request->price,
+            'moto_id' => $request->moto_id
         ]);
 
         return redirect()->route('schemas.index')
@@ -117,7 +142,7 @@ class SchemaController extends Controller
     public function show(Schema $schema)
     {
         // Chargement des relations
-        $schema->load('parent', 'enfants', 'commandes.client');
+        $schema->load('parent', 'enfants', 'commandes.client', 'moto.model');
         
         // Statistiques des commandes pour cette pièce
         $totalCommandes = $schema->commandes->count();
@@ -144,7 +169,10 @@ class SchemaController extends Controller
             ->orderBy('nom')
             ->get();
             
-        return view('schemas.edit', compact('schema', 'parentSchemas'));
+        // Récupération des motos pour l'association
+        $motos = Moto::with('model')->get();
+            
+        return view('schemas.edit', compact('schema', 'parentSchemas', 'motos'));
     }
 
     /**
@@ -160,7 +188,9 @@ class SchemaController extends Controller
         $validator = Validator::make($request->all(), [
             'nom' => 'required|string|max:255',
             'version' => 'required|string|max:50',
-            'parent_id' => 'nullable|exists:schemas,id'
+            'parent_id' => 'nullable|exists:schemas,id',
+            'price' => 'required|numeric|min:0',
+            'moto_id' => 'nullable|exists:motos,id'
         ]);
 
         if ($validator->fails()) {
@@ -196,8 +226,18 @@ class SchemaController extends Controller
         $schema->update([
             'nom' => $request->nom,
             'version' => $request->version,
-            'parent_id' => $request->parent_id
+            'parent_id' => $request->parent_id,
+            'price' => $request->price,
+            'moto_id' => $request->moto_id
         ]);
+
+        // Mise à jour du total des commandes associées si le prix a changé
+        if ($schema->wasChanged('price')) {
+            foreach ($schema->commandes as $commande) {
+                $commande->total = $commande->quantite * $schema->price;
+                $commande->save();
+            }
+        }
 
         return redirect()->route('schemas.index')
             ->with('success', 'Pièce mise à jour avec succès.');
@@ -239,7 +279,7 @@ class SchemaController extends Controller
     {
         // Récupération des pièces racines (sans parent)
         $racines = Schema::whereNull('parent_id')
-            ->with('enfants')
+            ->with('enfants', 'moto')
             ->orderBy('nom')
             ->get();
             
@@ -258,7 +298,7 @@ class SchemaController extends Controller
         
         $schemas = Schema::where('nom', 'LIKE', "%{$term}%")
             ->orWhere('version', 'LIKE', "%{$term}%")
-            ->select('id', 'nom', 'version')
+            ->select('id', 'nom', 'version', 'price')
             ->take(10)
             ->get();
             

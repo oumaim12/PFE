@@ -53,6 +53,29 @@
                                 @endforeach
                             </select>
                         </div>
+                        <div class="sm:w-[200px]">
+                            <label for="moto_id" class="block text-polished-chrome text-sm font-medium mb-1">Moto</label>
+                            <select name="moto_id" id="moto_id" class="form-input">
+                                <option value="">Toutes les motos</option>
+                                <option value="null" {{ request('moto_id') === 'null' ? 'selected' : '' }}>Sans association</option>
+                                @foreach($motos as $moto)
+                                    <option value="{{ $moto->id }}" {{ request('moto_id') == $moto->id ? 'selected' : '' }}>
+                                        {{ $moto->model->marque }} ({{ $moto->model->annee }})
+                                        @if($moto->client)
+                                            - {{ $moto->client->firstname }}
+                                        @endif
+                                    </option>
+                                @endforeach
+                            </select>
+                        </div>
+                        <div class="sm:w-[150px]">
+                            <label for="min_price" class="block text-polished-chrome text-sm font-medium mb-1">Prix min</label>
+                            <input type="number" step="0.01" name="min_price" id="min_price" value="{{ request('min_price') }}" class="form-input">
+                        </div>
+                        <div class="sm:w-[150px]">
+                            <label for="max_price" class="block text-polished-chrome text-sm font-medium mb-1">Prix max</label>
+                            <input type="number" step="0.01" name="max_price" id="max_price" value="{{ request('max_price') }}" class="form-input">
+                        </div>
                         <div class="flex items-end gap-2">
                             <button type="submit" class="moto-button py-2 px-4 flex items-center">
                                 <svg xmlns="http://www.w3.org/2000/svg" class="h-5 w-5 mr-1" fill="none" viewBox="0 0 24 24" stroke="currentColor">
@@ -60,7 +83,7 @@
                                 </svg>
                                 Filtrer
                             </button>
-                            @if(request()->has('search') || request()->has('version') || request()->has('parent_id'))
+                            @if(request()->has('search') || request()->has('version') || request()->has('parent_id') || request()->has('moto_id') || request()->has('min_price') || request()->has('max_price'))
                                 <a href="{{ route('schemas.index') }}" class="moto-button py-2 px-4 flex items-center bg-carbon-fiber hover:bg-gray-700">
                                     <svg xmlns="http://www.w3.org/2000/svg" class="h-5 w-5 mr-1" fill="none" viewBox="0 0 24 24" stroke="currentColor">
                                         <path stroke-linecap="round" stroke-linejoin="round" stroke-width="2" d="M6 18L18 6M6 6l12 12" />
@@ -103,7 +126,9 @@
                         <tr>
                             <th class="text-left">Nom</th>
                             <th class="text-left">Version</th>
+                            <th class="text-center">Prix</th>
                             <th class="text-left">Pièce parente</th>
+                            <th class="text-left">Moto associée</th>
                             <th class="text-center">Sous-pièces</th>
                             <th class="text-center">Commandes</th>
                             <th class="text-right">Actions</th>
@@ -114,6 +139,7 @@
                             <tr>
                                 <td class="font-medium">{{ $schema->nom }}</td>
                                 <td>{{ $schema->version }}</td>
+                                <td class="text-center text-green-500 font-semibold">{{ number_format($schema->price, 2) }} €</td>
                                 <td>
                                     @if($schema->parent)
                                         <a href="{{ route('schemas.show', $schema->parent->id) }}" class="text-exhaust-blue hover:text-white transition-colors">
@@ -121,6 +147,18 @@
                                         </a>
                                     @else
                                         <span class="text-polished-chrome/50 text-sm">Pas de parent</span>
+                                    @endif
+                                </td>
+                                <td>
+                                    @if($schema->moto)
+                                        <span class="text-white">
+                                            {{ $schema->moto->model->marque }} ({{ $schema->moto->model->annee }})
+                                            @if($schema->moto->client)
+                                                <span class="text-xs text-polished-chrome/70">- {{ $schema->moto->client->firstname }} {{ $schema->moto->client->lastname }}</span>
+                                            @endif
+                                        </span>
+                                    @else
+                                        <span class="text-polished-chrome/50 text-sm">Non associée</span>
                                     @endif
                                 </td>
                                 <td class="text-center">
@@ -173,13 +211,13 @@
                             </tr>
                         @empty
                             <tr>
-                                <td colspan="6" class="text-center py-8">
+                                <td colspan="8" class="text-center py-8">
                                     <div class="flex flex-col items-center justify-center">
                                         <svg xmlns="http://www.w3.org/2000/svg" class="h-12 w-12 text-polished-chrome/30 mb-4" fill="none" viewBox="0 0 24 24" stroke="currentColor">
                                             <path stroke-linecap="round" stroke-linejoin="round" stroke-width="1" d="M9 3v2m6-2v2M9 19v2m6-2v2M5 9H3m2 6H3m18-6h-2m2 6h-2M7 19h10a2 2 0 002-2V7a2 2 0 00-2-2H7a2 2 0 00-2 2v10a2 2 0 002 2zM9 9h6v6H9V9z" />
                                         </svg>
                                         <span class="text-polished-chrome/70">Aucune pièce trouvée</span>
-                                        @if(request()->has('search') || request()->has('version') || request()->has('parent_id'))
+                                        @if(request()->has('search') || request()->has('version') || request()->has('parent_id') || request()->has('moto_id') || request()->has('min_price') || request()->has('max_price'))
                                             <a href="{{ route('schemas.index') }}" class="text-engine-red hover:text-white mt-2 flex items-center">
                                                 <svg xmlns="http://www.w3.org/2000/svg" class="h-4 w-4 mr-1" fill="none" viewBox="0 0 24 24" stroke="currentColor">
                                                     <path stroke-linecap="round" stroke-linejoin="round" stroke-width="2" d="M6 18L18 6M6 6l12 12" />
@@ -206,7 +244,7 @@
             <h3 class="panel-title">Guide d'utilisation des pièces</h3>
         </div>
         <div class="panel-body p-4">
-            <div class="grid grid-cols-1 md:grid-cols-3 gap-4">
+            <div class="grid grid-cols-1 md:grid-cols-4 gap-4">
                 <div class="bg-carbon-fiber p-4 rounded-lg">
                     <div class="flex items-start mb-3">
                         <div class="bg-exhaust-blue rounded-full p-2 mr-3">
@@ -231,14 +269,25 @@
                 </div>
                 <div class="bg-carbon-fiber p-4 rounded-lg">
                     <div class="flex items-start mb-3">
+                        <div class="bg-green-600 rounded-full p-2 mr-3">
+                            <svg xmlns="http://www.w3.org/2000/svg" class="h-6 w-6 text-white" fill="none" viewBox="0 0 24 24" stroke="currentColor">
+                                <path stroke-linecap="round" stroke-linejoin="round" stroke-width="2" d="M12 8c-1.657 0-3 .895-3 2s1.343 2 3 2 3 .895 3 2-1.343 2-3 2m0-8c1.11 0 2.08.402 2.599 1M12 8V7m0 1v8m0 0v1m0-1c-1.11 0-2.08-.402-2.599-1M21 12a9 9 0 11-18 0 9 9 0 0118 0z" />
+                            </svg>
+                        </div>
+                        <h4 class="text-white text-lg font-bold">Prix et facturations</h4>
+                    </div>
+                    <p class="text-polished-chrome">Le prix défini pour chaque pièce sera automatiquement utilisé pour calculer le montant des commandes associées.</p>
+                </div>
+                <div class="bg-carbon-fiber p-4 rounded-lg">
+                    <div class="flex items-start mb-3">
                         <div class="bg-engine-red rounded-full p-2 mr-3">
                             <svg xmlns="http://www.w3.org/2000/svg" class="h-6 w-6 text-white" fill="none" viewBox="0 0 24 24" stroke="currentColor">
                                 <path stroke-linecap="round" stroke-linejoin="round" stroke-width="2" d="M12 8v4l3 3m6-3a9 9 0 11-18 0 9 9 0 0118 0z" />
                             </svg>
                         </div>
-                        <h4 class="text-white text-lg font-bold">Pièces et commandes</h4>
+                        <h4 class="text-white text-lg font-bold">Association aux motos</h4>
                     </div>
-                    <p class="text-polished-chrome">Vous ne pouvez pas supprimer une pièce qui est utilisée dans des commandes ou qui a des sous-pièces associées.</p>
+                    <p class="text-polished-chrome">Associez les pièces à des motos spécifiques pour faciliter le filtrage et la recherche des pièces compatibles.</p>
                 </div>
             </div>
         </div>

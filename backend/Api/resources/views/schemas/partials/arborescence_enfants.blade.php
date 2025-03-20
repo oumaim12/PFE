@@ -18,7 +18,17 @@
                     <div class="flex items-center">
                         <span class="text-white font-bold">{{ $enfant->nom }}</span>
                         <span class="text-polished-chrome/70 ml-2 text-sm">({{ $enfant->version }})</span>
+                        <span class="text-green-500 ml-2 font-bold">{{ number_format($enfant->price, 2) }} €</span>
                     </div>
+                    @if($enfant->moto)
+                    <div class="text-xs text-polished-chrome">
+                        <span class="text-exhaust-blue">Moto:</span> 
+                        {{ $enfant->moto->model->marque }} ({{ $enfant->moto->model->annee }})
+                        @if($enfant->moto->client)
+                            - {{ $enfant->moto->client->firstname }} {{ $enfant->moto->client->lastname }}
+                        @endif
+                    </div>
+                    @endif
                 </div>
                 <div class="flex space-x-2">
                     @if($enfant->commandes->count() > 0)
@@ -31,6 +41,11 @@
                         <div class="flex items-center">
                             <div class="w-3 h-3 rounded-full bg-fuel-yellow mr-1"></div>
                             <span class="text-polished-chrome text-xs">{{ $enfant->enfants->count() }}</span>
+                        </div>
+                    @endif
+                    @if($enfant->moto)
+                        <div class="flex items-center">
+                            <div class="w-3 h-3 rounded-full bg-green-500 mr-1"></div>
                         </div>
                     @endif
                     <a href="{{ route('schemas.show', $enfant->id) }}" class="text-exhaust-blue hover:text-white transition-colors">

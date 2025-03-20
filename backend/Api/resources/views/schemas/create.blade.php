@@ -42,16 +42,38 @@
                         </div>
 
                         <div class="mb-4">
+                            <label for="price" class="block text-polished-chrome text-sm font-medium mb-1">Prix <span class="text-engine-red">*</span></label>
+                            <input type="number" name="price" id="price" value="{{ old('price', 0) }}" step="0.01" min="0" required class="form-input" placeholder="0.00">
+                            <p class="text-polished-chrome/70 text-xs mt-1">Indiquez le prix unitaire de la pièce (en €).</p>
+                        </div>
+
+                        <div class="mb-4">
                             <label for="parent_id" class="block text-polished-chrome text-sm font-medium mb-1">Pièce parente</label>
                             <select name="parent_id" id="parent_id" class="form-input">
                                 <option value="">Aucune (pièce racine)</option>
                                 @foreach($parentSchemas as $parent)
                                     <option value="{{ $parent->id }}" {{ old('parent_id') == $parent->id ? 'selected' : '' }}>
-                                        {{ $parent->nom }} ({{ $parent->version }})
+                                        {{ $parent->nom }} ({{ $parent->version }}) - {{ number_format($parent->price, 2) }} €
                                     </option>
                                 @endforeach
                             </select>
                             <p class="text-polished-chrome/70 text-xs mt-1">Sélectionnez la pièce parente si cette pièce est un composant d'une autre pièce.</p>
+                        </div>
+
+                        <div class="mb-4">
+                            <label for="moto_id" class="block text-polished-chrome text-sm font-medium mb-1">Associer à une moto</label>
+                            <select name="moto_id" id="moto_id" class="form-input">
+                                <option value="">Aucune association</option>
+                                @foreach($motos as $moto)
+                                    <option value="{{ $moto->id }}" {{ old('moto_id') == $moto->id ? 'selected' : '' }}>
+                                        {{ $moto->model->marque }} ({{ $moto->model->annee }})
+                                        @if($moto->client)
+                                            - {{ $moto->client->firstname }} {{ $moto->client->lastname }}
+                                        @endif
+                                    </option>
+                                @endforeach
+                            </select>
+                            <p class="text-polished-chrome/70 text-xs mt-1">Associez cette pièce à un modèle de moto spécifique si applicable.</p>
                         </div>
                     </div>
 
@@ -80,7 +102,19 @@
                                 <svg xmlns="http://www.w3.org/2000/svg" class="h-5 w-5 text-exhaust-blue mr-2 flex-shrink-0 mt-0.5" fill="none" viewBox="0 0 24 24" stroke="currentColor">
                                     <path stroke-linecap="round" stroke-linejoin="round" stroke-width="2" d="M13 10V3L4 14h7v7l9-11h-7z" />
                                 </svg>
+                                <span class="text-polished-chrome text-sm">Le <strong class="text-white">prix</strong> sera utilisé pour calculer automatiquement le total des commandes.</span>
+                            </li>
+                            <li class="flex items-start">
+                                <svg xmlns="http://www.w3.org/2000/svg" class="h-5 w-5 text-exhaust-blue mr-2 flex-shrink-0 mt-0.5" fill="none" viewBox="0 0 24 24" stroke="currentColor">
+                                    <path stroke-linecap="round" stroke-linejoin="round" stroke-width="2" d="M13 10V3L4 14h7v7l9-11h-7z" />
+                                </svg>
                                 <span class="text-polished-chrome text-sm">Une pièce peut être un <strong class="text-white">composant d'une autre pièce</strong> en sélectionnant une pièce parente.</span>
+                            </li>
+                            <li class="flex items-start">
+                                <svg xmlns="http://www.w3.org/2000/svg" class="h-5 w-5 text-exhaust-blue mr-2 flex-shrink-0 mt-0.5" fill="none" viewBox="0 0 24 24" stroke="currentColor">
+                                    <path stroke-linecap="round" stroke-linejoin="round" stroke-width="2" d="M13 10V3L4 14h7v7l9-11h-7z" />
+                                </svg>
+                                <span class="text-polished-chrome text-sm">L'association à une <strong class="text-white">moto</strong> permet de filtrer les pièces compatibles avec un modèle spécifique.</span>
                             </li>
                             <li class="flex items-start">
                                 <svg xmlns="http://www.w3.org/2000/svg" class="h-5 w-5 text-engine-red mr-2 flex-shrink-0 mt-0.5" fill="none" viewBox="0 0 24 24" stroke="currentColor">

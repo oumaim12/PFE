@@ -27,7 +27,7 @@
                     À propos de l'arborescence
                 </h4>
                 <p class="text-polished-chrome mb-3">Cette vue présente la structure hiérarchique des pièces. Les pièces racines sont présentées au niveau supérieur, et leurs sous-pièces sont regroupées en dessous. Cliquez sur les flèches pour développer ou réduire les sections.</p>
-                <div class="grid grid-cols-1 md:grid-cols-3 gap-3">
+                <div class="grid grid-cols-1 md:grid-cols-4 gap-3">
                     <div class="flex items-center bg-deep-metal rounded p-2">
                         <div class="w-4 h-4 rounded-full bg-exhaust-blue mr-2"></div>
                         <span class="text-white text-sm">Pièce racine</span>
@@ -39,6 +39,10 @@
                     <div class="flex items-center bg-deep-metal rounded p-2">
                         <div class="w-4 h-4 rounded-full bg-fuel-yellow mr-2"></div>
                         <span class="text-white text-sm">A des sous-pièces</span>
+                    </div>
+                    <div class="flex items-center bg-deep-metal rounded p-2">
+                        <div class="w-4 h-4 rounded-full bg-green-500 mr-2"></div>
+                        <span class="text-white text-sm">Associée à une moto</span>
                     </div>
                 </div>
             </div>
@@ -57,7 +61,17 @@
                                 <div class="flex items-center">
                                     <span class="text-white font-bold">{{ $racine->nom }}</span>
                                     <span class="text-polished-chrome/70 ml-2 text-sm">({{ $racine->version }})</span>
+                                    <span class="text-green-500 ml-2 font-bold">{{ number_format($racine->price, 2) }} €</span>
                                 </div>
+                                @if($racine->moto)
+                                <div class="text-xs text-polished-chrome">
+                                    <span class="text-exhaust-blue">Moto:</span> 
+                                    {{ $racine->moto->model->marque }} ({{ $racine->moto->model->annee }})
+                                    @if($racine->moto->client)
+                                        - {{ $racine->moto->client->firstname }} {{ $racine->moto->client->lastname }}
+                                    @endif
+                                </div>
+                                @endif
                             </div>
                             <div class="flex space-x-2">
                                 @if($racine->commandes->count() > 0)
@@ -70,6 +84,11 @@
                                     <div class="flex items-center">
                                         <div class="w-3 h-3 rounded-full bg-fuel-yellow mr-1"></div>
                                         <span class="text-polished-chrome text-xs">{{ $racine->enfants->count() }}</span>
+                                    </div>
+                                @endif
+                                @if($racine->moto)
+                                    <div class="flex items-center">
+                                        <div class="w-3 h-3 rounded-full bg-green-500 mr-1"></div>
                                     </div>
                                 @endif
                                 <a href="{{ route('schemas.show', $racine->id) }}" class="text-exhaust-blue hover:text-white transition-colors">

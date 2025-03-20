@@ -49,8 +49,16 @@
                                     </a>
                                 </div>
                                 <div class="mb-3">
+                                    <span class="block text-polished-chrome/70 text-sm">Prix unitaire</span>
+                                    <span class="text-white font-medium">{{ number_format($commande->schema->price, 2) }} €</span>
+                                </div>
+                                <div class="mb-3">
                                     <span class="block text-polished-chrome/70 text-sm">Quantité</span>
                                     <span class="text-white font-medium">{{ $commande->quantite }}</span>
+                                </div>
+                                <div class="mb-3">
+                                    <span class="block text-polished-chrome/70 text-sm">Montant total</span>
+                                    <span class="text-green-500 font-bold text-xl">{{ number_format($commande->total, 2) }} €</span>
                                 </div>
                             </div>
                             <div>
@@ -86,6 +94,17 @@
                                         </span>
                                     @endif
                                 </div>
+                                @if($commande->schema->moto)
+                                <div class="mb-3">
+                                    <span class="block text-polished-chrome/70 text-sm">Moto associée à la pièce</span>
+                                    <span class="text-white font-medium">
+                                        {{ $commande->schema->moto->model->marque }} ({{ $commande->schema->moto->model->annee }})
+                                        @if($commande->schema->moto->client)
+                                            - {{ $commande->schema->moto->client->firstname }} {{ $commande->schema->moto->client->lastname }}
+                                        @endif
+                                    </span>
+                                </div>
+                                @endif
                             </div>
                         </div>
                     </div>
@@ -129,8 +148,8 @@
                                 <div class="flex flex-wrap gap-4">
                                     <select name="status" class="form-input w-full sm:w-auto">
                                         <option value="en_attente" {{ $commande->status == 'en_attente' ? 'selected' : '' }}>En attente</option>
-                                        <option value="en_traitement" {{ $commande->status == 'en_cours' ? 'selected' : '' }}>En cours</option>
-                                        <option value="expediee" {{ $commande->status == 'confirmee' ? 'selected' : '' }}>Confirmée</option>
+                                        <option value="en_cours" {{ $commande->status == 'en_cours' ? 'selected' : '' }}>En cours</option>
+                                        <option value="confirmee" {{ $commande->status == 'confirmee' ? 'selected' : '' }}>Confirmée</option>
                                         <option value="livree" {{ $commande->status == 'livree' ? 'selected' : '' }}>Livrée</option>
                                         <option value="annulee" {{ $commande->status == 'annulee' ? 'selected' : '' }}>Annulée</option>
                                     </select>
@@ -148,6 +167,7 @@
                             <img src="/api/placeholder/300/200" alt="Illustration de la pièce" class="w-full h-40 object-contain bg-carbon-fiber rounded-lg mb-3">
                             <h5 class="font-bold text-white">{{ $commande->schema->nom }}</h5>
                             <p class="text-polished-chrome/70 text-sm">Version: {{ $commande->schema->version }}</p>
+                            <p class="text-green-500 font-bold mt-2">Prix: {{ number_format($commande->schema->price, 2) }} €</p>
                         </div>
                         <a href="{{ route('schemas.show', $commande->schema->id) }}" class="bg-exhaust-blue hover:bg-blue-700 text-white py-2 px-3 rounded text-sm flex items-center justify-center transition-colors w-full">
                             <svg xmlns="http://www.w3.org/2000/svg" class="h-4 w-4 mr-1" fill="none" viewBox="0 0 24 24" stroke="currentColor">

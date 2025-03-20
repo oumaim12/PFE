@@ -64,6 +64,16 @@ class Client extends Authenticatable
     }
 
     /**
+     * Relation avec les motos du client
+     * 
+     * @return \Illuminate\Database\Eloquent\Relations\HasMany
+     */
+    public function motos()
+    {
+        return $this->hasMany(Moto::class);
+    }
+
+    /**
      * Récupère le nom complet du client
      * 
      * @return string

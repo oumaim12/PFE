@@ -52,6 +52,10 @@
                                     <span class="block text-polished-chrome/70 text-sm">Version</span>
                                     <span class="text-white font-medium">{{ $schema->version }}</span>
                                 </div>
+                                <div class="mb-3">
+                                    <span class="block text-polished-chrome/70 text-sm">Prix</span>
+                                    <span class="text-green-500 font-bold text-xl">{{ number_format($schema->price, 2) }} €</span>
+                                </div>
                             </div>
                             <div>
                                 <div class="mb-3">
@@ -72,6 +76,20 @@
                                         <span class="text-polished-chrome">Aucune (pièce racine)</span>
                                     @endif
                                 </div>
+                                <div class="mb-3">
+                                    <span class="block text-polished-chrome/70 text-sm">Moto associée</span>
+                                    @if($schema->moto)
+                                        <span class="text-white">
+                                            {{ $schema->moto->model->marque }} ({{ $schema->moto->model->annee }})
+                                            @if($schema->moto->client)
+                                                <br>
+                                                <span class="text-xs text-polished-chrome">Client: {{ $schema->moto->client->firstname }} {{ $schema->moto->client->lastname }}</span>
+                                            @endif
+                                        </span>
+                                    @else
+                                        <span class="text-polished-chrome">Aucune association</span>
+                                    @endif
+                                </div>
                             </div>
                         </div>
                     </div>
@@ -87,6 +105,7 @@
                                         <tr>
                                             <th class="text-left">Nom</th>
                                             <th class="text-left">Version</th>
+                                            <th class="text-center">Prix</th>
                                             <th class="text-center">Sous-pièces</th>
                                             <th></th>
                                         </tr>
@@ -96,6 +115,7 @@
                                             <tr>
                                                 <td class="font-medium">{{ $enfant->nom }}</td>
                                                 <td>{{ $enfant->version }}</td>
+                                                <td class="text-center text-green-500 font-semibold">{{ number_format($enfant->price, 2) }} €</td>
                                                 <td class="text-center">
                                                     @if($enfant->enfants->count() > 0)
                                                         <span class="px-2 py-1 bg-exhaust-blue text-white text-xs font-bold rounded-full">
@@ -133,6 +153,7 @@
                                             <th class="text-left">ID</th>
                                             <th class="text-left">Client</th>
                                             <th class="text-center">Quantité</th>
+                                            <th class="text-center">Total</th>
                                             <th class="text-center">Statut</th>
                                             <th class="text-left">Date</th>
                                             <th></th>
@@ -148,6 +169,7 @@
                                                     </a>
                                                 </td>
                                                 <td class="text-center">{{ $commande->quantite }}</td>
+                                                <td class="text-center text-green-500 font-semibold">{{ number_format($commande->total, 2) }} €</td>
                                                 <td class="text-center">
                                                     @if($commande->status == 'en_attente')
                                                         <span class="inline-flex items-center px-2.5 py-0.5 rounded-full text-xs font-medium bg-yellow-200 text-yellow-800">
@@ -198,8 +220,40 @@
                                 <span class="text-polished-chrome">Sous-pièces</span>
                                 <span class="font-bold text-white">{{ $schema->enfants->count() }}</span>
                             </div>
+                            <div class="flex justify-between items-center p-3 rounded bg-carbon-fiber">
+                                <span class="text-polished-chrome">Prix unitaire</span>
+                                <span class="font-bold text-green-500">{{ number_format($schema->price, 2) }} €</span>
+                            </div>
+                            <div class="flex justify-between items-center p-3 rounded bg-carbon-fiber">
+                                <span class="text-polished-chrome">Revenue généré</span>
+                                <span class="font-bold text-green-500">
+                                    {{ number_format($totalCommandes > 0 ? $schema->commandes->sum('total') : 0, 2) }} €
+                                </span>
+                            </div>
                         </div>
                     </div>
+
+                    @if($schema->moto)
+                        <div class="bg-deep-metal rounded-lg p-4 mb-6">
+                            <h4 class="text-white font-bold text-lg mb-4">Détails moto associée</h4>
+                            <div class="space-y-3">
+                                <div class="p-3 rounded bg-carbon-fiber">
+                                    <p class="text-polished-chrome mb-1">Marque & Modèle</p>
+                                    <p class="text-white font-medium">{{ $schema->moto->model->marque }}</p>
+                                    <p class="text-white text-sm">Année: {{ $schema->moto->model->annee }}</p>
+                                </div>
+                                @if($schema->moto->client)
+                                    <div class="p-3 rounded bg-carbon-fiber">
+                                        <p class="text-polished-chrome mb-1">Propriétaire</p>
+                                        <a href="{{ route('clients.show', $schema->moto->client->id) }}" class="text-exhaust-blue hover:text-white transition-colors">
+                                            {{ $schema->moto->client->firstname }} {{ $schema->moto->client->lastname }}
+                                        </a>
+                                        <p class="text-polished-chrome/70 text-xs mt-1">{{ $schema->moto->client->email }}</p>
+                                    </div>
+                                @endif
+                            </div>
+                        </div>
+                    @endif
 
                     @if($schema->parent)
                         <div class="bg-deep-metal rounded-lg p-4 mb-6">
@@ -213,6 +267,7 @@
                                         </svg>
                                         {{ $schema->parent->nom }} ({{ $schema->parent->version }})
                                     </a>
+                                    <p class="text-green-500 font-medium text-sm mt-1">{{ number_format($schema->parent->price, 2) }} €</p>
                                 </div>
                             </div>
                         </div>

@@ -44,6 +44,15 @@ class CommandesController extends Controller
             $query->whereDate('created_at', '<=', $request->input('date_to'));
         }
 
+        // Filtres de prix total
+        if ($request->filled('min_total')) {
+            $query->where('total', '>=', $request->input('min_total'));
+        }
+
+        if ($request->filled('max_total')) {
+            $query->where('total', '<=', $request->input('max_total'));
+        }
+
         // Recherche par ID ou client
         if ($request->filled('search')) {
             $search = $request->input('search');
@@ -84,6 +93,13 @@ class CommandesController extends Controller
         $commandesExpediees = Commande::where('status', 'confirmee')->count();
         $commandesLivrees = Commande::where('status', 'livree')->count();
         $commandesAnnulees = Commande::where('status', 'annulee')->count();
+        
+        // Statistiques de revenus
+        $totalRevenu = Commande::where('status', '!=', 'annulee')->sum('total');
+        $revenuMensuel = Commande::where('status', '!=', 'annulee')
+            ->whereMonth('created_at', Carbon::now()->month)
+            ->whereYear('created_at', Carbon::now()->year)
+            ->sum('total');
 
         return view('commandes.index', compact(
             'commandes',
@@ -95,7 +111,9 @@ class CommandesController extends Controller
             'commandesEnTraitement',
             'commandesExpediees',
             'commandesLivrees',
-            'commandesAnnulees'
+            'commandesAnnulees',
+            'totalRevenu',
+            'revenuMensuel'
         ));
     }
 
@@ -141,10 +159,16 @@ class CommandesController extends Controller
                 ->withInput();
         }
 
-        Commande::create([
+        // Récupérer le prix de la pièce
+        $schema = Schema::findOrFail($request->schema_id);
+        $total = $schema->price * $request->quantite;
+
+        // Créer la commande avec le total calculé
+        $commande = Commande::create([
             'client_id' => $request->client_id,
             'schema_id' => $request->schema_id,
             'quantite' => $request->quantite,
+            'total' => $total, // Ajout du total
             'status' => $request->status,
         ]);
 
@@ -160,7 +184,7 @@ class CommandesController extends Controller
      */
     public function show(Commande $commande)
     {
-        $commande->load(['client', 'schema']);
+        $commande->load(['client', 'schema.moto.model']);
         
         // Historique des statuts (à implémenter si vous avez une table pour suivre l'historique)
         // $statusHistory = StatusHistory::where('commande_id', $commande->id)->orderBy('created_at', 'desc')->get();
@@ -216,10 +240,22 @@ class CommandesController extends Controller
         $statusChanged = $commande->status !== $request->status;
         $oldStatus = $commande->status;
 
+        // Vérifier si le schéma ou la quantité ont changé pour recalculer le total
+        $schemaChanged = $commande->schema_id !== (int)$request->schema_id;
+        $quantiteChanged = $commande->quantite !== (int)$request->quantite;
+        
+        // Recalculer le total si nécessaire
+        $total = $commande->total;
+        if ($schemaChanged || $quantiteChanged) {
+            $schema = Schema::findOrFail($request->schema_id);
+            $total = $schema->price * $request->quantite;
+        }
+
         $commande->update([
             'client_id' => $request->client_id,
             'schema_id' => $request->schema_id,
             'quantite' => $request->quantite,
+            'total' => $total,
             'status' => $request->status,
         ]);
 
@@ -236,20 +272,6 @@ class CommandesController extends Controller
 
         return redirect()->route('commandes.index')
             ->with('success', 'Commande mise à jour avec succès.');
-    }
-
-    /**
-     * Supprime une commande
-     *
-     * @param  \App\Models\Commande  $commande
-     * @return \Illuminate\Http\RedirectResponse
-     */
-    public function destroy(Commande $commande)
-    {
-        $commande->delete();
-
-        return redirect()->route('commandes.index')
-            ->with('success', 'Commande supprimée avec succès.');
     }
 
     /**
@@ -335,7 +357,7 @@ class CommandesController extends Controller
 
         $commandes = $query->orderBy('created_at', 'desc')->get();
 
-        $columns = array('ID', 'Client', 'Email', 'Téléphone', 'Pièce', 'Version', 'Quantité', 'Statut', 'Date de commande');
+        $columns = array('ID', 'Client', 'Email', 'Téléphone', 'Pièce', 'Version', 'Prix unitaire', 'Quantité', 'Total', 'Statut', 'Date de commande');
 
         $callback = function() use ($commandes, $columns) {
             $file = fopen('php://output', 'w');
@@ -345,7 +367,7 @@ class CommandesController extends Controller
                 $statuts = [
                     'en_attente' => 'En attente',
                     'en_cours' => 'En cours',
-                    'Confirmee' => 'Confirmée',
+                    'confirmee' => 'Confirmée',
                     'livree' => 'Livrée',
                     'annulee' => 'Annulée'
                 ];
@@ -357,7 +379,9 @@ class CommandesController extends Controller
                     $commande->client->phone,
                     $commande->schema->nom,
                     $commande->schema->version,
+                    number_format($commande->schema->price, 2) . ' €',
                     $commande->quantite,
+                    number_format($commande->total, 2) . ' €',
                     $statuts[$commande->status] ?? $commande->status,
                     $commande->created_at->format('d/m/Y H:i:s')
                 ]);
@@ -366,6 +390,20 @@ class CommandesController extends Controller
         };
 
         return response()->stream($callback, 200, $headers);
+    }
+
+    /**
+     * Supprime une commande
+     *
+     * @param  \App\Models\Commande  $commande
+     * @return \Illuminate\Http\RedirectResponse
+     */
+    public function destroy(Commande $commande)
+    {
+        $commande->delete();
+
+        return redirect()->route('commandes.index')
+            ->with('success', 'Commande supprimée avec succès.');
     }
 
     /**
@@ -382,7 +420,9 @@ class CommandesController extends Controller
             'en_cours' => Commande::where('status', 'en_cours')->count(),
             'confirmees' => Commande::where('status', 'confirmee')->count(),
             'livrees' => Commande::where('status', 'livree')->count(),
-            'annulees' => Commande::where('status', 'annulee')->count()
+            'annulees' => Commande::where('status', 'annulee')->count(),
+            'revenu_total' => Commande::where('status', '!=', 'annulee')->sum('total'),
+            'panier_moyen' => Commande::where('status', '!=', 'annulee')->avg('total')
         ];
 
         // Commandes récentes
@@ -398,9 +438,14 @@ class CommandesController extends Controller
             $count = Commande::whereYear('created_at', $date->year)
                 ->whereMonth('created_at', $date->month)
                 ->count();
+            $revenue = Commande::whereYear('created_at', $date->year)
+                ->whereMonth('created_at', $date->month)
+                ->where('status', '!=', 'annulee')
+                ->sum('total');
             $commandesParMois[] = [
                 'mois' => $date->format('M Y'),
-                'nombre' => $count
+                'nombre' => $count,
+                'revenu' => $revenue
             ];
         }
 

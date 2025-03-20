@@ -13,6 +13,8 @@ return new class extends Migration
             $table->string('nom');
             $table->foreignId('parent_id')->nullable()->constrained('schemas')->onDelete('set null');
             $table->string('version');
+            $table->decimal('price', 10, 2)->default(0); // Ajout du prix
+            $table->foreignId('moto_id')->nullable()->constrained()->onDelete('set null'); // Ajout de la relation avec les motos
             $table->timestamps();
         });
     }
