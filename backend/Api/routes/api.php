@@ -28,3 +28,7 @@ Route::middleware('auth:sanctum')->group(function () {
     Route::post('/logout', [AuthController::class, 'logout']);
     Route::get('/profile', [AuthController::class, 'profile']);
 });
+
+use App\Http\Controllers\Api\CommandeController;
+
+Route::post('/commandes', [CommandeController::class, 'store']);
