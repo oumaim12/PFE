@@ -1,47 +1,45 @@
 class User {
   final int id;
-  final String firstName;
-  final String lastName;
+  final String firstname;
+  final String lastname;
   final String email;
-  final String? phone;
-  final String? address;
-  final String? cin;
-  final String? token;
+  final DateTime? emailVerifiedAt;
+  String? accessToken;
 
   User({
     required this.id,
-    required this.firstName,
-    required this.lastName,
+    required this.firstname,
+    required this.lastname,
     required this.email,
-    this.phone,
-    this.address,
-    this.cin,
-    this.token,
+    this.emailVerifiedAt,
+    this.accessToken,
   });
 
+  // Get full name
+  String get fullName => "$firstname $lastname";
+
+  // Factory constructor to create a User object from JSON
   factory User.fromJson(Map<String, dynamic> json) {
     return User(
       id: json['id'],
-      firstName: json['first_name'] ?? "",
-      lastName: json['last_name'] ?? "",
-      email: json['email'] ?? "",
-      phone: json['phone'],
-      address: json['address'],
-      cin: json['cin'],
-      token: json['token'],
+      firstname: json['firstname'],
+      lastname: json['lastname'],
+      email: json['email'],
+      emailVerifiedAt: json['email_verified_at'] != null 
+          ? DateTime.parse(json['email_verified_at']) 
+          : null,
+      accessToken: json['access_token'],
     );
   }
 
+  // Method to convert User object to JSON
   Map<String, dynamic> toJson() {
     return {
       'id': id,
-      'first_name': firstName,
-      'last_name': lastName,
+      'firstname': firstname,
+      'lastname': lastname,
       'email': email,
-      'phone': phone,
-      'address': address,
-      'cin': cin,
-      'token': token,
+      'email_verified_at': emailVerifiedAt?.toIso8601String(),
     };
   }
 }

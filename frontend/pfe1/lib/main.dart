@@ -1,18 +1,52 @@
+// lib/main.dart (modifié)
+
 import 'package:flutter/material.dart';
-import 'package:pfe1/screens/login_screen.dart';
+import 'package:provider/provider.dart';
+import 'package:flutter/services.dart';
+import 'screens/login_screen.dart';
+import 'providers/moto_provider.dart';
+import 'providers/cart_provider.dart';
 
 void main() {
+  WidgetsFlutterBinding.ensureInitialized();
+  SystemChrome.setPreferredOrientations([
+    DeviceOrientation.portraitUp,
+    DeviceOrientation.portraitDown,
+  ]);
   runApp(MyApp());
 }
 
 class MyApp extends StatelessWidget {
-  const MyApp({super.key});
-
   @override
   Widget build(BuildContext context) {
-    return MaterialApp(
-      debugShowCheckedModeBanner: false,
-      home: LoginScreen(),
+    return MultiProvider(
+      providers: [
+        ChangeNotifierProvider(create: (ctx) => MotoProvider()),
+        ChangeNotifierProvider(create: (ctx) => CartProvider()),
+      ],
+      child: MaterialApp(
+        debugShowCheckedModeBanner: false,
+        title: 'Moto Parts Shop',
+        theme: ThemeData(
+          primaryColor: Colors.red,
+          colorScheme: ColorScheme.dark(
+            primary: Colors.red,
+            secondary: Colors.red,
+            surface: Colors.grey[850]!,
+            background: Colors.black,
+          ),
+          scaffoldBackgroundColor: Colors.black,
+          appBarTheme: AppBarTheme(
+            backgroundColor: Colors.grey[900],
+            foregroundColor: Colors.white,
+          ),
+          textTheme: TextTheme(
+            bodyLarge: TextStyle(color: Colors.white),
+            bodyMedium: TextStyle(color: Colors.white),
+          ),
+        ),
+        home: LoginScreen(),
+      ),
     );
   }
 }

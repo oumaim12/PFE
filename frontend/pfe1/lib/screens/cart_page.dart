@@ -1,20 +1,8 @@
 import 'package:flutter/material.dart';
-
-class CartItem {
-  final int id;
-  final String name;
-  final double price;
-  final String imageUrl;
-  int quantity;
-
-  CartItem({
-    required this.id,
-    required this.name,
-    required this.price,
-    required this.imageUrl,
-    this.quantity = 1,
-  });
-}
+import 'package:provider/provider.dart';
+import '../models/cart_item.dart';
+import '../providers/cart_provider.dart';
+import '../services/api_service.dart';
 
 class CartPage extends StatefulWidget {
   const CartPage({super.key});
@@ -24,11 +12,10 @@ class CartPage extends StatefulWidget {
 }
 
 class _CartPageState extends State<CartPage> {
-  // Sample cart items - replace with your actual data fetching logic
-  List<CartItem> _cartItems = [];
-  bool _isLoading = true;
   String _promoCode = '';
   double _discount = 0.0;
+  bool _isLoadingLocal = false; // Pour le suivi local de l'état de chargement
+  String? _localError; // Pour le suivi local des erreurs
   
   // Define the dark theme colors
   final Color _primaryColor = Colors.red;
@@ -40,67 +27,48 @@ class _CartPageState extends State<CartPage> {
   @override
   void initState() {
     super.initState();
+    print("CartPage - initState called");
     _fetchCartItems();
   }
 
   Future<void> _fetchCartItems() async {
+    print("CartPage - _fetchCartItems called");
     setState(() {
-      _isLoading = true;
+      _isLoadingLocal = true;
+      _localError = null;
     });
 
     try {
-      // Replace with your actual API call
-      // final response = await ApiService.getCartItems(userId: 1);
-      
-      // For demo purposes, we'll use sample data
-      await Future.delayed(const Duration(seconds: 1));
-      final sampleItems = [
-        CartItem(
-          id: 1,
-          name: "Product 0",
-          price: 59.99,
-          imageUrl: "assets/images/product0.jpg",
-          quantity: 1,
-        ),
-        CartItem(
-          id: 2,
-          name: "Product 1",
-          price: 79.99,
-          imageUrl: "assets/images/product1.jpg",
-          quantity: 2,
-        ),
-        CartItem(
-          id: 3,
-          name: "Product 2",
-          price: 149.99,
-          imageUrl: "assets/images/product2.jpg",
-          quantity: 1,
-        ),
-      ];
-
-      setState(() {
-        _cartItems = sampleItems;
-        _isLoading = false;
-      });
+      print("CartPage - About to load cart from provider");
+      await Provider.of<CartProvider>(context, listen: false).loadCart();
+      print("CartPage - Cart loaded successfully");
     } catch (e) {
+      print("CartPage - Error loading cart: $e");
       setState(() {
-        _isLoading = false;
+        _localError = "Erreur lors du chargement du panier: $e";
       });
       
-      ScaffoldMessenger.of(context).showSnackBar(
-        SnackBar(
-          content: Text("Erreur lors du chargement du panier: $e"),
-          backgroundColor: Colors.red,
-        ),
-      );
+      if (mounted) {
+        ScaffoldMessenger.of(context).showSnackBar(
+          SnackBar(
+            content: Text("Erreur lors du chargement du panier: $e"),
+            backgroundColor: Colors.red,
+          ),
+        );
+      }
+    } finally {
+      if (mounted) {
+        setState(() {
+          _isLoadingLocal = false;
+        });
+      }
     }
   }
 
   double get _subtotal {
-    return _cartItems.fold(
-      0,
-      (total, item) => total + (item.price * item.quantity),
-    );
+    final cartProvider = Provider.of<CartProvider>(context, listen: false);
+    print("CartPage - Calculating subtotal: ${cartProvider.totalAmount}");
+    return cartProvider.totalAmount;
   }
 
   double get _shipping {
@@ -119,98 +87,157 @@ class _CartPageState extends State<CartPage> {
 
   Future<void> _updateQuantity(int itemId, int newQuantity) async {
     if (newQuantity < 1) return;
-
+    
+    print("CartPage - Updating quantity for item $itemId to $newQuantity");
+    setState(() {
+      _isLoadingLocal = true;
+    });
+    
     try {
-      // Replace with your actual API call
-      // await ApiService.updateCartItemQuantity(itemId, newQuantity);
-      
-      setState(() {
-        final index = _cartItems.indexWhere((item) => item.id == itemId);
-        if (index != -1) {
-          _cartItems[index].quantity = newQuantity;
-        }
-      });
+      await Provider.of<CartProvider>(context, listen: false).updateQuantity(itemId, newQuantity);
+      print("CartPage - Quantity updated successfully");
     } catch (e) {
-      ScaffoldMessenger.of(context).showSnackBar(
-        SnackBar(
-          content: Text("Erreur lors de la mise à jour: $e"),
-          backgroundColor: Colors.red,
-        ),
-      );
+      print("CartPage - Error updating quantity: $e");
+      if (mounted) {
+        ScaffoldMessenger.of(context).showSnackBar(
+          SnackBar(
+            content: Text("Erreur lors de la mise à jour: $e"),
+            backgroundColor: Colors.red,
+          ),
+        );
+      }
+    } finally {
+      if (mounted) {
+        setState(() {
+          _isLoadingLocal = false;
+        });
+      }
     }
   }
 
   Future<void> _removeItem(int itemId) async {
+    print("CartPage - Removing item $itemId");
+    setState(() {
+      _isLoadingLocal = true;
+    });
+    
     try {
-      // Replace with your actual API call
-      // await ApiService.removeCartItem(itemId);
+      await Provider.of<CartProvider>(context, listen: false).removeItem(itemId);
+      print("CartPage - Item removed successfully");
       
-      setState(() {
-        _cartItems.removeWhere((item) => item.id == itemId);
-      });
-      
-      ScaffoldMessenger.of(context).showSnackBar(
-        const SnackBar(
-          content: Text("Article retiré du panier"),
-          backgroundColor: Colors.green,
-        ),
-      );
+      if (mounted) {
+        ScaffoldMessenger.of(context).showSnackBar(
+          const SnackBar(
+            content: Text("Article retiré du panier"),
+            backgroundColor: Colors.green,
+          ),
+        );
+      }
     } catch (e) {
-      ScaffoldMessenger.of(context).showSnackBar(
-        SnackBar(
-          content: Text("Erreur lors de la suppression: $e"),
-          backgroundColor: Colors.red,
-        ),
-      );
+      print("CartPage - Error removing item: $e");
+      if (mounted) {
+        ScaffoldMessenger.of(context).showSnackBar(
+          SnackBar(
+            content: Text("Erreur lors de la suppression: $e"),
+            backgroundColor: Colors.red,
+          ),
+        );
+      }
+    } finally {
+      if (mounted) {
+        setState(() {
+          _isLoadingLocal = false;
+        });
+      }
     }
   }
 
   Future<void> _applyPromoCode() async {
     if (_promoCode.isEmpty) return;
-
+    
+    print("CartPage - Applying promo code: $_promoCode");
+    setState(() {
+      _isLoadingLocal = true;
+    });
+    
     try {
-      // Replace with your actual API call
-      // final result = await ApiService.applyPromoCode(_promoCode);
-      
+      // TODO: Implement promo code API
       // For demo purposes, we'll simulate a success response
       await Future.delayed(const Duration(milliseconds: 500));
       final sampleDiscount = _subtotal * 0.1; // 10% discount
-
+      
       setState(() {
         _discount = sampleDiscount;
       });
       
-      ScaffoldMessenger.of(context).showSnackBar(
-        const SnackBar(
-          content: Text("Code promo appliqué avec succès"),
-          backgroundColor: Colors.green,
-        ),
-      );
+      print("CartPage - Promo code applied successfully");
+      if (mounted) {
+        ScaffoldMessenger.of(context).showSnackBar(
+          const SnackBar(
+            content: Text("Code promo appliqué avec succès"),
+            backgroundColor: Colors.green,
+          ),
+        );
+      }
     } catch (e) {
-      ScaffoldMessenger.of(context).showSnackBar(
-        SnackBar(
-          content: Text("Code promo invalide: $e"),
-          backgroundColor: Colors.red,
-        ),
-      );
+      print("CartPage - Error applying promo code: $e");
+      if (mounted) {
+        ScaffoldMessenger.of(context).showSnackBar(
+          SnackBar(
+            content: Text("Code promo invalide: $e"),
+            backgroundColor: Colors.red,
+          ),
+        );
+      }
+    } finally {
+      if (mounted) {
+        setState(() {
+          _isLoadingLocal = false;
+        });
+      }
     }
   }
 
   Future<void> _checkout() async {
-    try {
-      // Replace with your actual API call
-      // await ApiService.createOrder(userId: 1, items: _cartItems);
+  print("CartPage - Checkout process started");
+  setState(() {
+    _isLoadingLocal = true;
+  });
+  
+  try {
+    // Implement checkout functionality
+    print("CartPage - Creating order from cart");
+    final result = await ApiService.createCommandeFromCart();
+    
+    if (result['success']) {
+      print("CartPage - Order created successfully");
+      await Provider.of<CartProvider>(context, listen: false).clearCart();
       
-      ScaffoldMessenger.of(context).showSnackBar(
-        const SnackBar(
-          content: Text("Commande passée avec succès"),
-          backgroundColor: Colors.green,
-        ),
-      );
+      if (mounted) {
+        ScaffoldMessenger.of(context).showSnackBar(
+          const SnackBar(
+            content: Text("Commande passée avec succès"),
+            backgroundColor: Colors.green,
+          ),
+        );
+      }
       
       // Navigate to order confirmation screen
       // Navigator.pushReplacementNamed(context, '/order-confirmation');
-    } catch (e) {
+    } else {
+      print("CartPage - Error creating order: ${result['message']}");
+      if (mounted) {
+        ScaffoldMessenger.of(context).showSnackBar(
+          SnackBar(
+            content: Text("Erreur: ${result['message']}"),
+            backgroundColor: Colors.red,
+          ),
+        );
+      }
+    }
+  } catch (e) {
+    print("CartPage - Exception during checkout: $e");
+    if (mounted) {
       ScaffoldMessenger.of(context).showSnackBar(
         SnackBar(
           content: Text("Erreur lors de la commande: $e"),
@@ -218,10 +245,19 @@ class _CartPageState extends State<CartPage> {
         ),
       );
     }
+  } finally {
+    if (mounted) {
+      setState(() {
+        _isLoadingLocal = false;
+      });
+    }
   }
+}
 
   @override
   Widget build(BuildContext context) {
+    print("CartPage - build method called");
+    
     return Theme(
       data: ThemeData.dark().copyWith(
         primaryColor: _primaryColor,
@@ -261,16 +297,88 @@ class _CartPageState extends State<CartPage> {
             ),
           ],
         ),
-        body: _isLoading
+        body: _isLoadingLocal
             ? Center(
-                child: CircularProgressIndicator(color: _primaryColor),
+                child: Column(
+                  mainAxisAlignment: MainAxisAlignment.center,
+                  children: [
+                    CircularProgressIndicator(color: _primaryColor),
+                    SizedBox(height: 16),
+                    Text(
+                      "Chargement du panier...",
+                      style: TextStyle(color: _textColor),
+                    ),
+                  ],
+                ),
               )
-            : _cartItems.isEmpty
-                ? _buildEmptyCart()
-                : _buildCartContent(),
-        bottomNavigationBar: _cartItems.isEmpty
-            ? null
-            : _buildCheckoutBar(),
+            : _localError != null
+                ? Center(
+                    child: Column(
+                      mainAxisAlignment: MainAxisAlignment.center,
+                      children: [
+                        Icon(Icons.error_outline, color: Colors.red, size: 48),
+                        SizedBox(height: 16),
+                        Text(
+                          'Erreur locale: $_localError',
+                          style: TextStyle(color: _textColor),
+                          textAlign: TextAlign.center,
+                        ),
+                        SizedBox(height: 16),
+                        ElevatedButton(
+                          style: ElevatedButton.styleFrom(backgroundColor: _primaryColor),
+                          onPressed: _fetchCartItems,
+                          child: Text('Réessayer'),
+                        ),
+                      ],
+                    ),
+                  )
+                : Consumer<CartProvider>(
+                    builder: (context, cartProvider, child) {
+                      print("CartPage - Consumer rebuilding with isLoading=${cartProvider.isLoading}, error=${cartProvider.error}, items=${cartProvider.items.length}");
+                      
+                      if (cartProvider.isLoading) {
+                        return Center(
+                          child: CircularProgressIndicator(color: _primaryColor),
+                        );
+                      }
+
+                      if (cartProvider.error != null) {
+                        return Center(
+                          child: Column(
+                            mainAxisAlignment: MainAxisAlignment.center,
+                            children: [
+                              Icon(Icons.error_outline, color: Colors.red, size: 48),
+                              SizedBox(height: 16),
+                              Text(
+                                'Erreur: ${cartProvider.error}',
+                                style: TextStyle(color: _textColor),
+                                textAlign: TextAlign.center,
+                              ),
+                              SizedBox(height: 16),
+                              ElevatedButton(
+                                style: ElevatedButton.styleFrom(backgroundColor: _primaryColor),
+                                onPressed: _fetchCartItems,
+                                child: Text('Réessayer'),
+                              ),
+                            ],
+                          ),
+                        );
+                      }
+
+                      if (cartProvider.items.isEmpty) {
+                        return _buildEmptyCart();
+                      }
+
+                      return _buildCartContent(cartProvider.items);
+                    },
+                  ),
+        bottomNavigationBar: Consumer<CartProvider>(
+          builder: (context, cartProvider, child) {
+            return cartProvider.items.isEmpty 
+                ? Container(height: 0) // Widget vide transparent 
+                : _buildCheckoutBar();
+          },
+        ),
       ),
     );
   }
@@ -313,7 +421,7 @@ class _CartPageState extends State<CartPage> {
             ),
             onPressed: () {
               // Navigate to products screen
-              // Navigator.pushReplacementNamed(context, '/products');
+              Navigator.pop(context);
             },
             child: const Text(
               "Explorer les produits",
@@ -325,14 +433,14 @@ class _CartPageState extends State<CartPage> {
     );
   }
 
-  Widget _buildCartContent() {
+  Widget _buildCartContent(List<CartItem> cartItems) {
     return SingleChildScrollView(
       padding: const EdgeInsets.all(16),
       child: Column(
         crossAxisAlignment: CrossAxisAlignment.start,
         children: [
           Text(
-            "Articles (${_cartItems.length})",
+            "Articles (${cartItems.length})",
             style: TextStyle(
               fontSize: 18,
               fontWeight: FontWeight.bold,
@@ -340,7 +448,7 @@ class _CartPageState extends State<CartPage> {
             ),
           ),
           const SizedBox(height: 16),
-          ..._cartItems.map((item) => _buildCartItem(item)),
+          ...cartItems.map((item) => _buildCartItem(item)),
           const SizedBox(height: 24),
           _buildPromoCodeSection(),
           const SizedBox(height: 24),
@@ -363,21 +471,43 @@ class _CartPageState extends State<CartPage> {
         child: Row(
           crossAxisAlignment: CrossAxisAlignment.start,
           children: [
-            // Product image (placeholder)
-            Container(
-              width: 80,
-              height: 80,
-              decoration: BoxDecoration(
-                color: Colors.grey[700],
-                borderRadius: BorderRadius.circular(8),
-              ),
-              child: Center(
-                child: Icon(
-                  Icons.image,
-                  size: 40,
-                  color: Colors.grey[500],
-                ),
-              ),
+            // Product image
+            ClipRRect(
+              borderRadius: BorderRadius.circular(8),
+              child: item.imageUrl.isNotEmpty
+                  ? Image.network(
+                      item.imageUrl,
+                      width: 80,
+                      height: 80,
+                      fit: BoxFit.cover,
+                      errorBuilder: (context, error, stackTrace) {
+                        return Container(
+                          width: 80,
+                          height: 80,
+                          color: Colors.grey[700],
+                          child: Icon(
+                            Icons.image_not_supported,
+                            size: 40,
+                            color: Colors.grey[500],
+                          ),
+                        );
+                      },
+                    )
+                  : Container(
+                      width: 80,
+                      height: 80,
+                      decoration: BoxDecoration(
+                        color: Colors.grey[700],
+                        borderRadius: BorderRadius.circular(8),
+                      ),
+                      child: Center(
+                        child: Icon(
+                          Icons.image,
+                          size: 40,
+                          color: Colors.grey[500],
+                        ),
+                      ),
+                    ),
             ),
             const SizedBox(width: 16),
             // Product details

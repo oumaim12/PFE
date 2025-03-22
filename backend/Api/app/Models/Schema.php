@@ -44,4 +44,9 @@ class Schema extends Model
     {
         return $this->belongsTo(Moto::class);
     }
+
+    public function compatibleModels()
+    {
+        return $this->belongsToMany(MotoModel::class, 'schema_model_compatibility', 'schema_id', 'model_id');
+    }
 }
