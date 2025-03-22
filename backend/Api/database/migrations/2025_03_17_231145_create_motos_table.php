@@ -11,7 +11,8 @@ return new class extends Migration
         Schema::create('motos', function (Blueprint $table) {
             $table->id();
             $table->foreignId('model_id')->constrained()->onDelete('cascade');
-            $table->foreignId('client_id')->nullable()->constrained()->onDelete('set null'); // Ajout de la relation avec les clients
+            $table->foreignId('client_id')->nullable()->constrained()->onDelete('set null');
+            $table->string('image')->nullable();
             $table->timestamps();
         });
     }

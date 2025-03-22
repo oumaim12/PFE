@@ -8,6 +8,7 @@ use App\Models\Client;
 use Illuminate\Http\Request;
 use Illuminate\Support\Facades\Validator;
 use Illuminate\Support\Facades\DB;
+use Illuminate\Support\Facades\Storage;
 use Carbon\Carbon;
 
 class MotosController extends Controller
@@ -142,7 +143,7 @@ class MotosController extends Controller
         $validator = Validator::make($request->all(), [
             'model_id' => 'required|exists:models,id',
             'client_id' => 'nullable|exists:clients,id',
-            // Ajoutez d'autres champs spécifiques à votre modèle Moto ici
+            'image' => 'nullable|image|mimes:jpeg,png,jpg,gif,svg|max:2048', // Validation pour l'image
         ]);
 
         if ($validator->fails()) {
@@ -151,10 +152,18 @@ class MotosController extends Controller
                 ->withInput();
         }
 
+        // Traitement de l'image si elle est présente
+        $imagePath = null;
+        if ($request->hasFile('image')) {
+            $image = $request->file('image');
+            $imageName = time() . '.' . $image->getClientOriginalExtension();
+            $imagePath = $image->storeAs('motos', $imageName, 'public');
+        }
+
         Moto::create([
             'model_id' => $request->model_id,
             'client_id' => $request->client_id,
-            // Ajoutez d'autres champs ici si nécessaire
+            'image' => $imagePath, // Sauvegarder le chemin de l'image
         ]);
 
         return redirect()->route('motos.index')
@@ -203,7 +212,7 @@ class MotosController extends Controller
         $validator = Validator::make($request->all(), [
             'model_id' => 'required|exists:models,id',
             'client_id' => 'nullable|exists:clients,id',
-            // Ajoutez d'autres champs spécifiques à votre modèle Moto ici
+            'image' => 'nullable|image|mimes:jpeg,png,jpg,gif,svg|max:2048', // Validation pour l'image
         ]);
 
         if ($validator->fails()) {
@@ -212,10 +221,32 @@ class MotosController extends Controller
                 ->withInput();
         }
 
+        // Traitement de l'image si elle est présente
+        $imagePath = $moto->image; // Conserver l'image existante par défaut
+        if ($request->hasFile('image')) {
+            // Supprimer l'ancienne image si elle existe
+            if ($moto->image && Storage::disk('public')->exists($moto->image)) {
+                Storage::disk('public')->delete($moto->image);
+            }
+            
+            // Stocker la nouvelle image
+            $image = $request->file('image');
+            $imageName = time() . '.' . $image->getClientOriginalExtension();
+            $imagePath = $image->storeAs('motos', $imageName, 'public');
+        }
+
+        // Option pour supprimer l'image
+        if ($request->has('remove_image') && $request->remove_image) {
+            if ($moto->image && Storage::disk('public')->exists($moto->image)) {
+                Storage::disk('public')->delete($moto->image);
+            }
+            $imagePath = null;
+        }
+
         $moto->update([
             'model_id' => $request->model_id,
             'client_id' => $request->client_id,
-            // Ajoutez d'autres champs ici si nécessaire
+            'image' => $imagePath,
         ]);
 
         return redirect()->route('motos.index')
@@ -232,6 +263,11 @@ class MotosController extends Controller
     {
         // Vérifier si la moto est liée à des commandes ou d'autres entités
         // Cela dépendra de votre structure de données
+
+        // Supprimer l'image si elle existe
+        if ($moto->image && Storage::disk('public')->exists($moto->image)) {
+            Storage::disk('public')->delete($moto->image);
+        }
 
         $moto->delete();
 
@@ -287,7 +323,7 @@ class MotosController extends Controller
 
         $motos = $query->get();
 
-        $columns = array('ID', 'Marque', 'Modèle', 'Année', 'Client', 'Email Client', 'Téléphone Client', 'Date d\'ajout');
+        $columns = array('ID', 'Marque', 'Modèle', 'Année', 'Client', 'Email Client', 'Téléphone Client', 'Image', 'Date d\'ajout');
 
         $callback = function() use ($motos, $columns) {
             $file = fopen('php://output', 'w');
@@ -302,6 +338,7 @@ class MotosController extends Controller
                     $moto->client ? $moto->client->firstname . ' ' . $moto->client->lastname : 'N/A',
                     $moto->client ? $moto->client->email : 'N/A',
                     $moto->client ? $moto->client->phone : 'N/A',
+                    $moto->image ? asset('storage/' . $moto->image) : 'Pas d\'image',
                     $moto->created_at->format('d/m/Y H:i:s')
                 ]);
             }

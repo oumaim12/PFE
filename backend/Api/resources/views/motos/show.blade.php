@@ -101,38 +101,64 @@
                             <h4 class="panel-title text-base">Pièces compatibles</h4>
                         </div>
                         <div class="panel-body p-4">
-                            <!-- Cette section peut être implémentée une fois que vous aurez établi la relation entre les motos et les pièces -->
-                            <p class="text-polished-chrome">Les pièces compatibles avec ce modèle de moto seront affichées ici. Vous pouvez établir une relation entre votre modèle de moto et les schémas de pièces pour afficher les pièces compatibles.</p>
-
-                            <!-- Exemple de ce à quoi pourrait ressembler la liste des pièces compatibles -->
-                            <div class="mt-4 grid grid-cols-1 sm:grid-cols-2 lg:grid-cols-3 gap-4">
-                                <!-- Exemple de carte pour une pièce -->
-                                <div class="bg-deep-metal rounded-lg p-3 flex items-center">
-                                    <div class="w-10 h-10 bg-carbon-fiber rounded-md flex items-center justify-center mr-3">
-                                        <svg xmlns="http://www.w3.org/2000/svg" class="h-6 w-6 text-exhaust-blue" fill="none" viewBox="0 0 24 24" stroke="currentColor">
-                                            <path stroke-linecap="round" stroke-linejoin="round" stroke-width="2" d="M10.325 4.317c.426-1.756 2.924-1.756 3.35 0a1.724 1.724 0 002.573 1.066c1.543-.94 3.31.826 2.37 2.37a1.724 1.724 0 001.065 2.572c1.756.426 1.756 2.924 0 3.35a1.724 1.724 0 00-1.066 2.573c.94 1.543-.826 3.31-2.37 2.37a1.724 1.724 0 00-2.572 1.065c-.426 1.756-2.924 1.756-3.35 0a1.724 1.724 0 00-2.573-1.066c-1.543.94-3.31-.826-2.37-2.37a1.724 1.724 0 00-1.065-2.572c-1.756-.426-1.756-2.924 0-3.35a1.724 1.724 0 001.066-2.573c-.94-1.543.826-3.31 2.37-2.37.996.608 2.296.07 2.572-1.065z" />
-                                            <path stroke-linecap="round" stroke-linejoin="round" stroke-width="2" d="M15 12a3 3 0 11-6 0 3 3 0 016 0z" />
-                                        </svg>
-                                    </div>
-                                    <div>
-                                        <span class="block text-white font-medium">Exemple de pièce</span>
-                                        <span class="text-polished-chrome/70 text-sm">v1.0</span>
-                                    </div>
+                            @if(isset($schemas) && count($schemas) > 0)
+                                <div class="grid grid-cols-1 sm:grid-cols-2 lg:grid-cols-3 gap-4">
+                                    @foreach($schemas as $schema)
+                                        <div class="bg-deep-metal rounded-lg p-3 flex items-center">
+                                            <div class="w-10 h-10 bg-carbon-fiber rounded-md flex items-center justify-center mr-3">
+                                                <svg xmlns="http://www.w3.org/2000/svg" class="h-6 w-6 text-exhaust-blue" fill="none" viewBox="0 0 24 24" stroke="currentColor">
+                                                    <path stroke-linecap="round" stroke-linejoin="round" stroke-width="2" d="M10.325 4.317c.426-1.756 2.924-1.756 3.35 0a1.724 1.724 0 002.573 1.066c1.543-.94 3.31.826 2.37 2.37a1.724 1.724 0 001.065 2.572c1.756.426 1.756 2.924 0 3.35a1.724 1.724 0 00-1.066 2.573c.94 1.543-.826 3.31-2.37 2.37a1.724 1.724 0 00-2.572 1.065c-.426 1.756-2.924 1.756-3.35 0a1.724 1.724 0 00-2.573-1.066c-1.543.94-3.31-.826-2.37-2.37a1.724 1.724 0 00-1.065-2.572c-1.756-.426-1.756-2.924 0-3.35a1.724 1.724 0 001.066-2.573c-.94-1.543.826-3.31 2.37-2.37.996.608 2.296.07 2.572-1.065z" />
+                                                    <path stroke-linecap="round" stroke-linejoin="round" stroke-width="2" d="M15 12a3 3 0 11-6 0 3 3 0 016 0z" />
+                                                </svg>
+                                            </div>
+                                            <div>
+                                                <a href="{{ route('schemas.show', $schema->id) }}" class="block text-white font-medium hover:text-exhaust-blue transition-colors">
+                                                    {{ $schema->nom }}
+                                                </a>
+                                                <span class="text-polished-chrome/70 text-sm">v{{ $schema->version }} - {{ number_format($schema->price, 2) }} €</span>
+                                            </div>
+                                        </div>
+                                    @endforeach
                                 </div>
-                            </div>
+                            @else
+                                <p class="text-polished-chrome">Les pièces compatibles avec ce modèle de moto seront affichées ici. Vous pouvez établir une relation entre votre modèle de moto et les schémas de pièces pour afficher les pièces compatibles.</p>
+                                
+                                <div class="mt-4">
+                                    <a href="{{ route('schemas.create') }}?moto_id={{ $moto->id }}" class="text-exhaust-blue hover:text-white flex items-center w-fit">
+                                        <svg xmlns="http://www.w3.org/2000/svg" class="h-5 w-5 mr-1" fill="none" viewBox="0 0 24 24" stroke="currentColor">
+                                            <path stroke-linecap="round" stroke-linejoin="round" stroke-width="2" d="M12 6v6m0 0v6m0-6h6m-6 0H6" />
+                                        </svg>
+                                        Ajouter une pièce compatible
+                                    </a>
+                                </div>
+                            @endif
                         </div>
                     </div>
                 </div>
 
                 <div>
                     <div class="bg-deep-metal rounded-lg p-4 mb-6">
-                        <h4 class="text-white font-bold text-lg mb-4">Aperçu</h4>
-                        <div class="bg-carbon-fiber rounded-lg p-3 flex justify-center items-center h-60">
-                            <!-- Affichage d'une image de la moto si disponible -->
-                            <img src="/api/placeholder/300/200" alt="Illustration de la moto" class="max-h-full object-contain">
+                        <h4 class="text-white font-bold text-lg mb-4">Photo de la moto</h4>
+                        <div class="bg-carbon-fiber rounded-lg p-3 flex justify-center items-center h-60 overflow-hidden">
+                            @if($moto->image)
+                                <img src="{{ asset('storage/'.$moto->image) }}" alt="Photo de la moto {{ $moto->model->marque }} {{ $moto->model->annee }}" class="max-h-full max-w-full object-contain">
+                            @else
+                                <div class="flex flex-col items-center justify-center">
+                                    <svg xmlns="http://www.w3.org/2000/svg" class="h-16 w-16 text-polished-chrome/20" fill="none" viewBox="0 0 24 24" stroke="currentColor">
+                                        <path stroke-linecap="round" stroke-linejoin="round" stroke-width="1" d="M4 16l4.586-4.586a2 2 0 012.828 0L16 16m-2-2l1.586-1.586a2 2 0 012.828 0L20 14m-6-6h.01M6 20h12a2 2 0 002-2V6a2 2 0 00-2-2H6a2 2 0 00-2 2v12a2 2 0 002 2z" />
+                                    </svg>
+                                    <p class="text-polished-chrome/50 text-sm mt-2">Aucune image disponible</p>
+                                </div>
+                            @endif
                         </div>
                         <div class="mt-4 text-center">
                             <p class="text-polished-chrome">{{ $moto->model->marque }} - {{ $moto->model->annee }}</p>
+                            <a href="{{ route('motos.edit', $moto->id) }}" class="text-exhaust-blue hover:text-white text-sm flex items-center justify-center mt-2">
+                                <svg xmlns="http://www.w3.org/2000/svg" class="h-4 w-4 mr-1" fill="none" viewBox="0 0 24 24" stroke="currentColor">
+                                    <path stroke-linecap="round" stroke-linejoin="round" stroke-width="2" d="M4 16l4.586-4.586a2 2 0 012.828 0L16 16m-2-2l1.586-1.586a2 2 0 012.828 0L20 14m-6-6h.01M6 20h12a2 2 0 002-2V6a2 2 0 00-2-2H6a2 2 0 00-2 2v12a2 2 0 002 2z" />
+                                </svg>
+                                {{ $moto->image ? 'Modifier l\'image' : 'Ajouter une image' }}
+                            </a>
                         </div>
                     </div>
 
@@ -174,8 +200,8 @@
                             <a href="{{ route('motos.edit', $moto->id) }}" class="block w-full p-3 bg-exhaust-blue hover:bg-blue-700 text-white rounded-md text-center transition-colors">
                                 Modifier cette moto
                             </a>
-                            <a href="{{ route('schemas.index') }}?model_id={{ $moto->model_id }}" class="block w-full p-3 bg-fuel-yellow hover:bg-yellow-600 text-white rounded-md text-center transition-colors">
-                                Voir les pièces compatibles
+                            <a href="{{ route('schemas.create') }}?moto_id={{ $moto->id }}" class="block w-full p-3 bg-fuel-yellow hover:bg-yellow-600 text-white rounded-md text-center transition-colors">
+                                Ajouter une pièce compatible
                             </a>
                             <form action="{{ route('motos.destroy', $moto->id) }}" method="POST" onsubmit="return confirm('Êtes-vous sûr de vouloir supprimer cette moto ?');">
                                 @csrf

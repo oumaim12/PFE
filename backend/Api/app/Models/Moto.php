@@ -11,7 +11,8 @@ class Moto extends Model
 
     protected $fillable = [
         'model_id',
-        'client_id', // Ajout de la relation avec les clients
+        'client_id',
+        'image',
     ];
 
     // Relation avec le modèle de moto
