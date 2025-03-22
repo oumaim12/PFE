@@ -904,6 +904,70 @@ static Future<Map<String, dynamic>> cancelCommande(int commandeId) async {
   }
 }
 
-
-
+static List<Moto> adaptMotosFromApi(List<dynamic> apiData) {
+  return apiData.map((item) {
+    // Check if this is a flattened response
+    if (item['marque'] != null && item['model'] == null) {
+      // Create a synthetic model object
+      final modelData = {
+        'id': item['model_id'] ?? 0,
+        'marque': item['marque'],
+        'annee': item['annee'] ?? 'Inconnue',
+      };
+      
+      // Add the model object to the item
+      item['model'] = modelData;
     }
+    
+    return Moto.fromJson(item);
+  }).toList();
+}
+
+// Get all motorcycles
+static Future<List<Moto>> getAllMotos() async {
+  try {
+    print('Appel API: GET $baseUrl/motos');
+    final response = await http.get(
+      Uri.parse('$baseUrl/motos'),
+      headers: accessToken != null
+          ? {"Authorization": "Bearer $accessToken"}
+          : {},
+    );
+    
+    print('Statut de réponse: ${response.statusCode}');
+    print('Corps de réponse: ${response.body}');
+    
+    if (response.statusCode == 200) {
+      final jsonData = jsonDecode(response.body);
+     
+      if (jsonData['success'] == true && jsonData['data'] != null) {
+        // Use the adapter method instead of direct mapping
+        final List<Moto> motos = adaptMotosFromApi(jsonData['data']);
+       
+        // Afficher les URL des images en utilisant model.marque au lieu de moto.marque
+        for (var moto in motos) {
+          print('Moto récupérée: ${moto.id} - ${moto.model?.marque}');
+          print('Chemin de l\'image: ${moto.image}');
+        }
+       
+        return motos;
+      } else {
+        print('Format de données incorrect: ${jsonData['success']}');
+        return [];
+      }
+    } else {
+      print('Échec de chargement des motos: ${response.statusCode}');
+      return [];
+    }
+  } catch (e) {
+    print('Erreur lors de la récupération des motos: $e');
+    return [];
+  }
+}
+    
+static String getImageUrl(String imagePath) {
+  // Éviter la duplication des segments de chemin
+  return 'http://10.0.2.2:8000/storage/$imagePath';
+}
+
+}

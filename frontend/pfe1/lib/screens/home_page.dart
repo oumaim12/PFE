@@ -1,11 +1,14 @@
 import 'package:flutter/material.dart';
+import 'package:http/http.dart' as http;
 import 'search_page.dart';
 import 'profile_screen.dart';
 import 'mes_motos_screen.dart';
 import 'mes_commandes_screen.dart';
 import 'cart_page.dart';
 import 'login_screen.dart';
-import '../widgets/product_card.dart';
+import '../models/moto.dart';
+import '../services/api_service.dart';
+import 'package:cached_network_image/cached_network_image.dart';
 
 class HomePage extends StatefulWidget {
   const HomePage({super.key});
@@ -19,13 +22,51 @@ class _HomePageState extends State<HomePage> {
   bool _showSearchBar = false;
   final TextEditingController _searchController = TextEditingController();
   bool _isSearching = false;
+  List<Moto> _motos = []; // Liste pour stocker les motos
+  bool _isLoading = true; // État de chargement
 
   final List<Widget> _pages = [
-    HomeContent(),       // Page d'accueil
-    MesMotosScreen(),    // Page Mes Motos
-    ProfileScreen(),     // Page du profile 
-    MesCommandesScreen() // Page Mes Commandes
+    const HomeContent(),       // Page d'accueil
+     MesMotosScreen(),    // Page Mes Motos
+     ProfileScreen(),     // Page du profile 
+     MesCommandesScreen() // Page Mes Commandes
   ];
+
+  @override
+  void initState() {
+    super.initState();
+    testImageAccess('http://10.0.2.2:8000/storage/motos/1742646869.jpg');
+    _fetchMotos(); // Récupérer les motos lors de l'initialisation de la page
+  }
+
+  // Fonction pour tester l'accès aux images
+  Future<void> testImageAccess(String url) async {
+    try {
+      final response = await http.get(Uri.parse(url));
+      print('Test d\'accès à l\'image: $url');
+      print('Code de statut: ${response.statusCode}');
+      print('Taille de la réponse: ${response.bodyBytes.length} octets');
+    } catch (e) {
+      print('Erreur de test d\'accès à l\'image: $e');
+    }
+  }
+
+  // Méthode pour récupérer les motos depuis l'API
+  Future<void> _fetchMotos() async {
+    try {
+      final motos = await ApiService.getAllMotos();
+      print('Motos récupérées: ${motos.length}');
+      setState(() {
+        _motos = motos;
+        _isLoading = false;
+      });
+    } catch (e) {
+      setState(() {
+        _isLoading = false;
+      });
+      print('Error fetching motorcycles: $e');
+    }
+  }
 
   void _onItemTapped(int index) {
     setState(() {
@@ -67,10 +108,12 @@ class _HomePageState extends State<HomePage> {
   }
 
   void _logout() {
-    Navigator.pushReplacement(
-      context,
-      MaterialPageRoute(builder: (context) => LoginScreen()),
-    );
+    ApiService.logout().then((_) {
+      Navigator.pushReplacement(
+        context,
+        MaterialPageRoute(builder: (context) => LoginScreen()),
+      );
+    });
   }
 
   @override
@@ -81,13 +124,13 @@ class _HomePageState extends State<HomePage> {
         backgroundColor: Colors.grey[900],
         title: _showSearchBar
             ? AnimatedContainer(
-                duration: Duration(milliseconds: 300),
+                duration: const Duration(milliseconds: 300),
                 width: double.infinity,
                 height: 40,
                 decoration: BoxDecoration(
                   color: Colors.grey[800],
                   borderRadius: BorderRadius.circular(20),
-                  boxShadow: [
+                  boxShadow: const [
                     BoxShadow(
                       color: Colors.black38,
                       blurRadius: 5,
@@ -100,15 +143,15 @@ class _HomePageState extends State<HomePage> {
                     hintText: 'Rechercher des pièces...',
                     hintStyle: TextStyle(color: Colors.grey[400]),
                     border: InputBorder.none,
-                    prefixIcon: Icon(Icons.search, color: Colors.red),
+                    prefixIcon: const Icon(Icons.search, color: Colors.red),
                     suffixIcon: _isSearching
                         ? IconButton(
-                            icon: Icon(Icons.close, color: Colors.red),
+                            icon: const Icon(Icons.close, color: Colors.red),
                             onPressed: _toggleSearch,
                           )
                         : null,
                   ),
-                  style: TextStyle(color: Colors.white),
+                  style: const TextStyle(color: Colors.white),
                   autofocus: true,
                   onChanged: (value) {
                     // Ajoutez ici la logique de recherche
@@ -120,30 +163,30 @@ class _HomePageState extends State<HomePage> {
                   },
                 ),
               )
-            : Text('Moto Parts Shopping', style: TextStyle(color: Colors.white)),
-        iconTheme: IconThemeData(color: Colors.red),
+            : const Text('Moto Parts Shopping', style: TextStyle(color: Colors.white)),
+        iconTheme: const IconThemeData(color: Colors.red),
         actions: [
           IconButton(
-            icon: Icon(Icons.search, color: Colors.red),
+            icon: const Icon(Icons.search, color: Colors.red),
             onPressed: _showSearchBar ? null : _toggleSearch,
           ),
           Stack(
             alignment: Alignment.center,
             children: [
               IconButton(
-                icon: Icon(Icons.shopping_cart, color: Colors.red),
+                icon: const Icon(Icons.shopping_cart, color: Colors.red),
                 onPressed: _navigateToCart,
               ),
               Positioned(
                 top: 8,
                 right: 8,
                 child: Container(
-                  padding: EdgeInsets.all(4),
-                  decoration: BoxDecoration(
+                  padding: const EdgeInsets.all(4),
+                  decoration: const BoxDecoration(
                     color: Colors.red,
                     shape: BoxShape.circle,
                   ),
-                  child: Text(
+                  child: const Text(
                     '3',
                     style: TextStyle(
                       color: Colors.white,
@@ -157,7 +200,11 @@ class _HomePageState extends State<HomePage> {
           ),
         ],
       ),
-      body: _pages[_selectedIndex],
+      body: _selectedIndex == 0 
+          ? _isLoading 
+              ? const Center(child: CircularProgressIndicator(color: Colors.red)) 
+              : HomeContent(motos: _motos)
+          : _pages[_selectedIndex],
       bottomNavigationBar: BottomNavigationBar(
         backgroundColor: Colors.grey[900],
         currentIndex: _selectedIndex,
@@ -165,7 +212,7 @@ class _HomePageState extends State<HomePage> {
         selectedItemColor: Colors.red,
         unselectedItemColor: Colors.grey,
         type: BottomNavigationBarType.fixed,
-        items: [
+        items: const [
           BottomNavigationBarItem(icon: Icon(Icons.home), label: 'Accueil'),
           BottomNavigationBarItem(icon: Icon(Icons.motorcycle), label: 'Mes Motos'),
           BottomNavigationBarItem(icon: Icon(Icons.person), label: 'Profile'),
@@ -178,6 +225,10 @@ class _HomePageState extends State<HomePage> {
 }
 
 class HomeContent extends StatelessWidget {
+  final List<Moto> motos;
+
+  const HomeContent({Key? key, this.motos = const []}) : super(key: key);
+
   @override
   Widget build(BuildContext context) {
     return SingleChildScrollView(
@@ -196,18 +247,12 @@ class HomeContent extends StatelessWidget {
                   begin: Alignment.topLeft,
                   end: Alignment.bottomRight,
                 ),
-                image: DecorationImage(
-                  image: NetworkImage('https://via.placeholder.com/600x150'),
-                  fit: BoxFit.cover,
-                  colorFilter: ColorFilter.mode(
-                    Colors.red.withOpacity(0.3),
-                    BlendMode.overlay,
-                  ),
-                ),
+                // Remplacer l'image placeholder par un gradient ou une autre solution
+                color: Colors.red.shade800,
               ),
-              child: Center(
+              child: const Center(
                 child: Text(
-                  'Promo Spéciale -30% sur les freins !',
+                  'Bienvenue sur Moto Parts',
                   style: TextStyle(
                     color: Colors.white,
                     fontSize: 24,
@@ -223,145 +268,175 @@ class HomeContent extends StatelessWidget {
                 ),
               ),
             ),
-            SizedBox(height: 20),
-            Text(
-              'Suggestions pour vous',
+            
+            // Section principale - Affichage des motos
+            const SizedBox(height: 20),
+            const Text(
+              'Recommandé pour vous',
               style: TextStyle(
-                fontSize: 20, 
+                fontSize: 22, 
                 fontWeight: FontWeight.bold,
                 color: Colors.white,
               ),
             ),
-            SizedBox(height: 10),
-            GridView.builder(
-              shrinkWrap: true,
-              physics: NeverScrollableScrollPhysics(),
-              gridDelegate: SliverGridDelegateWithFixedCrossAxisCount(
-                crossAxisCount: 2,
-                crossAxisSpacing: 10,
-                mainAxisSpacing: 10,
-                childAspectRatio: 0.8,
-              ),
-              itemCount: 4,
-              itemBuilder: (context, index) {
-                return ProductCard(
-                  product: {
-                    'name': 'Produit $index',
-                    'price': '\$${(index + 1) * 50}',
-                    'image': 'https://via.placeholder.com/150',
+            const SizedBox(height: 16),
+            
+            motos.isEmpty
+            ? Center(
+                child: Padding(
+                  padding: const EdgeInsets.all(20.0),
+                  child: Column(
+                    children: [
+                      Icon(Icons.motorcycle_outlined, size: 60, color: Colors.grey[600]),
+                      const SizedBox(height: 16),
+                      Text(
+                        'Aucune moto disponible',
+                        style: TextStyle(color: Colors.grey[500], fontSize: 18),
+                      ),
+                    ],
+                  ),
+                ),
+              )
+            : SizedBox(
+                height: 220, // Hauteur fixe pour la liste horizontale
+                child: ListView.builder(
+                  scrollDirection: Axis.horizontal,
+                  itemCount: motos.length,
+                  itemBuilder: (context, index) {
+                    return _buildMotoCard(context, motos[index]);
                   },
-                );
-              },
-            ),
-            SizedBox(height: 20),
-            Text(
-              'Catégories populaires',
-              style: TextStyle(
-                fontSize: 20, 
-                fontWeight: FontWeight.bold,
-                color: Colors.white,
+                ),
               ),
-            ),
-            SizedBox(height: 10),
-            Container(
-              height: 120,
-              child: ListView(
-                scrollDirection: Axis.horizontal,
-                children: [
-                  _buildCategoryCard('Freins', Icons.disc_full),
-                  _buildCategoryCard('Moteurs', Icons.settings),
-                  _buildCategoryCard('Pneus', Icons.tire_repair),
-                  _buildCategoryCard('Lumières', Icons.lightbulb),
-                  _buildCategoryCard('Carburant', Icons.local_gas_station),
-                  _buildCategoryCard('Filtres', Icons.filter_alt),
-                ],
-              ),
-            ),
-            SizedBox(height: 20),
-            Text(
-              'Meilleures ventes',
-              style: TextStyle(
-                fontSize: 20, 
-                fontWeight: FontWeight.bold,
-                color: Colors.white,
-              ),
-            ),
-            SizedBox(height: 10),
-            GridView.builder(
-              shrinkWrap: true,
-              physics: NeverScrollableScrollPhysics(),
-              gridDelegate: SliverGridDelegateWithFixedCrossAxisCount(
-                crossAxisCount: 2,
-                crossAxisSpacing: 10,
-                mainAxisSpacing: 10,
-                childAspectRatio: 0.8,
-              ),
-              itemCount: 4,
-              itemBuilder: (context, index) {
-                final products = [
-                  {
-                    'name': 'Plaquettes de frein',
-                    'price': '\$120',
-                    'image': 'https://via.placeholder.com/150',
-                  },
-                  {
-                    'name': 'Huile moteur premium',
-                    'price': '\$85',
-                    'image': 'https://via.placeholder.com/150',
-                  },
-                  {
-                    'name': 'Filtre à air performance',
-                    'price': '\$65',
-                    'image': 'https://via.placeholder.com/150',
-                  },
-                  {
-                    'name': 'Batterie longue durée',
-                    'price': '\$150',
-                    'image': 'https://via.placeholder.com/150',
-                  },
-                ];
-                return ProductCard(product: products[index]);
-              },
-            ),
           ],
         ),
       ),
     );
   }
 
-  Widget _buildCategoryCard(String title, IconData icon) {
-    return Container(
-      width: 100,
-      margin: EdgeInsets.only(right: 10),
-      decoration: BoxDecoration(
-        color: Colors.grey[800],
-        borderRadius: BorderRadius.circular(10),
-        boxShadow: [
-          BoxShadow(
-            color: Colors.black26,
-            blurRadius: 4,
-            offset: Offset(0, 2),
-          ),
-        ],
-      ),
-      child: Column(
-        mainAxisAlignment: MainAxisAlignment.center,
-        children: [
-          Icon(
-            icon,
-            size: 40,
-            color: Colors.red,
-          ),
-          SizedBox(height: 8),
-          Text(
-            title,
-            style: TextStyle(
-              color: Colors.white,
-              fontWeight: FontWeight.bold,
+  // Méthode modifiée pour construire une carte de moto en utilisant le model
+  Widget _buildMotoCard(BuildContext context, Moto moto) {
+  String imageUrl = moto.getImageUrl();
+  
+  print('Tentative de chargement de l\'image: $imageUrl');
+  
+  return Container(
+    width: 180, // Largeur fixe pour chaque carte
+    margin: const EdgeInsets.only(right: 12),
+    decoration: BoxDecoration(
+      color: Colors.grey[800],
+      borderRadius: BorderRadius.circular(10),
+      boxShadow: const [
+        BoxShadow(
+          color: Colors.black26,
+          blurRadius: 4,
+          offset: Offset(0, 2),
+        ),
+      ],
+    ),
+    child: Column(
+      crossAxisAlignment: CrossAxisAlignment.start,
+      children: [
+        // Image de la moto avec CachedNetworkImage
+        ClipRRect(
+          borderRadius: const BorderRadius.vertical(top: Radius.circular(10)),
+          child: SizedBox(
+            height: 120,
+            width: double.infinity,
+            child: CachedNetworkImage(
+              imageUrl: imageUrl,
+              fit: BoxFit.cover,
+              placeholder: (context, url) => Center(
+                child: CircularProgressIndicator(
+                  color: Colors.red,
+                ),
+              ),
+              errorWidget: (context, url, error) {
+                print('Erreur de chargement d\'image: $error');
+                print('URL qui a échoué: $imageUrl');
+                return Container(
+                  color: Colors.grey[700],
+                  child: const Center(
+                    child: Column(
+                      mainAxisAlignment: MainAxisAlignment.center,
+                      children: [
+                        Icon(Icons.broken_image, size: 40, color: Colors.red),
+                        SizedBox(height: 4),
+                        Text(
+                          'Image indisponible',
+                          style: TextStyle(color: Colors.white, fontSize: 12),
+                        ),
+                      ],
+                    ),
+                  ),
+                );
+              },
             ),
           ),
-        ],
-      ),
-    );
-  }
+        ),
+        
+        // Informations de la moto
+        Expanded(
+          child: Padding(
+            padding: const EdgeInsets.all(8.0),
+            child: Column(
+              crossAxisAlignment: CrossAxisAlignment.start,
+              mainAxisAlignment: MainAxisAlignment.spaceBetween,
+              mainAxisSize: MainAxisSize.min,
+              children: [
+                Column(
+                  crossAxisAlignment: CrossAxisAlignment.start,
+                  mainAxisSize: MainAxisSize.min,
+                  children: [
+                    // Marque avec gestion des nulls
+                    Text(
+                      moto.model?.marque ?? 'Marque inconnue',
+                      style: const TextStyle(
+                        color: Colors.white,
+                        fontWeight: FontWeight.bold,
+                        fontSize: 16,
+                      ),
+                      maxLines: 1,
+                      overflow: TextOverflow.ellipsis,
+                    ),
+                    const SizedBox(height: 2),
+                    // Année avec gestion des nulls
+                    Text(
+                      'Année: ${moto.model?.annee ?? 'Inconnue'}',
+                      style: TextStyle(
+                        color: Colors.grey[400],
+                        fontSize: 14,
+                      ),
+                    ),
+                  ],
+                ),
+                
+                // Bouton Détails
+                InkWell(
+                  onTap: () {
+                    // Navigation vers les détails de la moto
+                  },
+                  child: Container(
+                    padding: const EdgeInsets.symmetric(vertical: 4, horizontal: 12),
+                    decoration: BoxDecoration(
+                      color: Colors.red,
+                      borderRadius: BorderRadius.circular(4),
+                    ),
+                    child: const Text(
+                      'Détails',
+                      style: TextStyle(
+                        color: Colors.white,
+                        fontWeight: FontWeight.bold,
+                        fontSize: 12,
+                      ),
+                    ),
+                  ),
+                ),
+              ],
+            ),
+          ),
+        ),
+      ],
+    ),
+  );
+}
 }

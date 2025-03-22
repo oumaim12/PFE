@@ -432,7 +432,6 @@ class _MesCommandesScreenState extends State<MesCommandesScreen> with SingleTick
     bool commandeConfirmee = true;
     bool preparationEnCours = commande.status != 'en_attente';
     bool expediee = commande.status == 'en_cours' || commande.status == 'livree';
-    bool enCoursLivraison = commande.status == 'en_cours';
     bool livree = commande.status == 'livree';
 
     return Column(

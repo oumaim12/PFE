@@ -1,6 +1,7 @@
 // lib/models/moto.dart
 import 'dart:convert';
 import 'model_moto.dart';
+import 'package:pfe1/services/api_service.dart';
 
 class Moto {
   final int id;
@@ -9,7 +10,7 @@ class Moto {
   final String? image;
   final DateTime createdAt;
   final DateTime updatedAt;
-  final ModelMoto? model; // Relation avec le modèle
+  final ModelMoto? model;
 
   Moto({
     required this.id,
@@ -22,20 +23,38 @@ class Moto {
   });
 
   factory Moto.fromJson(Map<String, dynamic> json) {
-    return Moto(
-      id: json['id'],
-      modelId: json['model_id'],
-      clientId: json['client_id'],
-      image: json['image'],
-      createdAt: json['created_at'] != null 
-          ? DateTime.parse(json['created_at']) 
-          : DateTime.now(),
-      updatedAt: json['updated_at'] != null 
-          ? DateTime.parse(json['updated_at']) 
-          : DateTime.now(),
-      model: json['model'] != null ? ModelMoto.fromJson(json['model']) : null,
+  // If direct marque and annee properties exist but no model object,
+  // create a synthetic model object
+  ModelMoto? modelObject;
+  
+  if (json['model'] != null) {
+    // Use the model object if it exists
+    modelObject = ModelMoto.fromJson(json['model']);
+  } else if (json['marque'] != null) {
+    // Create a synthetic model from flattened properties
+    modelObject = ModelMoto(
+      id: json['model_id'] ?? 0, // Default or infer from elsewhere
+      marque: json['marque'] ?? 'Inconnue',
+      annee: json['annee'] ?? 'Inconnue',
+      createdAt: DateTime.now(),
+      updatedAt: DateTime.now(),
     );
   }
+  
+  return Moto(
+    id: json['id'],
+    modelId: json['model_id'] ?? 0, // You might need to handle missing model_id
+    clientId: json['client_id'],
+    image: json['image'],
+    createdAt: json['created_at'] != null 
+        ? DateTime.parse(json['created_at']) 
+        : DateTime.now(),
+    updatedAt: json['updated_at'] != null 
+        ? DateTime.parse(json['updated_at']) 
+        : DateTime.now(),
+    model: modelObject,
+  );
+}
 
   Map<String, dynamic> toJson() {
     return {
@@ -52,4 +71,9 @@ class Moto {
   factory Moto.fromJsonString(String jsonString) {
     return Moto.fromJson(json.decode(jsonString));
   }
+
+  String getImageUrl() {
+  return ApiService.getImageUrl(image!);
+}
+
 }

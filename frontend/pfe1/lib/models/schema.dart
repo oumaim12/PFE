@@ -1,5 +1,3 @@
-// lib/models/schema.dart
-import 'dart:convert';
 import 'moto.dart';
 
 class Schema {

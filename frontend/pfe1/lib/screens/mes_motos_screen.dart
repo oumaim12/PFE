@@ -1,9 +1,6 @@
-// lib/screens/mes_motos_screen.dart
-
 import 'package:flutter/material.dart';
 import 'package:provider/provider.dart';
 import '../models/moto.dart';
-import '../models/model_moto.dart';
 import '../providers/moto_provider.dart';
 import 'moto_parts_screen.dart';
 
@@ -291,7 +288,6 @@ class _MesMotosScreenState extends State<MesMotosScreen> {
           );
         },
       ),
-      // Le bouton flottant a été supprimé
     );
   }
 }

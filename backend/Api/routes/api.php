@@ -53,4 +53,4 @@ Route::post('/commandes/create-from-cart', [CommandeController::class, 'createCo
 Route::put('/commandes/{id}/cancel', [CommandeController::class, 'cancelCommande']);
 });
 
-
+Route::get('/motos', [MotoController::class, 'getAllMotos']);

@@ -135,4 +135,41 @@ public function getCompatibleSchemas($id)
         ], 500);
     }
 }
+public function getAllMotos()
+{
+    try {
+        $motos = Moto::with('model')->get();
+        
+        $formattedMotos = $motos->map(function($moto) {
+            return [
+                'id' => $moto->id,
+                'model_id' => $moto->model_id,
+                'client_id' => $moto->client_id,
+                'image' => $moto->image,
+                'created_at' => $moto->created_at,
+                'updated_at' => $moto->updated_at,
+                'model' => $moto->model ? [
+                    'id' => $moto->model->id,
+                    'marque' => $moto->model->marque,
+                    'annee' => $moto->model->annee
+                ] : null
+            ];
+        });
+        
+        return response()->json([
+            'success' => true,
+            'data' => $formattedMotos
+        ]);
+    } catch (\Exception $e) {
+        // Log l'erreur pour le débogage
+        \Log::error('Erreur lors de la récupération des motos: ' . $e->getMessage());
+        
+        // Renvoyer une réponse d'erreur
+        return response()->json([
+            'success' => false,
+            'message' => 'Erreur lors de la récupération des motos',
+            'error' => $e->getMessage()
+        ],500);
+    }
+}
 }
