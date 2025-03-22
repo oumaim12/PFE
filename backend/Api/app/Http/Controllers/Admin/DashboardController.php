@@ -7,6 +7,8 @@ use Illuminate\Http\Request;
 use App\Models\Client;
 use App\Models\Commande;
 use App\Models\Schema;
+use App\Models\Moto; // Ajouté
+use App\Models\MotoModel; // Ajouté
 use Illuminate\Support\Facades\DB;
 use Carbon\Carbon;
 
@@ -50,6 +52,34 @@ class DashboardController extends Controller
         $totalProducts = Schema::count();
         $lowStockProducts = 0; // Le modèle Schema n'a pas de champ quantité_stock
         $lowStockProductsList = []; // Liste vide car pas de gestion de stock
+        
+        // AJOUT: Statistiques pour les motos
+        $totalMotos = Moto::count();
+        $newMotos = Moto::where('created_at', '>=', $currentMonthStart)->count();
+
+        // Récupérer les motos récentes
+$recentMotos = Moto::with(['model', 'client'])
+->orderBy('created_at', 'desc')
+->take(5)
+->get();
+
+// Récupérer les modèles populaires (avec le nombre de motos par modèle)
+$popularModels = MotoModel::withCount('motos')
+->orderBy('motos_count', 'desc')
+->take(5)
+->get();
+        
+        // AJOUT: Statistiques pour les modèles
+        $totalModels = MotoModel::count();
+        $topBrandQuery = MotoModel::select('marque', DB::raw('count(*) as total'))
+            ->groupBy('marque')
+            ->orderBy('total', 'desc')
+            ->first();
+        $topBrand = $topBrandQuery ? $topBrandQuery->marque : 'N/A';
+        
+        // AJOUT: Calcul du prix moyen des pièces
+        $avgPrice = Schema::avg('price') ?: 0;
+        $avgPrice = number_format($avgPrice, 2);
 
         // Données pour le graphique des ventes mensuelles (6 derniers mois)
         $monthlySalesData = [];
@@ -104,7 +134,15 @@ class DashboardController extends Controller
             'monthlySalesLabels',
             'topCategoriesLabels',
             'topCategoriesData',
-            'recentCustomers'
+            'recentCustomers',
+            // Nouvelles variables pour motos et modèles
+            'totalMotos',
+            'newMotos',
+            'totalModels',
+            'topBrand',
+            'avgPrice',
+            'recentMotos',
+            'popularModels'
         ));
     }
 }

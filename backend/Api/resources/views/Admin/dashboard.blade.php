@@ -70,12 +70,11 @@
                                 <svg xmlns="http://www.w3.org/2000/svg" class="h-4 w-4 mr-1" fill="none" viewBox="0 0 24 24" stroke="currentColor">
                                     <path stroke-linecap="round" stroke-linejoin="round" stroke-width="2" d="M12 6v6m0 0v6m0-6h6m-6 0H6" />
                                 </svg>
-                                {{ $newCustomers }}
                             </span>
                         @else
                             <span class="text-gray-400">0</span>
                         @endif
-                        <span class="text-polished-chrome/70">nouveaux ce mois</span>
+                        <span class="text-polished-chrome/70">{{ $newCustomers }} nouveaux ce mois</span>
                     </div>
                 </div>
             </div>
@@ -99,9 +98,8 @@
                             <svg xmlns="http://www.w3.org/2000/svg" class="h-4 w-4 mr-1" fill="none" viewBox="0 0 24 24" stroke="currentColor">
                                 <path stroke-linecap="round" stroke-linejoin="round" stroke-width="2" d="M12 8v4l3 3m6-3a9 9 0 11-18 0 9 9 0 0118 0z" />
                             </svg>
-                            {{ $pendingOrders }}
                         </span>
-                        <span class="text-polished-chrome/70">en attente</span>
+                        <span class="text-polished-chrome/70">{{ $pendingOrders }} en attente</span>
                     </div>
                 </div>
             </div>
@@ -119,40 +117,64 @@
             </div>
             <div class="panel-body">
                 <div class="flex flex-col">
-                    <div class="text-3xl font-bold mb-1">{{ $totalProducts }}</div>
+                    <div class="text-3xl font-bold mb-1">{{ $totalProducts }} </div>
                     <div class="flex items-center text-sm">
-                        <span class="text-polished-chrome/70">pièces disponibles</span>
+                        <span class="text-polished-chrome/70">{{ $totalProducts }} pièces disponibles</span>
                     </div>
                 </div>
             </div>
         </div>
     </div>
 
-    <div class="grid grid-cols-1 lg:grid-cols-7 gap-6 mt-6">
-        <!-- Graphique des commandes mensuelles -->
-        <div class="content-panel lg:col-span-4">
-            <div class="panel-header flex justify-between items-center">
-                <h3 class="panel-title">Nombre de commandes mensuelles</h3>
-            </div>
-            <div class="panel-body">
-                <div class="h-80">
-                    <canvas id="sales-chart" class="chart-canvas"></canvas>
-                </div>
-            </div>
+    <!-- Motos -->
+<div class="content-panel relative overflow-hidden">
+    <div class="panel-header bg-gradient-to-r from-exhaust-blue to-exhaust-blue/80">
+        <div class="absolute top-0 right-0 mt-3 mr-3">
+            <svg xmlns="http://www.w3.org/2000/svg" class="h-8 w-8 text-white/30" fill="none" viewBox="0 0 24 24" stroke="currentColor">
+                <path stroke-linecap="round" stroke-linejoin="round" stroke-width="2" d="M5 17H4a2 2 0 01-2-2V5a2 2 0 012-2h16a2 2 0 012 2v10a2 2 0 01-2 2h-1m-6 0a2 2 0 002 2h6a2 2 0 002-2v-3a2 2 0 00-2-2h-6a2 2 0 00-2 2v3zm-7-7h4v4H4v-4z" />
+            </svg>
         </div>
-
-        <!-- Top pièces demandées -->
-        <div class="content-panel lg:col-span-3">
-            <div class="panel-header flex justify-between items-center">
-                <h3 class="panel-title">Top 5 des pièces les plus demandées</h3>
-            </div>
-            <div class="panel-body">
-                <div class="h-80">
-                    <canvas id="category-pie-chart" class="chart-canvas"></canvas>
-                </div>
+        <h3 class="panel-title text-white">Motos</h3>
+    </div>
+    <div class="panel-body">
+        <div class="flex flex-col">
+            <div class="text-3xl font-bold mb-1">{{ $totalMotos }}</div>
+            <div class="flex items-center text-sm">
+                <span class="text-exhaust-blue flex items-center mr-1">
+                    <svg xmlns="http://www.w3.org/2000/svg" class="h-4 w-4 mr-1" fill="none" viewBox="0 0 24 24" stroke="currentColor">
+                        <path stroke-linecap="round" stroke-linejoin="round" stroke-width="2" d="M12 6v6m0 0v6m0-6h6m-6 0H6" />
+                    </svg>
+                </span>
+                <span class="text-polished-chrome/70">{{ $newMotos }} ajoutées ce mois</span>
             </div>
         </div>
     </div>
+</div>
+
+<!-- Modèles -->
+<div class="content-panel relative overflow-hidden">
+    <div class="panel-header bg-gradient-to-r from-engine-red to-engine-red/80">
+        <div class="absolute top-0 right-0 mt-3 mr-3">
+            <svg xmlns="http://www.w3.org/2000/svg" class="h-8 w-8 text-white/30" fill="none" viewBox="0 0 24 24" stroke="currentColor">
+                <path stroke-linecap="round" stroke-linejoin="round" stroke-width="2" d="M9 3v2m6-2v2M9 19v2m6-2v2M5 9H3m2 6H3m18-6h-2m2 6h-2M7 19h10a2 2 0 002-2V7a2 2 0 00-2-2H7a2 2 0 00-2 2v10a2 2 0 002 2zM9 9h6v6H9V9z" />
+            </svg>
+        </div>
+        <h3 class="panel-title text-white">Modèles</h3>
+    </div>
+    <div class="panel-body">
+        <div class="flex flex-col">
+            <div class="text-3xl font-bold mb-1">{{ $totalModels }}</div>
+            <div class="flex items-center text-sm">
+                <span class="text-engine-red flex items-center mr-1">
+                    <svg xmlns="http://www.w3.org/2000/svg" class="h-4 w-4 mr-1" fill="none" viewBox="0 0 24 24" stroke="currentColor">
+                        <path stroke-linecap="round" stroke-linejoin="round" stroke-width="2" d="M9 5l7 7-7 7" />
+                    </svg>
+                </span>
+                <span class="text-polished-chrome/70">{{ $topBrand }} marque principale</span>
+            </div>
+        </div>
+    </div>
+</div>
 
     <!-- Commandes récentes -->
     <div class="content-panel mt-6">
@@ -234,56 +256,6 @@
         </div>
     </div>
 
-    <div class="grid grid-cols-1 md:grid-cols-2 gap-6 mt-6">
-        <!-- Pièces les plus demandées -->
-        <div class="content-panel">
-            <div class="panel-header flex justify-between items-center">
-                <h3 class="panel-title">Pièces les plus demandées</h3>
-                <a href="{{ route('schemas.index') }}" class="moto-button py-1 px-4 text-sm">VOIR TOUT</a>
-            </div>
-            <div class="panel-body p-0">
-                <table class="moto-table">
-                    <thead>
-                        <tr>
-                            <th>PIÈCE</th>
-                            <th>VERSION</th>
-                            <th class="text-center">COMMANDES</th>
-                            <th></th>
-                        </tr>
-                    </thead>
-                    <tbody>
-                        @forelse($lowStockProductsList as $piece)
-                            <tr>
-                                <td class="font-semibold">{{ $piece->nom }}</td>
-                                <td>{{ $piece->version }}</td>
-                                <td class="text-center">
-                                    <span class="inline-flex items-center justify-center px-2 py-1 text-xs font-bold leading-none rounded-full bg-exhaust-blue/20 text-exhaust-blue">
-                                        {{ $piece->commandes->count() }}
-                                    </span>
-                                </td>
-                                <td>
-                                    <a href="{{ route('schemas.edit', $piece->id) }}" class="text-engine-red hover:text-white transition-colors duration-200">
-                                        Modifier
-                                    </a>
-                                </td>
-                            </tr>
-                        @empty
-                            <tr>
-                                <td colspan="4" class="text-center py-8">
-                                    <div class="flex flex-col items-center justify-center">
-                                        <svg xmlns="http://www.w3.org/2000/svg" class="h-12 w-12 text-polished-chrome/30 mb-4" fill="none" viewBox="0 0 24 24" stroke="currentColor">
-                                            <path stroke-linecap="round" stroke-linejoin="round" stroke-width="1" d="M10 6H6a2 2 0 00-2 2v10a2 2 0 002 2h10a2 2 0 002-2v-4M14 4h6m0 0v6m0-6L10 14" />
-                                        </svg>
-                                        <span class="text-polished-chrome/70">Aucune pièce disponible</span>
-                                    </div>
-                                </td>
-                            </tr>
-                        @endforelse
-                    </tbody>
-                </table>
-            </div>
-        </div>
-
         <!-- Derniers clients inscrits -->
         <div class="content-panel">
             <div class="panel-header flex justify-between items-center">
@@ -338,6 +310,147 @@
                 </table>
             </div>
         </div>
+
+        <!-- Motos récemment ajoutées -->
+<div class="content-panel">
+    <div class="panel-header flex justify-between items-center">
+        <h3 class="panel-title">Motos récemment ajoutées</h3>
+        <a href="{{ route('motos.index') }}" class="moto-button py-1 px-4 text-sm">VOIR TOUT</a>
+    </div>
+    <div class="panel-body p-0">
+        <table class="moto-table">
+            <thead>
+                <tr>
+                    <th>MOTO</th>
+                    <th>MARQUE</th>
+                    <th>ANNÉE</th>
+                    <th>PROPRIÉTAIRE</th>
+                    <th>DATE D'AJOUT</th>
+                    <th></th>
+                </tr>
+            </thead>
+            <tbody>
+                @forelse($recentMotos as $moto)
+                    <tr>
+                        <td>
+                            <div style="display: flex; align-items: center;">
+                                <div style="width: 48px; height: 48px; border-radius: 6px; background-color: var(--carbon-fiber); display: flex; align-items: center; justify-content: center; overflow: hidden;">
+                                    @if($moto->image)
+                                        <img src="{{ asset('storage/' . $moto->image) }}" alt="Moto" style="width: 100px; height: 50px; object-fit: cover;" >
+                                    @else
+                                        <svg xmlns="http://www.w3.org/2000/svg" style="height: 32px; width: 32px; color: rgba(var(--polished-chrome), 0.5);" fill="none" viewBox="0 0 24 24" stroke="currentColor">
+                                            <path stroke-linecap="round" stroke-linejoin="round" stroke-width="1.5" d="M5 17H4a2 2 0 01-2-2V5a2 2 0 012-2h16a2 2 0 012 2v10a2 2 0 01-2 2h-1m-6 0a2 2 0 002 2h6a2 2 0 002-2v-3a2 2 0 00-2-2h-6a2 2 0 00-2 2v3zm-7-7h4v4H4v-4z" />
+                                        </svg>
+                                    @endif
+                                </div>
+                                <div style="margin-left: 30px;">
+                                    <div style="font-weight: 600;">ID #{{ $moto->id }}</div>
+                                    <div style="font-size: 0.75rem; color: rgba(var(--polished-chrome), 0.7);">
+                                        @if($moto->client)
+                                            Client: {{ $moto->client->firstname }}
+                                        @else
+                                            Sans client
+                                        @endif
+                                    </div>
+                                </div>
+                            </div>
+                        </td>
+                        <td>{{ $moto->model->marque }}</td>
+                        <td>{{ $moto->model->annee }}</td>
+                        <td>
+                            @if($moto->client)
+                                <a href="{{ route('clients.show', $moto->client->id) }}" class="text-exhaust-blue hover:text-white transition-colors">
+                                    {{ $moto->client->firstname }} {{ $moto->client->lastname }}
+                                </a>
+                            @else
+                                <span class="text-polished-chrome/50">Non assigné</span>
+                            @endif
+                        </td>
+                        <td>{{ $moto->created_at->format('d/m/Y') }}</td>
+                        <td>
+                            <a href="{{ route('motos.show', $moto->id) }}" class="text-engine-red hover:text-white transition-colors duration-200">
+                                Détails
+                            </a>
+                        </td>
+                    </tr>
+                @empty
+                    <tr>
+                        <td colspan="6" class="text-center py-8">
+                            <div class="flex flex-col items-center justify-center">
+                                <svg xmlns="http://www.w3.org/2000/svg" class="h-12 w-12 text-polished-chrome/30 mb-4" fill="none" viewBox="0 0 24 24" stroke="currentColor">
+                                    <path stroke-linecap="round" stroke-linejoin="round" stroke-width="1" d="M5 17H4a2 2 0 01-2-2V5a2 2 0 012-2h16a2 2 0 012 2v10a2 2 0 01-2 2h-1m-6 0a2 2 0 002 2h6a2 2 0 002-2v-3a2 2 0 00-2-2h-6a2 2 0 00-2 2v3zm-7-7h4v4H4v-4z" />
+                                </svg>
+                                <span class="text-polished-chrome/70">Aucune moto récente</span>
+                            </div>
+                        </td>
+                    </tr>
+                @endforelse
+            </tbody>
+        </table>
+    </div>
+</div>
+
+<!-- Composant pour les modèles récents -->
+<div class="content-panel">
+    <div class="panel-header flex justify-between items-center">
+        <h3 class="panel-title">Modèles populaires</h3>
+        <a href="{{ route('models.index') }}" class="moto-button py-1 px-4 text-sm">VOIR TOUT</a>
+    </div>
+    <div class="panel-body p-0">
+        <table class="moto-table">
+            <thead>
+                <tr>
+                    <th>MODÈLE</th>
+                    <th>MARQUE</th>
+                    <th>ANNÉE</th>
+                    <th>MOTOS</th>
+                    <th>DATE D'AJOUT</th>
+                    <th></th>
+                </tr>
+            </thead>
+            <tbody>
+                @forelse($popularModels as $model)
+                    <tr>
+                        <td>
+                            <div class="flex items-center">
+                                <div class="w-10 h-10 rounded-md bg-engine-red/20 flex items-center justify-center mr-3">
+                                    <svg xmlns="http://www.w3.org/2000/svg" class="h-6 w-6 text-engine-red" fill="none" viewBox="0 0 24 24" stroke="currentColor">
+                                        <path stroke-linecap="round" stroke-linejoin="round" stroke-width="1.5" d="M9 3v2m6-2v2M9 19v2m6-2v2M5 9H3m2 6H3m18-6h-2m2 6h-2M7 19h10a2 2 0 002-2V7a2 2 0 00-2-2H7a2 2 0 00-2 2v10a2 2 0 002 2zM9 9h6v6H9V9z" />
+                                    </svg>
+                                </div>
+                                <div class="font-semibold">ID #{{ $model->id }}</div>
+                            </div>
+                        </td>
+                        <td>{{ $model->marque }}</td>
+                        <td>{{ $model->annee }}</td>
+                        <td>
+                            <span class="inline-flex items-center px-2.5 py-0.5 rounded-full text-xs font-medium bg-exhaust-blue/20 text-exhaust-blue">
+                                {{ $model->motos_count }}
+                            </span>
+                        </td>
+                        <td>{{ $model->created_at->format('d/m/Y') }}</td>
+                        <td>
+                            <a href="{{ route('models.show', $model->id) }}" class="text-engine-red hover:text-white transition-colors duration-200">
+                                Détails
+                            </a>
+                        </td>
+                    </tr>
+                @empty
+                    <tr>
+                        <td colspan="6" class="text-center py-8">
+                            <div class="flex flex-col items-center justify-center">
+                                <svg xmlns="http://www.w3.org/2000/svg" class="h-12 w-12 text-polished-chrome/30 mb-4" fill="none" viewBox="0 0 24 24" stroke="currentColor">
+                                    <path stroke-linecap="round" stroke-linejoin="round" stroke-width="1" d="M9 3v2m6-2v2M9 19v2m6-2v2M5 9H3m2 6H3m18-6h-2m2 6h-2M7 19h10a2 2 0 002-2V7a2 2 0 00-2-2H7a2 2 0 00-2 2v10a2 2 0 002 2zM9 9h6v6H9V9z" />
+                                </svg>
+                                <span class="text-polished-chrome/70">Aucun modèle disponible</span>
+                            </div>
+                        </td>
+                    </tr>
+                @endforelse
+            </tbody>
+        </table>
+    </div>
+</div>  
     </div>
 
     @push('scripts')

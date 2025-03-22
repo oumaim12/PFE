@@ -119,6 +119,7 @@
                 <table class="moto-table">
                     <thead>
                         <tr>
+                            <th class="text-left">Image</th>
                             <th class="text-left">ID</th>
                             <th class="text-left">Marque</th>
                             <th class="text-left">Année</th>
@@ -130,6 +131,17 @@
                     <tbody>
                         @forelse($motos as $moto)
                             <tr>
+                                <td>
+                                    <div class="w-12 h-12 bg-carbon-fiber rounded-md flex items-center justify-center overflow-hidden">
+                                        @if($moto->image)
+                                            <img src="{{ asset('storage/' . $moto->image) }}" alt="Moto" style="width: 100px; height: 50px; object-fit: cover;">
+                                        @else
+                                            <svg xmlns="http://www.w3.org/2000/svg" class="h-6 w-6 text-polished-chrome/40" fill="none" viewBox="0 0 24 24" stroke="currentColor">
+                                                <path stroke-linecap="round" stroke-linejoin="round" stroke-width="2" d="M4 16l4.586-4.586a2 2 0 012.828 0L16 16m-2-2l1.586-1.586a2 2 0 012.828 0L20 14m-6-6h.01M6 20h12a2 2 0 002-2V6a2 2 0 00-2-2H6a2 2 0 00-2 2v12a2 2 0 002 2z" />
+                                            </svg>
+                                        @endif
+                                    </div>
+                                </td>
                                 <td class="font-medium">#{{ $moto->id }}</td>
                                 <td>{{ $moto->model->marque }}</td>
                                 <td>{{ $moto->model->annee }}</td>
@@ -170,7 +182,7 @@
                             </tr>
                         @empty
                             <tr>
-                                <td colspan="6" class="text-center py-8">
+                                <td colspan="7" class="text-center py-8">
                                     <div class="flex flex-col items-center justify-center">
                                         <svg xmlns="http://www.w3.org/2000/svg" class="h-12 w-12 text-polished-chrome/30 mb-4" fill="none" viewBox="0 0 24 24" stroke="currentColor">
                                             <path stroke-linecap="round" stroke-linejoin="round" stroke-width="1" d="M5 17H4a2 2 0 01-2-2V5a2 2 0 012-2h16a2 2 0 012 2v10a2 2 0 01-2 2h-1m-6 0a2 2 0 002 2h6a2 2 0 002-2v-3a2 2 0 00-2-2h-6a2 2 0 00-2 2v3zm-7-7h4v4H4v-4z" />
@@ -230,12 +242,12 @@
                     <div class="flex items-start mb-3">
                         <div class="bg-engine-red rounded-full p-2 mr-3">
                             <svg xmlns="http://www.w3.org/2000/svg" class="h-6 w-6 text-white" fill="none" viewBox="0 0 24 24" stroke="currentColor">
-                                <path stroke-linecap="round" stroke-linejoin="round" stroke-width="2" d="M12 9v2m0 4h.01m-6.938 4h13.856c1.54 0 2.502-1.667 1.732-3L13.732 4c-.77-1.333-2.694-1.333-3.464 0L3.34 16c-.77 1.333.192 3 1.732 3z" />
+                                <path stroke-linecap="round" stroke-linejoin="round" stroke-width="2" d="M4 16l4.586-4.586a2 2 0 012.828 0L16 16m-2-2l1.586-1.586a2 2 0 012.828 0L20 14m-6-6h.01M6 20h12a2 2 0 002-2V6a2 2 0 00-2-2H6a2 2 0 00-2 2v12a2 2 0 002 2z" />
                             </svg>
                         </div>
-                        <h4 class="text-white text-lg font-bold">Précautions</h4>
+                        <h4 class="text-white text-lg font-bold">Gestion des images</h4>
                     </div>
-                    <p class="text-polished-chrome">Avant de supprimer une moto, assurez-vous qu'elle n'est pas liée à des commandes ou à d'autres données importantes.</p>
+                    <p class="text-polished-chrome">Ajoutez des photos de motos pour une meilleure identification. Les images apparaîtront dans la liste et les fiches détaillées.</p>
                 </div>
             </div>
         </div>

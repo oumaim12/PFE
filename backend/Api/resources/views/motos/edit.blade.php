@@ -24,7 +24,7 @@
                 </div>
             @endif
 
-            <form action="{{ route('motos.update', $moto->id) }}" method="POST">
+            <form action="{{ route('motos.update', $moto->id) }}" method="POST" enctype="multipart/form-data">
                 @csrf
                 @method('PUT')
 
@@ -56,7 +56,47 @@
                             <p class="text-polished-chrome/70 text-xs mt-1">Sélectionnez le client propriétaire de la moto (optionnel).</p>
                         </div>
                         
-                        <!-- Si vous avez des attributs supplémentaires spécifiques aux motos, ajoutez-les ici -->
+                        <!-- Image Upload -->
+                        <div class="mb-4">
+                            <label for="image" class="block text-polished-chrome text-sm font-medium mb-1">Image de la moto</label>
+                            
+                            <div class="flex flex-col space-y-3">
+                                <!-- Current Image (if exists) -->
+                                @if($moto->image)
+                                <div class="bg-carbon-fiber p-3 rounded-md">
+                                    <p class="text-polished-chrome/70 text-xs mb-2">Image actuelle:</p>
+                                    <div class="flex items-center space-x-3">
+                                        <div class="w-20 h-20 flex items-center justify-center bg-deep-metal rounded overflow-hidden">
+                                            <img src="{{ asset('storage/' . $moto->image) }}" alt="Image de la moto" class="max-h-full max-w-full object-contain">
+                                        </div>
+                                        <div class="flex-1">
+                                            <div class="flex items-center">
+                                                <label for="remove_image" class="flex items-center text-polished-chrome text-sm cursor-pointer">
+                                                    <input type="checkbox" name="remove_image" id="remove_image" class="mr-2" value="1">
+                                                    Supprimer l'image actuelle
+                                                </label>
+                                            </div>
+                                            <p class="text-polished-chrome/50 text-xs mt-1">Cochez cette case pour supprimer l'image sans la remplacer</p>
+                                        </div>
+                                    </div>
+                                </div>
+                                @endif
+                                
+                                <!-- New Image Upload -->
+                                <div class="flex items-center space-x-3">
+                                    <div class="flex-1">
+                                        <input type="file" name="image" id="image" class="form-input" accept="image/jpeg,image/png,image/jpg,image/gif,image/svg">
+                                    </div>
+                                    <div class="w-16 h-16 flex items-center justify-center bg-carbon-fiber rounded">
+                                        <img id="image-preview" src="#" alt="Aperçu" class="max-h-full max-w-full rounded hidden">
+                                        <svg id="image-placeholder" xmlns="http://www.w3.org/2000/svg" class="h-8 w-8 text-polished-chrome/40" fill="none" viewBox="0 0 24 24" stroke="currentColor">
+                                            <path stroke-linecap="round" stroke-linejoin="round" stroke-width="2" d="M4 16l4.586-4.586a2 2 0 012.828 0L16 16m-2-2l1.586-1.586a2 2 0 012.828 0L20 14m-6-6h.01M6 20h12a2 2 0 002-2V6a2 2 0 00-2-2H6a2 2 0 00-2 2v12a2 2 0 002 2z" />
+                                        </svg>
+                                    </div>
+                                </div>
+                                <p class="text-polished-chrome/70 text-xs">Format acceptés: JPG, PNG, GIF, SVG (max 2MB). Laissez vide pour conserver l'image actuelle.</p>
+                            </div>
+                        </div>
                         
                         <div class="mt-6">
                             <p class="text-polished-chrome text-sm">Les champs marqués d'un <span class="text-engine-red">*</span> sont obligatoires.</p>
@@ -114,4 +154,53 @@
             </form>
         </div>
     </div>
+
+    @push('scripts')
+    <script>
+        // Image preview functionality
+        document.addEventListener('DOMContentLoaded', function() {
+            const imageInput = document.getElementById('image');
+            const imagePreview = document.getElementById('image-preview');
+            const imagePlaceholder = document.getElementById('image-placeholder');
+            const removeImageCheckbox = document.getElementById('remove_image');
+            
+            // Preview new image when selected
+            imageInput.addEventListener('change', function() {
+                if (this.files && this.files[0]) {
+                    const reader = new FileReader();
+                    
+                    reader.onload = function(e) {
+                        imagePreview.src = e.target.result;
+                        imagePreview.classList.remove('hidden');
+                        imagePlaceholder.classList.add('hidden');
+                        
+                        // Uncheck the remove image checkbox when a new image is selected
+                        if (removeImageCheckbox) {
+                            removeImageCheckbox.checked = false;
+                        }
+                    }
+                    
+                    reader.readAsDataURL(this.files[0]);
+                } else {
+                    imagePreview.src = '#';
+                    imagePreview.classList.add('hidden');
+                    imagePlaceholder.classList.remove('hidden');
+                }
+            });
+            
+            // Handle remove image checkbox
+            if (removeImageCheckbox) {
+                removeImageCheckbox.addEventListener('change', function() {
+                    if (this.checked) {
+                        // Clear file input when remove checkbox is checked
+                        imageInput.value = '';
+                        imagePreview.src = '#';
+                        imagePreview.classList.add('hidden');
+                        imagePlaceholder.classList.remove('hidden');
+                    }
+                });
+            }
+        });
+    </script>
+    @endpush
 </x-app-layout>
