@@ -299,4 +299,51 @@ static Future<Map<String, dynamic>> changePassword(
     } catch (e) {
       return {"success": false, "message": "Error changing password: $e"};
 
-    }}}
+    }}
+    
+    
+
+Future<Map<String, dynamic>> createCommande({
+    required int schemaId, 
+    required int quantite, 
+    required int clientId
+  }) async {
+    try {
+      final response = await http.post(
+        Uri.parse('$baseUrl/commandes'),
+        headers: {"Content-Type": "application/json"},
+        body: jsonEncode({
+          'schema_id': schemaId,
+          'quantite': quantite,
+          'client_id': clientId,
+        }),
+      );
+
+      final responseData = jsonDecode(response.body);
+      
+      if (response.statusCode == 201) {
+        return {
+          'success': true,
+          'message': responseData['message'],
+          'data': responseData['data'],
+        };
+      } else {
+        return {
+          'success': false,
+          'message': responseData['message'] ?? 'Erreur lors de la création de la commande',
+          'errors': responseData['errors'],
+        };
+      }
+    } catch (e) {
+      return {
+        'success': false,
+        'message': 'Exception: ${e.toString()}',
+        'errors': null,
+      };
+    }
+  }
+
+
+
+    
+    }
