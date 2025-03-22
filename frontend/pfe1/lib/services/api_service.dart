@@ -3,6 +3,7 @@ import 'package:http/http.dart' as http;
 import '../models/model_moto.dart';
 import '../models/moto.dart';
 import '../models/schema.dart';
+import '../models/commande.dart';
 
 class ApiService {
   // Replace with your PC's IP
@@ -788,5 +789,121 @@ static Future<Map<String, dynamic>> createCommandeFromCart() async {
     return {"success": false, "message": "Exception: $e"};
   }
 }
+
+// Récupère toutes les commandes du client
+static Future<List<Commande>> getClientCommandes() async {
+  try {
+    if (!isLoggedIn() || currentUser == null) {
+      print("ApiService - User not logged in");
+      return [];
+    }
+
+    print("ApiService - Fetching client commandes");
+    final response = await http.get(
+      Uri.parse("$baseUrl/commandes"),
+      headers: {
+        "Content-Type": "application/json",
+        "Authorization": "Bearer $accessToken",
+        "Accept": "application/json"
+      },
+    );
+
+    print("ApiService - Response status: ${response.statusCode}");
+
+    if (response.statusCode == 200) {
+      final Map<String, dynamic> data = jsonDecode(response.body);
+      
+      if (data['success'] == true && data['commandes'] != null) {
+        List<dynamic> commandesJson = data['commandes'];
+        print("ApiService - Received ${commandesJson.length} commandes");
+        return commandesJson.map((json) => Commande.fromJson(json)).toList();
+      } else {
+        print("ApiService - No commandes in response or success = false");
+        return [];
+      }
+    } else {
+      print("ApiService - Error fetching commandes: ${response.statusCode}");
+      return [];
+    }
+  } catch (e) {
+    print("ApiService - Exception fetching commandes: $e");
+    return [];
+  }
+}
+
+// Récupère les détails d'une commande spécifique
+static Future<Commande?> getCommandeDetails(int commandeId) async {
+  try {
+    if (!isLoggedIn() || currentUser == null) {
+      print("ApiService - User not logged in");
+      return null;
+    }
+
+    print("ApiService - Fetching commande details for ID: $commandeId");
+    final response = await http.get(
+      Uri.parse("$baseUrl/commandes/$commandeId"),
+      headers: {
+        "Content-Type": "application/json",
+        "Authorization": "Bearer $accessToken",
+        "Accept": "application/json"
+      },
+    );
+
+    if (response.statusCode == 200) {
+      final Map<String, dynamic> data = jsonDecode(response.body);
+      
+      if (data['success'] == true && data['commande'] != null) {
+        return Commande.fromJson(data['commande']);
+      } else {
+        print("ApiService - No commande in response or success = false");
+        return null;
+      }
+    } else {
+      print("ApiService - Error fetching commande details: ${response.statusCode}");
+      return null;
+    }
+  } catch (e) {
+    print("ApiService - Exception fetching commande details: $e");
+    return null;
+  }
+}
+
+// Annule une commande
+static Future<Map<String, dynamic>> cancelCommande(int commandeId) async {
+  try {
+    if (!isLoggedIn() || currentUser == null) {
+      return {"success": false, "message": "Utilisateur non connecté"};
+    }
+
+    print("ApiService - Cancelling commande ID: $commandeId");
+    final response = await http.put(
+      Uri.parse("$baseUrl/commandes/$commandeId/cancel"),
+      headers: {
+        "Content-Type": "application/json",
+        "Authorization": "Bearer $accessToken",
+        "Accept": "application/json"
+      },
+    );
+
+    if (response.statusCode == 200) {
+      final Map<String, dynamic> data = jsonDecode(response.body);
+      return {
+        "success": true,
+        "message": data['message'] ?? "Commande annulée avec succès",
+        "commande": data['commande']
+      };
+    } else {
+      final Map<String, dynamic> data = jsonDecode(response.body);
+      return {
+        "success": false,
+        "message": data['message'] ?? "Erreur lors de l'annulation de la commande"
+      };
+    }
+  } catch (e) {
+    return {"success": false, "message": "Exception: $e"};
+  }
+}
+
+
 
     }

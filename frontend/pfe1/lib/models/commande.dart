@@ -29,11 +29,27 @@ class Commande {
   });
 
   factory Commande.fromJson(Map<String, dynamic> json) {
+    // Fonction pour analyser les prix
+    double parsePrice(dynamic value) {
+      if (value == null) return 0.0;
+      if (value is double) return value;
+      if (value is int) return value.toDouble();
+      if (value is String) {
+        try {
+          return double.parse(value);
+        } catch (e) {
+          print("Erreur lors de la conversion du prix: $e");
+          return 0.0;
+        }
+      }
+      return 0.0;
+    }
+
     return Commande(
       id: json['id'],
       schemaId: json['schema_id'],
       quantite: json['quantite'],
-      total: json['total']?.toDouble() ?? 0.0,
+      total: parsePrice(json['total']),
       clientId: json['client_id'],
       status: json['status'] ?? 'en_attente',
       createdAt: json['created_at'] != null 
@@ -67,7 +83,6 @@ class Commande {
   }
   
   bool get isEnAttente => status == 'en_attente';
-  bool get isConfirmee => status == 'confirmee';
   bool get isEnCours => status == 'en_cours';
   bool get isLivree => status == 'livree';
   bool get isAnnulee => status == 'annulee';

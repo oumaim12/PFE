@@ -6,6 +6,7 @@ import 'package:flutter/services.dart';
 import 'screens/login_screen.dart';
 import 'providers/moto_provider.dart';
 import 'providers/cart_provider.dart';
+import 'providers/commande_provider.dart';
 
 void main() {
   WidgetsFlutterBinding.ensureInitialized();
@@ -23,6 +24,7 @@ class MyApp extends StatelessWidget {
       providers: [
         ChangeNotifierProvider(create: (ctx) => MotoProvider()),
         ChangeNotifierProvider(create: (ctx) => CartProvider()),
+        ChangeNotifierProvider(create: (ctx) => CommandeProvider()), 
       ],
       child: MaterialApp(
         debugShowCheckedModeBanner: false,

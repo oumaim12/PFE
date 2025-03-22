@@ -5,7 +5,7 @@ import 'package:provider/provider.dart';
 import '../models/moto.dart';
 import '../models/model_moto.dart';
 import '../providers/moto_provider.dart';
-import 'moto_parts_screen.dart'; // Nous allons créer cet écran ensuite
+import 'moto_parts_screen.dart';
 
 class MesMotosScreen extends StatefulWidget {
   @override
@@ -21,101 +21,6 @@ class _MesMotosScreenState extends State<MesMotosScreen> {
       Provider.of<MotoProvider>(context, listen: false).loadClientMotos();
       Provider.of<MotoProvider>(context, listen: false).loadAvailableModels();
     });
-  }
-
-  void _showAddMotoDialog() {
-    final motoProvider = Provider.of<MotoProvider>(context, listen: false);
-    int? selectedModelId;
-
-    showDialog(
-      context: context,
-      builder: (context) => AlertDialog(
-        backgroundColor: Colors.grey[900],
-        title: Text('Ajouter une moto', style: TextStyle(color: Colors.white)),
-        content: Consumer<MotoProvider>(
-          builder: (context, provider, child) {
-            if (provider.isLoading) {
-              return Center(child: CircularProgressIndicator(color: Colors.red));
-            }
-            
-            if (provider.availableModels.isEmpty) {
-              return Text(
-                'Aucun modèle disponible',
-                style: TextStyle(color: Colors.white),
-              );
-            }
-            
-            return Column(
-              mainAxisSize: MainAxisSize.min,
-              children: [
-                DropdownButtonFormField<int>(
-                  dropdownColor: Colors.grey[800],
-                  decoration: InputDecoration(
-                    labelText: 'Modèle',
-                    labelStyle: TextStyle(color: Colors.grey),
-                    enabledBorder: UnderlineInputBorder(
-                      borderSide: BorderSide(color: Colors.grey),
-                    ),
-                    focusedBorder: UnderlineInputBorder(
-                      borderSide: BorderSide(color: Colors.red),
-                    ),
-                  ),
-                  style: TextStyle(color: Colors.white),
-                  items: provider.availableModels.map((ModelMoto model) {
-                    return DropdownMenuItem<int>(
-                      value: model.id,
-                      child: Text(
-                        '${model.marque} (${model.annee})',
-                        style: TextStyle(color: Colors.white),
-                      ),
-                    );
-                  }).toList(),
-                  onChanged: (value) {
-                    selectedModelId = value;
-                  },
-                ),
-              ],
-            );
-          },
-        ),
-        actions: [
-          TextButton(
-            onPressed: () => Navigator.pop(context),
-            child: Text('Annuler', style: TextStyle(color: Colors.grey)),
-          ),
-          Consumer<MotoProvider>(
-            builder: (context, provider, child) {
-              return ElevatedButton(
-                style: ElevatedButton.styleFrom(backgroundColor: Colors.red),
-                onPressed: provider.isLoading
-                    ? null
-                    : () async {
-                        if (selectedModelId != null) {
-                          final result = await motoProvider.addMoto(selectedModelId!, null);
-                          Navigator.pop(context);
-                          
-                          ScaffoldMessenger.of(context).showSnackBar(
-                            SnackBar(
-                              content: Text(result['message']),
-                              backgroundColor: result['success'] ? Colors.green : Colors.red,
-                            ),
-                          );
-                        } else {
-                          ScaffoldMessenger.of(context).showSnackBar(
-                            SnackBar(
-                              content: Text('Veuillez sélectionner un modèle'),
-                              backgroundColor: Colors.red,
-                            ),
-                          );
-                        }
-                      },
-                child: Text('Ajouter'),
-              );
-            },
-          ),
-        ],
-      ),
-    );
   }
 
   void _showDeleteConfirmation(Moto moto) {
@@ -249,50 +154,8 @@ class _MesMotosScreenState extends State<MesMotosScreen> {
                   ListView.builder(
                     shrinkWrap: true,
                     physics: NeverScrollableScrollPhysics(),
-                    itemCount: motoProvider.motos.length + 1, // +1 for the add card
+                    itemCount: motoProvider.motos.length,
                     itemBuilder: (context, index) {
-                      if (index == motoProvider.motos.length) {
-                        // Card for adding a new motorcycle
-                        return Card(
-                          color: Colors.grey[900],
-                          shape: RoundedRectangleBorder(
-                            borderRadius: BorderRadius.circular(10),
-                            side: BorderSide(
-                              color: Colors.red.withOpacity(0.5),
-                              width: 1,
-                            ),
-                          ),
-                          margin: EdgeInsets.symmetric(
-                            vertical: screenHeight * 0.01,
-                            horizontal: screenWidth * 0.02,
-                          ),
-                          child: InkWell(
-                            onTap: _showAddMotoDialog,
-                            child: Padding(
-                              padding: EdgeInsets.all(screenWidth * 0.04),
-                              child: Column(
-                                mainAxisAlignment: MainAxisAlignment.center,
-                                children: [
-                                  Icon(
-                                    Icons.add_circle,
-                                    size: screenWidth * 0.13,
-                                    color: Colors.red,
-                                  ),
-                                  SizedBox(height: screenHeight * 0.01),
-                                  Text(
-                                    'Ajouter une moto',
-                                    style: TextStyle(
-                                      color: Colors.white,
-                                      fontSize: screenWidth * 0.04,
-                                    ),
-                                  ),
-                                ],
-                              ),
-                            ),
-                          ),
-                        );
-                      }
-
                       // Card for each motorcycle
                       final moto = motoProvider.motos[index];
                       final model = moto.model; // Peut être null
@@ -428,11 +291,7 @@ class _MesMotosScreenState extends State<MesMotosScreen> {
           );
         },
       ),
-      floatingActionButton: FloatingActionButton(
-        backgroundColor: Colors.red,
-        onPressed: _showAddMotoDialog,
-        child: Icon(Icons.add),
-      ),
+      // Le bouton flottant a été supprimé
     );
   }
 }
