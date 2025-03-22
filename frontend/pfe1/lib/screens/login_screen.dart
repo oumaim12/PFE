@@ -81,7 +81,7 @@ class _LoginScreenState extends State<LoginScreen> {
       appBar: AppBar(
         backgroundColor: Colors.grey[900],
         title: const Text(
-          "Connexion",
+          "Se Connecter ",
           style: TextStyle(color: Colors.white),
         ),
         centerTitle: true,

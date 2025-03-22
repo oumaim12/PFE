@@ -12,14 +12,13 @@ class RegisterScreen extends StatefulWidget {
 class _RegisterScreenState extends State<RegisterScreen> {
   final TextEditingController firstNameController = TextEditingController();
   final TextEditingController lastNameController = TextEditingController();
-   final TextEditingController cinController = TextEditingController();
+  final TextEditingController cinController = TextEditingController();
   final TextEditingController emailController = TextEditingController();
   final TextEditingController passwordController = TextEditingController();
   final TextEditingController confirmPasswordController = TextEditingController();
   final TextEditingController phoneController = TextEditingController();
   final TextEditingController addressController = TextEditingController();
  
-
   bool _isLoading = false;
   String? _errorMessage;
 
@@ -31,14 +30,13 @@ class _RegisterScreenState extends State<RegisterScreen> {
 
     String firstName = firstNameController.text.trim();
     String lastName = lastNameController.text.trim();
-     String cin = cinController.text.trim();
+    String cin = cinController.text.trim();
     String email = emailController.text.trim();
     String password = passwordController.text.trim();
     String confirmPassword = confirmPasswordController.text.trim();
     String phone = phoneController.text.trim();
     String address = addressController.text.trim();
    
-
     // Client-side validation
     if (firstName.isEmpty || lastName.isEmpty || email.isEmpty || 
         password.isEmpty || confirmPassword.isEmpty || cin.isEmpty) {
@@ -88,7 +86,7 @@ class _RegisterScreenState extends State<RegisterScreen> {
         await Future.delayed(const Duration(seconds: 2));
         Navigator.pushReplacement(
           context,
-          MaterialPageRoute(builder: (context) => const  LoginScreen()),
+          MaterialPageRoute(builder: (context) => const LoginScreen()),
         );
       } else {
         setState(() {
@@ -149,7 +147,7 @@ class _RegisterScreenState extends State<RegisterScreen> {
             TextField(
               controller: cinController,
               decoration: _inputDecoration("Numéro CIN *", Icons.credit_card),
-              keyboardType: TextInputType.number,
+              // keyboardType: TextInputType.number,
               style: TextStyle(color: Colors.white),
             ),
             const SizedBox(height: 15),
@@ -160,9 +158,10 @@ class _RegisterScreenState extends State<RegisterScreen> {
               decoration: _inputDecoration("Email ", Icons.email),
               keyboardType: TextInputType.emailAddress,
               style: TextStyle(color: Colors.white),
-            ),  const SizedBox(height: 15),
+            ),  
+            const SizedBox(height: 15),
 
-// Password Field
+            // Password Field
             PasswordField(
               controller: passwordController,
               label: "Mot de passe *",
@@ -195,9 +194,6 @@ class _RegisterScreenState extends State<RegisterScreen> {
             ),
             const SizedBox(height: 15),
             
-            
-            
-            
             RegisterButton(
               isLoading: _isLoading,
               onPressed: _register,
@@ -229,7 +225,7 @@ class _RegisterScreenState extends State<RegisterScreen> {
   }
 }
 
-class PasswordField extends StatelessWidget {
+class PasswordField extends StatefulWidget {
   final TextEditingController controller;
   final String label;
   final void Function(String)? onSubmitted;
@@ -242,11 +238,18 @@ class PasswordField extends StatelessWidget {
   });
 
   @override
+  State<PasswordField> createState() => _PasswordFieldState();
+}
+
+class _PasswordFieldState extends State<PasswordField> {
+  bool _obscureText = true;
+
+  @override
   Widget build(BuildContext context) {
     return TextField(
-      controller: controller,
+      controller: widget.controller,
       decoration: InputDecoration(
-        labelText: label,
+        labelText: widget.label,
         labelStyle: const TextStyle(color: Color.fromARGB(255, 255, 255, 255)),
         border: OutlineInputBorder(
           borderSide: BorderSide(color: Colors.grey.shade800),
@@ -258,11 +261,22 @@ class PasswordField extends StatelessWidget {
           borderSide: BorderSide(color: Colors.red),
         ),
         prefixIcon: const Icon(Icons.lock, color: Colors.red),
+        suffixIcon: IconButton(
+          icon: Icon(
+            _obscureText ? Icons.visibility_off : Icons.visibility,
+            color: Colors.grey,
+          ),
+          onPressed: () {
+            setState(() {
+              _obscureText = !_obscureText;
+            });
+          },
+        ),
         filled: true,
         fillColor: Colors.grey[850],
       ),
-      obscureText: true,
-      onSubmitted: onSubmitted,
+      obscureText: _obscureText,
+      onSubmitted: widget.onSubmitted,
       style: const TextStyle(color: Colors.white),
     );
   }

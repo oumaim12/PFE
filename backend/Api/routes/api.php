@@ -31,4 +31,4 @@ Route::middleware('auth:sanctum')->group(function () {
 
 use App\Http\Controllers\Api\CommandeController;
 
-Route::post('/commandes', [CommandeController::class, 'store']);
+Route::post('/commandes', [CommandeController::class, 'createCommande']);

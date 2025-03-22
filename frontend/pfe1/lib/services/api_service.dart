@@ -304,14 +304,17 @@ static Future<Map<String, dynamic>> changePassword(
     
 
 Future<Map<String, dynamic>> createCommande({
-    required int schemaId, 
-    required int quantite, 
-    required int clientId
+    required int schemaId,
+    required int quantite,
+    required int clientId,
   }) async {
     try {
       final response = await http.post(
         Uri.parse('$baseUrl/commandes'),
-        headers: {"Content-Type": "application/json"},
+        headers: {
+          'Content-Type': 'application/json',
+          'Accept': 'application/json',
+        },
         body: jsonEncode({
           'schema_id': schemaId,
           'quantite': quantite,
@@ -320,30 +323,26 @@ Future<Map<String, dynamic>> createCommande({
       );
 
       final responseData = jsonDecode(response.body);
-      
+
       if (response.statusCode == 201) {
         return {
           'success': true,
-          'message': responseData['message'],
+          'message': 'Commande creee avec succes',
           'data': responseData['data'],
         };
       } else {
         return {
           'success': false,
           'message': responseData['message'] ?? 'Erreur lors de la création de la commande',
-          'errors': responseData['errors'],
+          'errors': responseData['errors'] ?? {},
         };
       }
     } catch (e) {
       return {
         'success': false,
-        'message': 'Exception: ${e.toString()}',
-        'errors': null,
+        'message': 'Erreur de connexion: ${e.toString()}',
+        'errors': {},
       };
     }
-  }
-
-
-
-    
+  }    
     }
