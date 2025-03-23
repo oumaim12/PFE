@@ -108,6 +108,10 @@
                                 <span class="text-polished-chrome text-xs">Livrées</span>
                                 <span class="font-bold text-green-500">{{ $commandesLivrees }}</span>
                             </div>
+                            <div class="flex justify-between items-center p-2 rounded bg-green-900/20 border border-green-900/30">
+                                <span class="text-polished-chrome text-xs">Annulée</span>
+                                <span class="font-bold text-green-500">{{ $commandesAnnulees }}</span>
+                            </div>
                         </div>
                     </div>
                     <div class="mt-3 grid grid-cols-1 gap-2">

@@ -8,7 +8,6 @@ import 'cart_page.dart';
 import 'login_screen.dart';
 import '../models/moto.dart';
 import '../services/api_service.dart';
-import 'package:cached_network_image/cached_network_image.dart';
 
 class HomePage extends StatefulWidget {
   const HomePage({super.key});
@@ -314,7 +313,7 @@ class HomeContent extends StatelessWidget {
   }
 
   // Méthode modifiée pour construire une carte de moto en utilisant le model
-  Widget _buildMotoCard(BuildContext context, Moto moto) {
+Widget _buildMotoCard(BuildContext context, Moto moto) {
   String imageUrl = moto.getImageUrl();
   
   print('Tentative de chargement de l\'image: $imageUrl');
@@ -336,21 +335,27 @@ class HomeContent extends StatelessWidget {
     child: Column(
       crossAxisAlignment: CrossAxisAlignment.start,
       children: [
-        // Image de la moto avec CachedNetworkImage
+        // Image de la moto avec meilleure gestion des erreurs
         ClipRRect(
           borderRadius: const BorderRadius.vertical(top: Radius.circular(10)),
           child: SizedBox(
             height: 120,
             width: double.infinity,
-            child: CachedNetworkImage(
-              imageUrl: imageUrl,
+            child: Image.network(
+              imageUrl,
               fit: BoxFit.cover,
-              placeholder: (context, url) => Center(
-                child: CircularProgressIndicator(
-                  color: Colors.red,
-                ),
-              ),
-              errorWidget: (context, url, error) {
+              loadingBuilder: (context, child, loadingProgress) {
+                if (loadingProgress == null) return child;
+                return Center(
+                  child: CircularProgressIndicator(
+                    value: loadingProgress.expectedTotalBytes != null
+                        ? loadingProgress.cumulativeBytesLoaded / loadingProgress.expectedTotalBytes!
+                        : null,
+                    color: Colors.red,
+                  ),
+                );
+              },
+              errorBuilder: (context, error, stackTrace) {
                 print('Erreur de chargement d\'image: $error');
                 print('URL qui a échoué: $imageUrl');
                 return Container(
