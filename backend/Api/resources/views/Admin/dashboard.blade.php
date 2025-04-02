@@ -8,21 +8,19 @@
         </h2>
     </x-slot>
 
-    <div class="grid grid-cols-1 md:grid-cols-2 lg:grid-cols-4 gap-6">
+    <div class="grid grid-cols-1 md:grid-cols-2 lg:grid-cols-3 gap-4">
         <!-- Ventes Totales -->
-        <div class="content-panel relative overflow-hidden">
-            <div class="panel-header bg-gradient-to-r from-engine-red to-engine-red/80">
-                <div class="absolute top-0 right-0 mt-3 mr-3">
-                    <svg xmlns="http://www.w3.org/2000/svg" class="h-8 w-8 text-white/30" fill="none" viewBox="0 0 24 24" stroke="currentColor">
+        <div class="bg-gray-900 border-l-4 border-engine-red">
+            <div class="p-4">
+                <div class="flex justify-between items-center">
+                    <h3 class="text-lg font-bold text-white uppercase">VENTES TOTALES</h3>
+                    <svg xmlns="http://www.w3.org/2000/svg" class="h-6 w-6 text-white/30" fill="none" viewBox="0 0 24 24" stroke="currentColor">
                         <path stroke-linecap="round" stroke-linejoin="round" stroke-width="2" d="M9 7h6m0 10v-3m-3 3h.01M9 17h.01M9 14h.01M12 14h.01M15 11h.01M12 11h.01M9 11h.01M7 21h10a2 2 0 002-2V5a2 2 0 00-2-2H7a2 2 0 00-2 2v14a2 2 0 002 2z" />
                     </svg>
                 </div>
-                <h3 class="panel-title text-white">Ventes Totales</h3>
-            </div>
-            <div class="panel-body">
-                <div class="flex flex-col">
-                    <div class="text-3xl font-bold mb-1">{{ $totalSales }} commandes</div>
-                    <div class="flex items-center text-sm">
+                <div class="mt-2">
+                    <div class="text-2xl font-bold text-white">{{ $totalSales }} commandes</div>
+                    <div class="flex items-center text-sm mt-1">
                         @if($salesGrowth > 0)
                             <span class="text-green-500 flex items-center mr-1">
                                 <svg xmlns="http://www.w3.org/2000/svg" class="h-4 w-4 mr-1" fill="none" viewBox="0 0 24 24" stroke="currentColor">
@@ -45,26 +43,24 @@
                                 0%
                             </span>
                         @endif
-                        <span class="text-polished-chrome/70">depuis le mois dernier</span>
+                        <span class="text-gray-400">depuis le mois dernier</span>
                     </div>
                 </div>
             </div>
         </div>
-
+    
         <!-- Clients -->
-        <div class="content-panel relative overflow-hidden">
-            <div class="panel-header bg-gradient-to-r from-exhaust-blue to-exhaust-blue/80">
-                <div class="absolute top-0 right-0 mt-3 mr-3">
-                    <svg xmlns="http://www.w3.org/2000/svg" class="h-8 w-8 text-white/30" fill="none" viewBox="0 0 24 24" stroke="currentColor">
+        <div class="bg-gray-900 border-l-4 border-exhaust-blue">
+            <div class="p-4">
+                <div class="flex justify-between items-center">
+                    <h3 class="text-lg font-bold text-white uppercase">CLIENTS</h3>
+                    <svg xmlns="http://www.w3.org/2000/svg" class="h-6 w-6 text-white/30" fill="none" viewBox="0 0 24 24" stroke="currentColor">
                         <path stroke-linecap="round" stroke-linejoin="round" stroke-width="2" d="M12 4.354a4 4 0 110 5.292M15 21H3v-1a6 6 0 0112 0v1zm0 0h6v-1a6 6 0 00-9-5.197M13 7a4 4 0 11-8 0 4 4 0 018 0z" />
                     </svg>
                 </div>
-                <h3 class="panel-title text-white">Clients</h3>
-            </div>
-            <div class="panel-body">
-                <div class="flex flex-col">
-                    <div class="text-3xl font-bold mb-1">{{ $totalCustomers }}</div>
-                    <div class="flex items-center text-sm">
+                <div class="mt-2">
+                    <div class="text-2xl font-bold text-white">{{ $totalCustomers }}</div>
+                    <div class="flex items-center text-sm mt-1">
                         @if($newCustomers > 0)
                             <span class="text-green-500 flex items-center mr-1">
                                 <svg xmlns="http://www.w3.org/2000/svg" class="h-4 w-4 mr-1" fill="none" viewBox="0 0 24 24" stroke="currentColor">
@@ -74,107 +70,99 @@
                         @else
                             <span class="text-gray-400">0</span>
                         @endif
-                        <span class="text-polished-chrome/70">{{ $newCustomers }} nouveaux ce mois</span>
+                        <span class="text-gray-400">{{ $newCustomers }} nouveaux ce mois</span>
                     </div>
                 </div>
             </div>
         </div>
-
+    
         <!-- Commandes -->
-        <div class="content-panel relative overflow-hidden">
-            <div class="panel-header bg-gradient-to-r from-fuel-yellow to-fuel-yellow/80">
-                <div class="absolute top-0 right-0 mt-3 mr-3">
-                    <svg xmlns="http://www.w3.org/2000/svg" class="h-8 w-8 text-white/30" fill="none" viewBox="0 0 24 24" stroke="currentColor">
+        <div class="bg-gray-900 border-l-4 border-fuel-yellow">
+            <div class="p-4">
+                <div class="flex justify-between items-center">
+                    <h3 class="text-lg font-bold text-white uppercase">COMMANDES</h3>
+                    <svg xmlns="http://www.w3.org/2000/svg" class="h-6 w-6 text-white/30" fill="none" viewBox="0 0 24 24" stroke="currentColor">
                         <path stroke-linecap="round" stroke-linejoin="round" stroke-width="2" d="M16 11V7a4 4 0 00-8 0v4M5 9h14l1 12H4L5 9z" />
                     </svg>
                 </div>
-                <h3 class="panel-title text-white">Commandes</h3>
-            </div>
-            <div class="panel-body">
-                <div class="flex flex-col">
-                    <div class="text-3xl font-bold mb-1">{{ $totalOrders }}</div>
-                    <div class="flex items-center text-sm">
+                <div class="mt-2">
+                    <div class="text-2xl font-bold text-white">{{ $totalOrders }}</div>
+                    <div class="flex items-center text-sm mt-1">
                         <span class="text-yellow-500 flex items-center mr-1">
                             <svg xmlns="http://www.w3.org/2000/svg" class="h-4 w-4 mr-1" fill="none" viewBox="0 0 24 24" stroke="currentColor">
                                 <path stroke-linecap="round" stroke-linejoin="round" stroke-width="2" d="M12 8v4l3 3m6-3a9 9 0 11-18 0 9 9 0 0118 0z" />
                             </svg>
                         </span>
-                        <span class="text-polished-chrome/70">{{ $pendingOrders }} en attente</span>
+                        <span class="text-gray-400">{{ $pendingOrders }} en attente</span>
                     </div>
                 </div>
             </div>
         </div>
-
+    
         <!-- Produits (Schémas) -->
-        <div class="content-panel relative overflow-hidden">
-            <div class="panel-header bg-gradient-to-r from-leather-brown to-leather-brown/80">
-                <div class="absolute top-0 right-0 mt-3 mr-3">
-                    <svg xmlns="http://www.w3.org/2000/svg" class="h-8 w-8 text-white/30" fill="none" viewBox="0 0 24 24" stroke="currentColor">
+        <div class="bg-gray-900 border-l-4 border-leather-brown">
+            <div class="p-4">
+                <div class="flex justify-between items-center">
+                    <h3 class="text-lg font-bold text-white uppercase">PIÈCES</h3>
+                    <svg xmlns="http://www.w3.org/2000/svg" class="h-6 w-6 text-white/30" fill="none" viewBox="0 0 24 24" stroke="currentColor">
                         <path stroke-linecap="round" stroke-linejoin="round" stroke-width="2" d="M9 3v2m6-2v2M9 19v2m6-2v2M5 9H3m2 6H3m18-6h-2m2 6h-2M7 19h10a2 2 0 002-2V7a2 2 0 00-2-2H7a2 2 0 00-2 2v10a2 2 0 002 2zM9 9h6v6H9V9z" />
                     </svg>
                 </div>
-                <h3 class="panel-title text-white">Pièces</h3>
+                <div class="mt-2">
+                    <div class="text-2xl font-bold text-white">{{ $totalProducts }}</div>
+                    <div class="flex items-center text-sm mt-1">
+                        <span class="text-gray-400">{{ $totalProducts }} pièces disponibles</span>
+                    </div>
+                </div>
             </div>
-            <div class="panel-body">
-                <div class="flex flex-col">
-                    <div class="text-3xl font-bold mb-1">{{ $totalProducts }} </div>
-                    <div class="flex items-center text-sm">
-                        <span class="text-polished-chrome/70">{{ $totalProducts }} pièces disponibles</span>
+        </div>
+    
+        <!-- Motos -->
+        <div class="bg-gray-900 border-l-4 border-exhaust-blue">
+            <div class="p-4">
+                <div class="flex justify-between items-center">
+                    <h3 class="text-lg font-bold text-white uppercase">MOTOS</h3>
+                    <svg xmlns="http://www.w3.org/2000/svg" class="h-6 w-6 text-white/30" fill="none" viewBox="0 0 24 24" stroke="currentColor">
+                        <path stroke-linecap="round" stroke-linejoin="round" stroke-width="2" d="M5 17H4a2 2 0 01-2-2V5a2 2 0 012-2h16a2 2 0 012 2v10a2 2 0 01-2 2h-1m-6 0a2 2 0 002 2h6a2 2 0 002-2v-3a2 2 0 00-2-2h-6a2 2 0 00-2 2v3zm-7-7h4v4H4v-4z" />
+                    </svg>
+                </div>
+                <div class="mt-2">
+                    <div class="text-2xl font-bold text-white">{{ $totalMotos }}</div>
+                    <div class="flex items-center text-sm mt-1">
+                        <span class="text-exhaust-blue flex items-center mr-1">
+                            <svg xmlns="http://www.w3.org/2000/svg" class="h-4 w-4 mr-1" fill="none" viewBox="0 0 24 24" stroke="currentColor">
+                                <path stroke-linecap="round" stroke-linejoin="round" stroke-width="2" d="M12 6v6m0 0v6m0-6h6m-6 0H6" />
+                            </svg>
+                        </span>
+                        <span class="text-gray-400">{{ $newMotos }} ajoutées ce mois</span>
+                    </div>
+                </div>
+            </div>
+        </div>
+    
+        <!-- Modèles -->
+        <div class="bg-gray-900 border-l-4 border-engine-red">
+            <div class="p-4">
+                <div class="flex justify-between items-center">
+                    <h3 class="text-lg font-bold text-white uppercase">MODÈLES</h3>
+                    <svg xmlns="http://www.w3.org/2000/svg" class="h-6 w-6 text-white/30" fill="none" viewBox="0 0 24 24" stroke="currentColor">
+                        <path stroke-linecap="round" stroke-linejoin="round" stroke-width="2" d="M9 3v2m6-2v2M9 19v2m6-2v2M5 9H3m2 6H3m18-6h-2m2 6h-2M7 19h10a2 2 0 002-2V7a2 2 0 00-2-2H7a2 2 0 00-2 2v10a2 2 0 002 2zM9 9h6v6H9V9z" />
+                    </svg>
+                </div>
+                <div class="mt-2">
+                    <div class="text-2xl font-bold text-white">{{ $totalModels }}</div>
+                    <div class="flex items-center text-sm mt-1">
+                        <span class="text-engine-red flex items-center mr-1">
+                            <svg xmlns="http://www.w3.org/2000/svg" class="h-4 w-4 mr-1" fill="none" viewBox="0 0 24 24" stroke="currentColor">
+                                <path stroke-linecap="round" stroke-linejoin="round" stroke-width="2" d="M9 5l7 7-7 7" />
+                            </svg>
+                        </span>
+                        <span class="text-gray-400">{{ $topBrand }} marque principale</span>
                     </div>
                 </div>
             </div>
         </div>
     </div>
-
-    <!-- Motos -->
-<div class="content-panel relative overflow-hidden">
-    <div class="panel-header bg-gradient-to-r from-exhaust-blue to-exhaust-blue/80">
-        <div class="absolute top-0 right-0 mt-3 mr-3">
-            <svg xmlns="http://www.w3.org/2000/svg" class="h-8 w-8 text-white/30" fill="none" viewBox="0 0 24 24" stroke="currentColor">
-                <path stroke-linecap="round" stroke-linejoin="round" stroke-width="2" d="M5 17H4a2 2 0 01-2-2V5a2 2 0 012-2h16a2 2 0 012 2v10a2 2 0 01-2 2h-1m-6 0a2 2 0 002 2h6a2 2 0 002-2v-3a2 2 0 00-2-2h-6a2 2 0 00-2 2v3zm-7-7h4v4H4v-4z" />
-            </svg>
-        </div>
-        <h3 class="panel-title text-white">Motos</h3>
-    </div>
-    <div class="panel-body">
-        <div class="flex flex-col">
-            <div class="text-3xl font-bold mb-1">{{ $totalMotos }}</div>
-            <div class="flex items-center text-sm">
-                <span class="text-exhaust-blue flex items-center mr-1">
-                    <svg xmlns="http://www.w3.org/2000/svg" class="h-4 w-4 mr-1" fill="none" viewBox="0 0 24 24" stroke="currentColor">
-                        <path stroke-linecap="round" stroke-linejoin="round" stroke-width="2" d="M12 6v6m0 0v6m0-6h6m-6 0H6" />
-                    </svg>
-                </span>
-                <span class="text-polished-chrome/70">{{ $newMotos }} ajoutées ce mois</span>
-            </div>
-        </div>
-    </div>
-</div>
-
-<!-- Modèles -->
-<div class="content-panel relative overflow-hidden">
-    <div class="panel-header bg-gradient-to-r from-engine-red to-engine-red/80">
-        <div class="absolute top-0 right-0 mt-3 mr-3">
-            <svg xmlns="http://www.w3.org/2000/svg" class="h-8 w-8 text-white/30" fill="none" viewBox="0 0 24 24" stroke="currentColor">
-                <path stroke-linecap="round" stroke-linejoin="round" stroke-width="2" d="M9 3v2m6-2v2M9 19v2m6-2v2M5 9H3m2 6H3m18-6h-2m2 6h-2M7 19h10a2 2 0 002-2V7a2 2 0 00-2-2H7a2 2 0 00-2 2v10a2 2 0 002 2zM9 9h6v6H9V9z" />
-            </svg>
-        </div>
-        <h3 class="panel-title text-white">Modèles</h3>
-    </div>
-    <div class="panel-body">
-        <div class="flex flex-col">
-            <div class="text-3xl font-bold mb-1">{{ $totalModels }}</div>
-            <div class="flex items-center text-sm">
-                <span class="text-engine-red flex items-center mr-1">
-                    <svg xmlns="http://www.w3.org/2000/svg" class="h-4 w-4 mr-1" fill="none" viewBox="0 0 24 24" stroke="currentColor">
-                        <path stroke-linecap="round" stroke-linejoin="round" stroke-width="2" d="M9 5l7 7-7 7" />
-                    </svg>
-                </span>
-                <span class="text-polished-chrome/70">{{ $topBrand }} marque principale</span>
-            </div>
-        </div>
-    </div>
-</div>
 
     <!-- Commandes récentes -->
     <div class="content-panel mt-6">
