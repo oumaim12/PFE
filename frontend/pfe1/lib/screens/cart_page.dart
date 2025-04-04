@@ -32,18 +32,15 @@ class _CartPageState extends State<CartPage> {
   }
 
   Future<void> _fetchCartItems() async {
-    print("CartPage - _fetchCartItems called");
     setState(() {
       _isLoadingLocal = true;
       _localError = null;
     });
 
     try {
-      print("CartPage - About to load cart from provider");
       await Provider.of<CartProvider>(context, listen: false).loadCart();
-      print("CartPage - Cart loaded successfully");
-    } catch (e) {
-      print("CartPage - Error loading cart: $e");
+    } catch (e, stackTrace) {
+      debugPrint('Error loading cart: $e\n$stackTrace');
       setState(() {
         _localError = "Erreur lors du chargement du panier: $e";
       });
@@ -51,7 +48,7 @@ class _CartPageState extends State<CartPage> {
       if (mounted) {
         ScaffoldMessenger.of(context).showSnackBar(
           SnackBar(
-            content: Text("Erreur lors du chargement du panier: $e"),
+            content: Text(_localError!),
             backgroundColor: Colors.red,
           ),
         );
@@ -71,41 +68,46 @@ class _CartPageState extends State<CartPage> {
     return cartProvider.totalAmount;
   }
 
-  double get _shipping {
-    // Sample shipping calculation logic
-    return _subtotal > 100 ? 0 : 7.99;
-  }
-
-  double get _tax {
-    // Sample tax calculation (20% VAT)
-    return _subtotal * 0.2;
-  }
-
-  double get _total {
-    return _subtotal + _shipping + _tax - _discount;
-  }
+  double get _shipping => _subtotal > 100 ? 0 : 7.99;
+  double get _tax => _subtotal * 0.2;
+  double get _total => _subtotal + _shipping + _tax - _discount;
 
   Future<void> _updateQuantity(int itemId, int newQuantity) async {
-    if (newQuantity < 1) return;
+    if (newQuantity < 1) newQuantity = 1;
+    if (newQuantity > 99) newQuantity = 99;
     
-    print("CartPage - Updating quantity for item $itemId to $newQuantity");
     setState(() {
       _isLoadingLocal = true;
     });
     
     try {
-      await Provider.of<CartProvider>(context, listen: false).updateQuantity(itemId, newQuantity);
-      print("CartPage - Quantity updated successfully");
-    } catch (e) {
-      print("CartPage - Error updating quantity: $e");
+      final cartProvider = Provider.of<CartProvider>(context, listen: false);
+      await cartProvider.updateQuantity(itemId, newQuantity);
+      
+      if (mounted) {
+        ScaffoldMessenger.of(context).showSnackBar(
+          const SnackBar(
+            content: Text("Quantité mise à jour"),
+            backgroundColor: Colors.green,
+          ),
+        );
+      }
+    } catch (e, stackTrace) {
+      debugPrint('Error updating quantity: $e\n$stackTrace');
+      
       if (mounted) {
         ScaffoldMessenger.of(context).showSnackBar(
           SnackBar(
-            content: Text("Erreur lors de la mise à jour: $e"),
+            content: Text(e.toString().contains('Validation')
+                ? "Erreur de validation - quantité invalide"
+                : "Erreur lors de la mise à jour"),
             backgroundColor: Colors.red,
           ),
         );
       }
+      
+      // Revert to previous state if update fails
+      if (mounted) _fetchCartItems();
     } finally {
       if (mounted) {
         setState(() {
@@ -116,14 +118,13 @@ class _CartPageState extends State<CartPage> {
   }
 
   Future<void> _removeItem(int itemId) async {
-    print("CartPage - Removing item $itemId");
     setState(() {
       _isLoadingLocal = true;
     });
     
     try {
-      await Provider.of<CartProvider>(context, listen: false).removeItem(itemId);
-      print("CartPage - Item removed successfully");
+      final cartProvider = Provider.of<CartProvider>(context, listen: false);
+      await cartProvider.removeItem(itemId);
       
       if (mounted) {
         ScaffoldMessenger.of(context).showSnackBar(
@@ -133,16 +134,21 @@ class _CartPageState extends State<CartPage> {
           ),
         );
       }
-    } catch (e) {
-      print("CartPage - Error removing item: $e");
+    } catch (e, stackTrace) {
+      debugPrint('Error removing item: $e\n$stackTrace');
+      
       if (mounted) {
         ScaffoldMessenger.of(context).showSnackBar(
           SnackBar(
-            content: Text("Erreur lors de la suppression: $e"),
+            content: Text(e.toString().contains('Validation')
+                ? "Erreur de validation - impossible de supprimer"
+                : "Erreur lors de la suppression"),
             backgroundColor: Colors.red,
           ),
         );
       }
+      
+      if (mounted) _fetchCartItems();
     } finally {
       if (mounted) {
         setState(() {
@@ -152,39 +158,39 @@ class _CartPageState extends State<CartPage> {
     }
   }
 
+
   Future<void> _applyPromoCode() async {
     if (_promoCode.isEmpty) return;
     
-    print("CartPage - Applying promo code: $_promoCode");
     setState(() {
       _isLoadingLocal = true;
     });
     
     try {
-      // TODO: Implement promo code API
-      // For demo purposes, we'll simulate a success response
+      // Simulate API call
       await Future.delayed(const Duration(milliseconds: 500));
-      final sampleDiscount = _subtotal * 0.1; // 10% discount
       
-      setState(() {
-        _discount = sampleDiscount;
-      });
-      
-      print("CartPage - Promo code applied successfully");
-      if (mounted) {
-        ScaffoldMessenger.of(context).showSnackBar(
-          const SnackBar(
-            content: Text("Code promo appliqué avec succès"),
-            backgroundColor: Colors.green,
-          ),
-        );
+      if (_promoCode.toLowerCase() == 'skbt2025') {
+        setState(() {
+          _discount = _subtotal * 0.1;
+        });
+        
+        if (mounted) {
+          ScaffoldMessenger.of(context).showSnackBar(
+            const SnackBar(
+              content: Text("Réduction de 10% appliquée"),
+              backgroundColor: Colors.green,
+            ),
+          );
+        }
+      } else {
+        throw Exception("Code promo invalide");
       }
     } catch (e) {
-      print("CartPage - Error applying promo code: $e");
       if (mounted) {
         ScaffoldMessenger.of(context).showSnackBar(
           SnackBar(
-            content: Text("Code promo invalide: $e"),
+            content: Text(e.toString()),
             backgroundColor: Colors.red,
           ),
         );
@@ -199,65 +205,47 @@ class _CartPageState extends State<CartPage> {
   }
 
   Future<void> _checkout() async {
-  print("CartPage - Checkout process started");
-  setState(() {
-    _isLoadingLocal = true;
-  });
-  
-  try {
-    // Implement checkout functionality
-    print("CartPage - Creating order from cart");
-    final result = await ApiService.createCommandeFromCart();
+    setState(() {
+      _isLoadingLocal = true;
+    });
     
-    if (result['success']) {
-      print("CartPage - Order created successfully");
-      await Provider.of<CartProvider>(context, listen: false).clearCart();
+    try {
+      final result = await ApiService.createCommandeFromCart();
       
-      if (mounted) {
-        ScaffoldMessenger.of(context).showSnackBar(
-          const SnackBar(
-            content: Text("Commande passée avec succès"),
-            backgroundColor: Colors.green,
-          ),
-        );
+      if (result['success']) {
+        await Provider.of<CartProvider>(context, listen: false).clearCart();
+        
+        if (mounted) {
+          ScaffoldMessenger.of(context).showSnackBar(
+            const SnackBar(
+              content: Text("Commande passée avec succès"),
+              backgroundColor: Colors.green,
+            ),
+          );
+        }
+      } else {
+        throw Exception(result['message'] ?? "Erreur inconnue");
       }
-      
-      // Navigate to order confirmation screen
-      // Navigator.pushReplacementNamed(context, '/order-confirmation');
-    } else {
-      print("CartPage - Error creating order: ${result['message']}");
+    } catch (e) {
       if (mounted) {
         ScaffoldMessenger.of(context).showSnackBar(
           SnackBar(
-            content: Text("Erreur: ${result['message']}"),
+            content: Text(e.toString()),
             backgroundColor: Colors.red,
           ),
         );
       }
-    }
-  } catch (e) {
-    print("CartPage - Exception during checkout: $e");
-    if (mounted) {
-      ScaffoldMessenger.of(context).showSnackBar(
-        SnackBar(
-          content: Text("Erreur lors de la commande: $e"),
-          backgroundColor: Colors.red,
-        ),
-      );
-    }
-  } finally {
-    if (mounted) {
-      setState(() {
-        _isLoadingLocal = false;
-      });
+    } finally {
+      if (mounted) {
+        setState(() {
+          _isLoadingLocal = false;
+        });
+      }
     }
   }
-}
 
   @override
   Widget build(BuildContext context) {
-    print("CartPage - build method called");
-    
     return Theme(
       data: ThemeData.dark().copyWith(
         primaryColor: _primaryColor,
@@ -274,17 +262,6 @@ class _CartPageState extends State<CartPage> {
           foregroundColor: _textColor,
           elevation: 0,
         ),
-        inputDecorationTheme: InputDecorationTheme(
-          border: OutlineInputBorder(
-            borderRadius: BorderRadius.circular(8),
-            borderSide: BorderSide(color: _primaryColor),
-          ),
-          focusedBorder: OutlineInputBorder(
-            borderRadius: BorderRadius.circular(8),
-            borderSide: BorderSide(color: _primaryColor, width: 2),
-          ),
-          labelStyle: TextStyle(color: Colors.grey[400]),
-        ),
       ),
       child: Scaffold(
         appBar: AppBar(
@@ -297,89 +274,93 @@ class _CartPageState extends State<CartPage> {
             ),
           ],
         ),
-        body: _isLoadingLocal
-            ? Center(
-                child: Column(
-                  mainAxisAlignment: MainAxisAlignment.center,
-                  children: [
-                    CircularProgressIndicator(color: _primaryColor),
-                    SizedBox(height: 16),
-                    Text(
-                      "Chargement du panier...",
-                      style: TextStyle(color: _textColor),
-                    ),
-                  ],
-                ),
-              )
-            : _localError != null
-                ? Center(
-                    child: Column(
-                      mainAxisAlignment: MainAxisAlignment.center,
-                      children: [
-                        Icon(Icons.error_outline, color: Colors.red, size: 48),
-                        SizedBox(height: 16),
-                        Text(
-                          'Erreur locale: $_localError',
-                          style: TextStyle(color: _textColor),
-                          textAlign: TextAlign.center,
-                        ),
-                        SizedBox(height: 16),
-                        ElevatedButton(
-                          style: ElevatedButton.styleFrom(backgroundColor: _primaryColor),
-                          onPressed: _fetchCartItems,
-                          child: Text('Réessayer'),
-                        ),
-                      ],
-                    ),
-                  )
-                : Consumer<CartProvider>(
-                    builder: (context, cartProvider, child) {
-                      print("CartPage - Consumer rebuilding with isLoading=${cartProvider.isLoading}, error=${cartProvider.error}, items=${cartProvider.items.length}");
-                      
-                      if (cartProvider.isLoading) {
-                        return Center(
-                          child: CircularProgressIndicator(color: _primaryColor),
-                        );
-                      }
-
-                      if (cartProvider.error != null) {
-                        return Center(
-                          child: Column(
-                            mainAxisAlignment: MainAxisAlignment.center,
-                            children: [
-                              Icon(Icons.error_outline, color: Colors.red, size: 48),
-                              SizedBox(height: 16),
-                              Text(
-                                'Erreur: ${cartProvider.error}',
-                                style: TextStyle(color: _textColor),
-                                textAlign: TextAlign.center,
-                              ),
-                              SizedBox(height: 16),
-                              ElevatedButton(
-                                style: ElevatedButton.styleFrom(backgroundColor: _primaryColor),
-                                onPressed: _fetchCartItems,
-                                child: Text('Réessayer'),
-                              ),
-                            ],
-                          ),
-                        );
-                      }
-
-                      if (cartProvider.items.isEmpty) {
-                        return _buildEmptyCart();
-                      }
-
-                      return _buildCartContent(cartProvider.items);
-                    },
-                  ),
+        body: _buildBody(),
         bottomNavigationBar: Consumer<CartProvider>(
-          builder: (context, cartProvider, child) {
+          builder: (context, cartProvider, _) {
             return cartProvider.items.isEmpty 
-                ? Container(height: 0) // Widget vide transparent 
+                ? const SizedBox.shrink()
                 : _buildCheckoutBar();
           },
         ),
       ),
+    );
+  }
+
+  Widget _buildBody() {
+    if (_isLoadingLocal) {
+      return Center(
+        child: Column(
+          mainAxisAlignment: MainAxisAlignment.center,
+          children: [
+            CircularProgressIndicator(color: _primaryColor),
+            const SizedBox(height: 16),
+            Text(
+              "Chargement...",
+              style: TextStyle(color: _textColor),
+            ),
+          ],
+        ),
+      );
+    }
+
+    if (_localError != null) {
+      return Center(
+        child: Column(
+          mainAxisAlignment: MainAxisAlignment.center,
+          children: [
+            Icon(Icons.error_outline, color: Colors.red, size: 48),
+            const SizedBox(height: 16),
+            Text(
+              _localError!,
+              style: TextStyle(color: Colors.white),
+              textAlign: TextAlign.center,
+            ),
+            const SizedBox(height: 16),
+            ElevatedButton(
+              style: ElevatedButton.styleFrom(backgroundColor: _primaryColor),
+              onPressed: _fetchCartItems,
+              child: const Text('Réessayer'),
+            ),
+          ],
+        ),
+      );
+    }
+
+    return Consumer<CartProvider>(
+      builder: (context, cartProvider, _) {
+        if (cartProvider.isLoading) {
+          return Center(child: CircularProgressIndicator(color: _primaryColor));
+        }
+
+        if (cartProvider.error != null) {
+          return Center(
+            child: Column(
+              mainAxisAlignment: MainAxisAlignment.center,
+              children: [
+                Icon(Icons.error_outline, color: Colors.red, size: 48),
+                const SizedBox(height: 16),
+                Text(
+                  cartProvider.error!,
+                  style: TextStyle(color: Colors.white),
+                  textAlign: TextAlign.center,
+                ),
+                const SizedBox(height: 16),
+                ElevatedButton(
+                  style: ElevatedButton.styleFrom(backgroundColor: _primaryColor),
+                  onPressed: _fetchCartItems,
+                  child: const Text('Réessayer'),
+                ),
+              ],
+            ),
+          );
+        }
+
+        if (cartProvider.items.isEmpty) {
+          return _buildEmptyCart();
+        }
+
+        return _buildCartContent(cartProvider.items);
+      },
     );
   }
 
@@ -425,7 +406,7 @@ class _CartPageState extends State<CartPage> {
             },
             child: const Text(
               "Explorer les produits",
-              style: TextStyle(fontSize: 16),
+              style: TextStyle(fontSize: 16, color : Colors.white),
             ),
           ),
         ],

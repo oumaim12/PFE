@@ -196,14 +196,6 @@ class _HomePageState extends State<HomePage> {
                     color: Colors.red,
                     shape: BoxShape.circle,
                   ),
-                  child: const Text(
-                    '3',
-                    style: TextStyle(
-                      color: Colors.white,
-                      fontSize: 10,
-                      fontWeight: FontWeight.bold,
-                    ),
-                  ),
                 ),
               ),
             ],

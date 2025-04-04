@@ -22,57 +22,6 @@ class _MesMotosScreenState extends State<MesMotosScreen> {
     });
   }
 
-  void _showDeleteConfirmation(Moto moto) {
-    showDialog(
-      context: context,
-      builder:
-          (context) => AlertDialog(
-            backgroundColor: Colors.grey[900],
-            title: Text(
-              'Supprimer la moto',
-              style: TextStyle(color: Colors.white),
-            ),
-            content: Text(
-              'Êtes-vous sûr de vouloir supprimer cette moto ?',
-              style: TextStyle(color: Colors.white),
-            ),
-            actions: [
-              TextButton(
-                onPressed: () => Navigator.pop(context),
-                child: Text('Annuler', style: TextStyle(color: Colors.grey)),
-              ),
-              Consumer<MotoProvider>(
-                builder: (context, provider, child) {
-                  return ElevatedButton(
-                    style: ElevatedButton.styleFrom(
-                      backgroundColor: Colors.red,
-                    ),
-                    onPressed:
-                        provider.isLoading
-                            ? null
-                            : () async {
-                              final result = await provider.deleteMoto(moto.id);
-                              Navigator.pop(context);
-
-                              ScaffoldMessenger.of(context).showSnackBar(
-                                SnackBar(
-                                  content: Text(result['message']),
-                                  backgroundColor:
-                                      result['success']
-                                          ? Colors.green
-                                          : Colors.red,
-                                ),
-                              );
-                            },
-                    child: Text('Supprimer'),
-                  );
-                },
-              ),
-            ],
-          ),
-    );
-  }
-
   void _navigateToPartsList(Moto moto) {
     Navigator.push(
       context,
@@ -294,8 +243,6 @@ class _MesMotosScreenState extends State<MesMotosScreen> {
                                       onSelected: (value) {
                                         if (value == 'parts') {
                                           _navigateToPartsList(moto);
-                                        } else if (value == 'delete') {
-                                          _showDeleteConfirmation(moto);
                                         } else if (value == 'details') {
                                           _navigateToDetails(moto);
                                         }
@@ -317,15 +264,6 @@ class _MesMotosScreenState extends State<MesMotosScreen> {
                                                 'Voir les pièces compatibles',
                                                 style: TextStyle(
                                                   color: Colors.white,
-                                                ),
-                                              ),
-                                            ),
-                                            PopupMenuItem(
-                                              value: 'delete',
-                                              child: Text(
-                                                'Supprimer',
-                                                style: TextStyle(
-                                                  color: Colors.red,
                                                 ),
                                               ),
                                             ),

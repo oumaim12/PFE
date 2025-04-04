@@ -253,8 +253,8 @@ class _MesCommandesScreenState extends State<MesCommandesScreen> with SingleTick
                     SizedBox(width: 8),
                     if (commande.status == 'en_attente')
                       ElevatedButton.icon(
-                        icon: Icon(Icons.cancel),
-                        label: Text('Annuler'),
+                        icon: Icon(Icons.cancel, color: Colors.white),
+                        label: Text('Annuler', style: TextStyle(color: Colors.white)),
                         style: ElevatedButton.styleFrom(
                           backgroundColor: Colors.red,
                         ),
@@ -560,7 +560,7 @@ class _MesCommandesScreenState extends State<MesCommandesScreen> with SingleTick
                 style: ElevatedButton.styleFrom(
                   backgroundColor: Colors.red,
                 ),
-                child: Text('Confirmer l\'annulation'),
+                child: Text('Confirmer l\'annulation', style: TextStyle(color: Colors.white)),
                 onPressed: provider.isLoading
                     ? null
                     : () async {
