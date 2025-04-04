@@ -4,6 +4,7 @@ import 'package:provider/provider.dart';
 import '../models/moto.dart';
 import '../providers/moto_provider.dart';
 import 'moto_parts_screen.dart';
+import 'moto_details_screen.dart'; // Importer l'écran de détails
 
 class MesMotosScreen extends StatefulWidget {
   @override
@@ -76,6 +77,13 @@ class _MesMotosScreenState extends State<MesMotosScreen> {
     Navigator.push(
       context,
       MaterialPageRoute(builder: (context) => MotoPartsScreen(moto: moto)),
+    );
+  }
+
+  void _navigateToDetails(Moto moto) {
+    Navigator.push(
+      context,
+      MaterialPageRoute(builder: (context) => MotoDetailsScreen(moto: moto)),
     );
   }
 
@@ -179,142 +187,183 @@ class _MesMotosScreenState extends State<MesMotosScreen> {
                           vertical: screenHeight * 0.01,
                           horizontal: screenWidth * 0.02,
                         ),
-                        child: Padding(
-                          padding: EdgeInsets.all(screenWidth * 0.04),
-                          child: Row(
-                            children: [
-                              ClipRRect(
-                                borderRadius: BorderRadius.circular(8),
-                                child:
-                                    moto.image != null && moto.image!.isNotEmpty
-                                        ? CachedNetworkImage(
-                                          imageUrl:
-                                              moto.getImageUrl(), // Utilisez getImageUrl() au lieu de l'URL directe
-                                          width: screenWidth * 0.25,
-                                          height: screenWidth * 0.25,
-                                          fit: BoxFit.cover,
-                                          placeholder:
-                                              (context, url) => Container(
+                        child: Column(
+                          children: [
+                            // Image et infos
+                            InkWell(
+                              onTap: () => _navigateToDetails(moto),
+                              child: Padding(
+                                padding: EdgeInsets.all(screenWidth * 0.04),
+                                child: Row(
+                                  children: [
+                                    // Image de la moto
+                                    ClipRRect(
+                                      borderRadius: BorderRadius.circular(8),
+                                      child:
+                                          moto.image != null &&
+                                                  moto.image!.isNotEmpty
+                                              ? CachedNetworkImage(
+                                                imageUrl: moto.getImageUrl(),
                                                 width: screenWidth * 0.25,
                                                 height: screenWidth * 0.25,
-                                                color: Colors.grey[800],
-                                                child: Center(
-                                                  child:
-                                                      CircularProgressIndicator(
-                                                        color: Colors.red,
-                                                        strokeWidth: 2.0,
+                                                fit: BoxFit.cover,
+                                                placeholder:
+                                                    (context, url) => Container(
+                                                      width: screenWidth * 0.25,
+                                                      height:
+                                                          screenWidth * 0.25,
+                                                      color: Colors.grey[800],
+                                                      child: Center(
+                                                        child:
+                                                            CircularProgressIndicator(
+                                                              color: Colors.red,
+                                                              strokeWidth: 2.0,
+                                                            ),
                                                       ),
+                                                    ),
+                                                errorWidget: (
+                                                  context,
+                                                  url,
+                                                  error,
+                                                ) {
+                                                  print(
+                                                    'Erreur de chargement d\'image: $error pour URL: $url',
+                                                  );
+                                                  return Container(
+                                                    width: screenWidth * 0.25,
+                                                    height: screenWidth * 0.25,
+                                                    color: Colors.grey[700],
+                                                    child: Icon(
+                                                      Icons.image_not_supported,
+                                                      color: Colors.grey[500],
+                                                      size: screenWidth * 0.1,
+                                                    ),
+                                                  );
+                                                },
+                                              )
+                                              : Container(
+                                                width: screenWidth * 0.25,
+                                                height: screenWidth * 0.25,
+                                                color: Colors.grey[700],
+                                                child: Icon(
+                                                  Icons.motorcycle,
+                                                  color: Colors.grey[500],
+                                                  size: screenWidth * 0.1,
                                                 ),
                                               ),
-                                          errorWidget: (context, url, error) {
-                                            print(
-                                              'Erreur de chargement d\'image: $error pour URL: $url',
-                                            );
-                                            return Container(
-                                              width: screenWidth * 0.25,
-                                              height: screenWidth * 0.25,
-                                              color: Colors.grey[700],
-                                              child: Icon(
-                                                Icons.image_not_supported,
-                                                color: Colors.grey[500],
-                                                size: screenWidth * 0.1,
-                                              ),
-                                            );
-                                          },
-                                        )
-                                        : Container(
-                                          width: screenWidth * 0.25,
-                                          height: screenWidth * 0.25,
-                                          color: Colors.grey[700],
-                                          child: Icon(
-                                            Icons.motorcycle,
-                                            color: Colors.grey[500],
-                                            size: screenWidth * 0.1,
+                                    ),
+                                    SizedBox(width: screenWidth * 0.04),
+                                    // Informations de la moto
+                                    Expanded(
+                                      child: Column(
+                                        crossAxisAlignment:
+                                            CrossAxisAlignment.start,
+                                        children: [
+                                          Text(
+                                            '$marque',
+                                            style: TextStyle(
+                                              fontSize: screenWidth * 0.05,
+                                              fontWeight: FontWeight.bold,
+                                              color: Colors.white,
+                                            ),
+                                            maxLines: 2,
+                                            overflow: TextOverflow.ellipsis,
                                           ),
-                                        ),
-                              ),
-                              SizedBox(width: screenWidth * 0.04),
-                              // Wrap the text in a Flexible widget so it doesn't force overflow
-                              Flexible(
-                                child: Column(
-                                  crossAxisAlignment: CrossAxisAlignment.start,
-                                  children: [
-                                    Text(
-                                      '$marque',
-                                      style: TextStyle(
-                                        fontSize: screenWidth * 0.05,
-                                        fontWeight: FontWeight.bold,
+                                          SizedBox(
+                                            height: screenHeight * 0.005,
+                                          ),
+                                          Text(
+                                            'Année: $annee',
+                                            style: TextStyle(
+                                              fontSize: screenWidth * 0.04,
+                                              color: Colors.grey[400],
+                                            ),
+                                            maxLines: 1,
+                                            overflow: TextOverflow.ellipsis,
+                                          ),
+                                        ],
+                                      ),
+                                    ),
+                                    // Menu d'options
+                                    PopupMenuButton<String>(
+                                      icon: Icon(
+                                        Icons.more_vert,
                                         color: Colors.white,
                                       ),
-                                      maxLines: 2,
-                                      overflow: TextOverflow.ellipsis,
-                                    ),
-                                    SizedBox(height: screenHeight * 0.005),
-                                    Text(
-                                      'Année: $annee',
-                                      style: TextStyle(
-                                        fontSize: screenWidth * 0.04,
-                                        color: Colors.grey[400],
-                                      ),
-                                      maxLines: 1,
-                                      overflow: TextOverflow.ellipsis,
-                                    ),
-                                    SizedBox(height: screenHeight * 0.01),
-                                    ElevatedButton.icon(
-                                      icon: Icon(Icons.shopping_cart, size: 18),
-                                      label: Text('Acheter des pièces'),
-                                      style: ElevatedButton.styleFrom(
-                                        backgroundColor: Colors.red,
-                                        padding: EdgeInsets.symmetric(
-                                          horizontal: 12,
-                                          vertical: 8,
-                                        ),
-                                      ),
-                                      onPressed:
-                                          () => _navigateToPartsList(moto),
+                                      color: Colors.grey[800],
+                                      onSelected: (value) {
+                                        if (value == 'parts') {
+                                          _navigateToPartsList(moto);
+                                        } else if (value == 'delete') {
+                                          _showDeleteConfirmation(moto);
+                                        } else if (value == 'details') {
+                                          _navigateToDetails(moto);
+                                        }
+                                      },
+                                      itemBuilder:
+                                          (context) => [
+                                            PopupMenuItem(
+                                              value: 'details',
+                                              child: Text(
+                                                'Voir les détails',
+                                                style: TextStyle(
+                                                  color: Colors.white,
+                                                ),
+                                              ),
+                                            ),
+                                            PopupMenuItem(
+                                              value: 'parts',
+                                              child: Text(
+                                                'Voir les pièces compatibles',
+                                                style: TextStyle(
+                                                  color: Colors.white,
+                                                ),
+                                              ),
+                                            ),
+                                            PopupMenuItem(
+                                              value: 'delete',
+                                              child: Text(
+                                                'Supprimer',
+                                                style: TextStyle(
+                                                  color: Colors.red,
+                                                ),
+                                              ),
+                                            ),
+                                          ],
                                     ),
                                   ],
                                 ),
                               ),
-                              // Constrain the PopupMenuButton with a SizedBox
-                              SizedBox(
-                                width: screenWidth * 0.1,
-                                child: PopupMenuButton<String>(
+                            ),
+                            // Bouton d'achat de pièces séparé
+                            Padding(
+                              padding: EdgeInsets.fromLTRB(
+                                screenWidth * 0.04,
+                                0,
+                                screenWidth * 0.04,
+                                screenWidth * 0.04,
+                              ),
+                              child: SizedBox(
+                                width: double.infinity,
+                                child: ElevatedButton.icon(
                                   icon: Icon(
-                                    Icons.more_vert,
+                                    Icons.shopping_cart,
+                                    size: 18,
                                     color: Colors.white,
                                   ),
-                                  color: Colors.grey[800],
-                                  onSelected: (value) {
-                                    if (value == 'parts') {
-                                      _navigateToPartsList(moto);
-                                    } else if (value == 'delete') {
-                                      _showDeleteConfirmation(moto);
-                                    }
-                                  },
-                                  itemBuilder:
-                                      (context) => [
-                                        PopupMenuItem(
-                                          value: 'parts',
-                                          child: Text(
-                                            'Voir les pièces compatibles',
-                                            style: TextStyle(
-                                              color: Colors.white,
-                                            ),
-                                          ),
-                                        ),
-                                        PopupMenuItem(
-                                          value: 'delete',
-                                          child: Text(
-                                            'Supprimer',
-                                            style: TextStyle(color: Colors.red),
-                                          ),
-                                        ),
-                                      ],
+                                  label: Text(
+                                    'Acheter des pièces',
+                                    style: TextStyle(color: Colors.white),
+                                  ),
+                                  style: ElevatedButton.styleFrom(
+                                    backgroundColor: Colors.red,
+                                    padding: EdgeInsets.symmetric(vertical: 12),
+                                  ),
+                                  onPressed: () => _navigateToPartsList(moto),
                                 ),
                               ),
-                            ],
-                          ),
+                            ),
+                          ],
                         ),
                       );
                     },

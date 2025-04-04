@@ -619,7 +619,7 @@ class _CartPageState extends State<CartPage> {
                     padding: const EdgeInsets.symmetric(vertical: 16),
                   ),
                   onPressed: _applyPromoCode,
-                  child: const Text("Appliquer"),
+                  child: const Text("Appliquer", style: TextStyle(color: Colors.white)),
                 ),
               ],
             ),
@@ -743,12 +743,12 @@ class _CartPageState extends State<CartPage> {
             children: [
               const Text(
                 "Passer commande",
-                style: TextStyle(fontSize: 16, fontWeight: FontWeight.bold),
+                style: TextStyle(fontSize: 16, fontWeight: FontWeight.bold, color: Colors.white),
               ),
               const SizedBox(width: 8),
               Text(
                 "${_total.toStringAsFixed(2)} €",
-                style: const TextStyle(fontSize: 16),
+                style: const TextStyle(fontSize: 16, fontWeight: FontWeight.bold, color: Colors.white),
               ),
             ],
           ),
