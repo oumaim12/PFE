@@ -8,6 +8,7 @@ import 'cart_page.dart';
 import 'login_screen.dart';
 import '../models/moto.dart';
 import '../services/api_service.dart';
+import 'package:cached_network_image/cached_network_image.dart';
 
 class HomePage extends StatefulWidget {
   const HomePage({super.key});
@@ -25,16 +26,16 @@ class _HomePageState extends State<HomePage> {
   bool _isLoading = true; // État de chargement
 
   final List<Widget> _pages = [
-    const HomeContent(),       // Page d'accueil
-     MesMotosScreen(),    // Page Mes Motos
-     ProfileScreen(),     // Page du profile 
-     MesCommandesScreen() // Page Mes Commandes
+    const HomeContent(), // Page d'accueil
+    MesMotosScreen(), // Page Mes Motos
+    ProfileScreen(), // Page du profile
+    MesCommandesScreen(), // Page Mes Commandes
   ];
 
   @override
   void initState() {
     super.initState();
-    testImageAccess('http://10.0.2.2:8000/storage/motos/1742646869.jpg');
+    testImageAccess('http://10.0.2.2:8000/storage/motos/1742657296.jpg');
     _fetchMotos(); // Récupérer les motos lors de l'initialisation de la page
   }
 
@@ -70,7 +71,7 @@ class _HomePageState extends State<HomePage> {
   void _onItemTapped(int index) {
     setState(() {
       _selectedIndex = index;
-      
+
       // Si la barre de recherche est ouverte, la fermer lors d'un changement d'onglet
       if (_showSearchBar) {
         _toggleSearch();
@@ -121,48 +122,57 @@ class _HomePageState extends State<HomePage> {
       backgroundColor: Colors.black,
       appBar: AppBar(
         backgroundColor: Colors.grey[900],
-        title: _showSearchBar
-            ? AnimatedContainer(
-                duration: const Duration(milliseconds: 300),
-                width: double.infinity,
-                height: 40,
-                decoration: BoxDecoration(
-                  color: Colors.grey[800],
-                  borderRadius: BorderRadius.circular(20),
-                  boxShadow: const [
-                    BoxShadow(
-                      color: Colors.black38,
-                      blurRadius: 5,
-                      offset: Offset(0, 2),)
-                  ],
-                ),
-                child: TextField(
-                  controller: _searchController,
-                  decoration: InputDecoration(
-                    hintText: 'Rechercher des pièces...',
-                    hintStyle: TextStyle(color: Colors.grey[400]),
-                    border: InputBorder.none,
-                    prefixIcon: const Icon(Icons.search, color: Colors.red),
-                    suffixIcon: _isSearching
-                        ? IconButton(
-                            icon: const Icon(Icons.close, color: Colors.red),
-                            onPressed: _toggleSearch,
-                          )
-                        : null,
+        title:
+            _showSearchBar
+                ? AnimatedContainer(
+                  duration: const Duration(milliseconds: 300),
+                  width: double.infinity,
+                  height: 40,
+                  decoration: BoxDecoration(
+                    color: Colors.grey[800],
+                    borderRadius: BorderRadius.circular(20),
+                    boxShadow: const [
+                      BoxShadow(
+                        color: Colors.black38,
+                        blurRadius: 5,
+                        offset: Offset(0, 2),
+                      ),
+                    ],
                   ),
-                  style: const TextStyle(color: Colors.white),
-                  autofocus: true,
-                  onChanged: (value) {
-                    // Ajoutez ici la logique de recherche
-                  },
-                  onSubmitted: (value) {
-                    if (value.isNotEmpty) {
-                      _navigateToSearch();
-                    }
-                  },
+                  child: TextField(
+                    controller: _searchController,
+                    decoration: InputDecoration(
+                      hintText: 'Rechercher des pièces...',
+                      hintStyle: TextStyle(color: Colors.grey[400]),
+                      border: InputBorder.none,
+                      prefixIcon: const Icon(Icons.search, color: Colors.red),
+                      suffixIcon:
+                          _isSearching
+                              ? IconButton(
+                                icon: const Icon(
+                                  Icons.close,
+                                  color: Colors.red,
+                                ),
+                                onPressed: _toggleSearch,
+                              )
+                              : null,
+                    ),
+                    style: const TextStyle(color: Colors.white),
+                    autofocus: true,
+                    onChanged: (value) {
+                      // Ajoutez ici la logique de recherche
+                    },
+                    onSubmitted: (value) {
+                      if (value.isNotEmpty) {
+                        _navigateToSearch();
+                      }
+                    },
+                  ),
+                )
+                : const Text(
+                  'Moto Parts Shopping',
+                  style: TextStyle(color: Colors.white),
                 ),
-              )
-            : const Text('Moto Parts Shopping', style: TextStyle(color: Colors.white)),
         iconTheme: const IconThemeData(color: Colors.red),
         actions: [
           IconButton(
@@ -199,11 +209,14 @@ class _HomePageState extends State<HomePage> {
           ),
         ],
       ),
-      body: _selectedIndex == 0 
-          ? _isLoading 
-              ? const Center(child: CircularProgressIndicator(color: Colors.red)) 
-              : HomeContent(motos: _motos)
-          : _pages[_selectedIndex],
+      body:
+          _selectedIndex == 0
+              ? _isLoading
+                  ? const Center(
+                    child: CircularProgressIndicator(color: Colors.red),
+                  )
+                  : HomeContent(motos: _motos)
+              : _pages[_selectedIndex],
       bottomNavigationBar: BottomNavigationBar(
         backgroundColor: Colors.grey[900],
         currentIndex: _selectedIndex,
@@ -213,10 +226,19 @@ class _HomePageState extends State<HomePage> {
         type: BottomNavigationBarType.fixed,
         items: const [
           BottomNavigationBarItem(icon: Icon(Icons.home), label: 'Accueil'),
-          BottomNavigationBarItem(icon: Icon(Icons.motorcycle), label: 'Mes Motos'),
+          BottomNavigationBarItem(
+            icon: Icon(Icons.motorcycle),
+            label: 'Mes Motos',
+          ),
           BottomNavigationBarItem(icon: Icon(Icons.person), label: 'Profile'),
-          BottomNavigationBarItem(icon: Icon(Icons.receipt_long), label: 'Mes Commandes'),
-          BottomNavigationBarItem(icon: Icon(Icons.logout), label: 'Déconnexion'),
+          BottomNavigationBarItem(
+            icon: Icon(Icons.receipt_long),
+            label: 'Mes Commandes',
+          ),
+          BottomNavigationBarItem(
+            icon: Icon(Icons.logout),
+            label: 'Déconnexion',
+          ),
         ],
       ),
     );
@@ -267,45 +289,52 @@ class HomeContent extends StatelessWidget {
                 ),
               ),
             ),
-            
+
             // Section principale - Affichage des motos
             const SizedBox(height: 20),
             const Text(
               'Recommandé pour vous',
               style: TextStyle(
-                fontSize: 22, 
+                fontSize: 22,
                 fontWeight: FontWeight.bold,
                 color: Colors.white,
               ),
             ),
             const SizedBox(height: 16),
-            
+
             motos.isEmpty
-            ? Center(
-                child: Padding(
-                  padding: const EdgeInsets.all(20.0),
-                  child: Column(
-                    children: [
-                      Icon(Icons.motorcycle_outlined, size: 60, color: Colors.grey[600]),
-                      const SizedBox(height: 16),
-                      Text(
-                        'Aucune moto disponible',
-                        style: TextStyle(color: Colors.grey[500], fontSize: 18),
-                      ),
-                    ],
+                ? Center(
+                  child: Padding(
+                    padding: const EdgeInsets.all(20.0),
+                    child: Column(
+                      children: [
+                        Icon(
+                          Icons.motorcycle_outlined,
+                          size: 60,
+                          color: Colors.grey[600],
+                        ),
+                        const SizedBox(height: 16),
+                        Text(
+                          'Aucune moto disponible',
+                          style: TextStyle(
+                            color: Colors.grey[500],
+                            fontSize: 18,
+                          ),
+                        ),
+                      ],
+                    ),
+                  ),
+                )
+                : SizedBox(
+                  height: 220, // Hauteur fixe pour la liste horizontale
+                  child: ListView.builder(
+                    scrollDirection: Axis.horizontal,
+                    itemCount: motos.length,
+                    itemBuilder: (context, index) {
+                      return _buildMotoCard(context, motos[index]);
+                    },
                   ),
                 ),
-              )
-            : SizedBox(
-                height: 220, // Hauteur fixe pour la liste horizontale
-                child: ListView.builder(
-                  scrollDirection: Axis.horizontal,
-                  itemCount: motos.length,
-                  itemBuilder: (context, index) {
-                    return _buildMotoCard(context, motos[index]);
-                  },
-                ),
-              ),
           ],
         ),
       ),
@@ -313,135 +342,128 @@ class HomeContent extends StatelessWidget {
   }
 
   // Méthode modifiée pour construire une carte de moto en utilisant le model
-Widget _buildMotoCard(BuildContext context, Moto moto) {
-  String imageUrl = moto.getImageUrl();
-  
-  print('Tentative de chargement de l\'image: $imageUrl');
-  
-  return Container(
-    width: 180, // Largeur fixe pour chaque carte
-    margin: const EdgeInsets.only(right: 12),
-    decoration: BoxDecoration(
-      color: Colors.grey[800],
-      borderRadius: BorderRadius.circular(10),
-      boxShadow: const [
-        BoxShadow(
-          color: Colors.black26,
-          blurRadius: 4,
-          offset: Offset(0, 2),
-        ),
-      ],
-    ),
-    child: Column(
-      crossAxisAlignment: CrossAxisAlignment.start,
-      children: [
-        // Image de la moto avec meilleure gestion des erreurs
-        ClipRRect(
-          borderRadius: const BorderRadius.vertical(top: Radius.circular(10)),
-          child: SizedBox(
-            height: 120,
-            width: double.infinity,
-            child: Image.network(
-              imageUrl,
-              fit: BoxFit.cover,
-              loadingBuilder: (context, child, loadingProgress) {
-                if (loadingProgress == null) return child;
-                return Center(
-                  child: CircularProgressIndicator(
-                    value: loadingProgress.expectedTotalBytes != null
-                        ? loadingProgress.cumulativeBytesLoaded / loadingProgress.expectedTotalBytes!
-                        : null,
-                    color: Colors.red,
-                  ),
-                );
-              },
-              errorBuilder: (context, error, stackTrace) {
-                print('Erreur de chargement d\'image: $error');
-                print('URL qui a échoué: $imageUrl');
-                return Container(
-                  color: Colors.grey[700],
-                  child: const Center(
-                    child: Column(
-                      mainAxisAlignment: MainAxisAlignment.center,
-                      children: [
-                        Icon(Icons.broken_image, size: 40, color: Colors.red),
-                        SizedBox(height: 4),
-                        Text(
-                          'Image indisponible',
-                          style: TextStyle(color: Colors.white, fontSize: 12),
+  Widget _buildMotoCard(BuildContext context, Moto moto) {
+    String imageUrl = moto.getImageUrl();
+
+    print('Tentative de chargement de l\'image: $imageUrl');
+
+    return Container(
+      width: 180, // Largeur fixe pour chaque carte
+      margin: const EdgeInsets.only(right: 12),
+      decoration: BoxDecoration(
+        color: Colors.grey[800],
+        borderRadius: BorderRadius.circular(10),
+        boxShadow: const [
+          BoxShadow(color: Colors.black26, blurRadius: 4, offset: Offset(0, 2)),
+        ],
+      ),
+      child: Column(
+        crossAxisAlignment: CrossAxisAlignment.start,
+        children: [
+          // Image de la moto avec meilleure gestion des erreurs
+          ClipRRect(
+            borderRadius: const BorderRadius.vertical(top: Radius.circular(10)),
+            child: SizedBox(
+              height: 120,
+              width: double.infinity,
+              child: CachedNetworkImage(
+                imageUrl: imageUrl,
+                fit: BoxFit.cover,
+                placeholder:
+                    (context, url) => Center(
+                      child: CircularProgressIndicator(color: Colors.red),
+                    ),
+                errorWidget:
+                    (context, url, error) => Container(
+                      color: Colors.grey[700],
+                      child: const Center(
+                        child: Column(
+                          mainAxisAlignment: MainAxisAlignment.center,
+                          children: [
+                            Icon(
+                              Icons.broken_image,
+                              size: 40,
+                              color: Colors.red,
+                            ),
+                            SizedBox(height: 4),
+                            Text(
+                              'Image indisponible',
+                              style: TextStyle(
+                                color: Colors.white,
+                                fontSize: 12,
+                              ),
+                            ),
+                          ],
                         ),
-                      ],
+                      ),
                     ),
-                  ),
-                );
-              },
+              ),
             ),
           ),
-        ),
-        
-        // Informations de la moto
-        Expanded(
-          child: Padding(
-            padding: const EdgeInsets.all(8.0),
-            child: Column(
-              crossAxisAlignment: CrossAxisAlignment.start,
-              mainAxisAlignment: MainAxisAlignment.spaceBetween,
-              mainAxisSize: MainAxisSize.min,
-              children: [
-                Column(
-                  crossAxisAlignment: CrossAxisAlignment.start,
-                  mainAxisSize: MainAxisSize.min,
-                  children: [
-                    // Marque avec gestion des nulls
-                    Text(
-                      moto.model?.marque ?? 'Marque inconnue',
-                      style: const TextStyle(
-                        color: Colors.white,
-                        fontWeight: FontWeight.bold,
-                        fontSize: 16,
+
+          // Informations de la moto
+          Expanded(
+            child: Padding(
+              padding: const EdgeInsets.all(8.0),
+              child: Column(
+                crossAxisAlignment: CrossAxisAlignment.start,
+                mainAxisAlignment: MainAxisAlignment.spaceBetween,
+                mainAxisSize: MainAxisSize.min,
+                children: [
+                  Column(
+                    crossAxisAlignment: CrossAxisAlignment.start,
+                    mainAxisSize: MainAxisSize.min,
+                    children: [
+                      // Marque avec gestion des nulls
+                      Text(
+                        moto.model?.marque ?? 'Marque inconnue',
+                        style: const TextStyle(
+                          color: Colors.white,
+                          fontWeight: FontWeight.bold,
+                          fontSize: 16,
+                        ),
+                        maxLines: 1,
+                        overflow: TextOverflow.ellipsis,
                       ),
-                      maxLines: 1,
-                      overflow: TextOverflow.ellipsis,
-                    ),
-                    const SizedBox(height: 2),
-                    // Année avec gestion des nulls
-                    Text(
-                      'Année: ${moto.model?.annee ?? 'Inconnue'}',
-                      style: TextStyle(
-                        color: Colors.grey[400],
-                        fontSize: 14,
+                      const SizedBox(height: 2),
+                      // Année avec gestion des nulls
+                      Text(
+                        'Année: ${moto.model?.annee ?? 'Inconnue'}',
+                        style: TextStyle(color: Colors.grey[400], fontSize: 14),
                       ),
-                    ),
-                  ],
-                ),
-                
-                // Bouton Détails
-                InkWell(
-                  onTap: () {
-                    // Navigation vers les détails de la moto
-                  },
-                  child: Container(
-                    padding: const EdgeInsets.symmetric(vertical: 4, horizontal: 12),
-                    decoration: BoxDecoration(
-                      color: Colors.red,
-                      borderRadius: BorderRadius.circular(4),
-                    ),
-                    child: const Text(
-                      'Détails',
-                      style: TextStyle(
-                        color: Colors.white,
-                        fontWeight: FontWeight.bold,
-                        fontSize: 12,
+                    ],
+                  ),
+
+                  // Bouton Détails
+                  InkWell(
+                    onTap: () {
+                      // Navigation vers les détails de la moto
+                    },
+                    child: Container(
+                      padding: const EdgeInsets.symmetric(
+                        vertical: 4,
+                        horizontal: 12,
+                      ),
+                      decoration: BoxDecoration(
+                        color: Colors.red,
+                        borderRadius: BorderRadius.circular(4),
+                      ),
+                      child: const Text(
+                        'Détails',
+                        style: TextStyle(
+                          color: Colors.white,
+                          fontWeight: FontWeight.bold,
+                          fontSize: 12,
+                        ),
                       ),
                     ),
                   ),
-                ),
-              ],
+                ],
+              ),
             ),
           ),
-        ),
-      ],
-    ),
-  );
-}
+        ],
+      ),
+    );
+  }
 }

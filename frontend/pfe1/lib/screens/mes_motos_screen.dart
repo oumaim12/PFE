@@ -1,3 +1,4 @@
+import 'package:cached_network_image/cached_network_image.dart';
 import 'package:flutter/material.dart';
 import 'package:provider/provider.dart';
 import '../models/moto.dart';
@@ -23,50 +24,58 @@ class _MesMotosScreenState extends State<MesMotosScreen> {
   void _showDeleteConfirmation(Moto moto) {
     showDialog(
       context: context,
-      builder: (context) => AlertDialog(
-        backgroundColor: Colors.grey[900],
-        title: Text('Supprimer la moto', style: TextStyle(color: Colors.white)),
-        content: Text(
-          'Êtes-vous sûr de vouloir supprimer cette moto ?',
-          style: TextStyle(color: Colors.white),
-        ),
-        actions: [
-          TextButton(
-            onPressed: () => Navigator.pop(context),
-            child: Text('Annuler', style: TextStyle(color: Colors.grey)),
+      builder:
+          (context) => AlertDialog(
+            backgroundColor: Colors.grey[900],
+            title: Text(
+              'Supprimer la moto',
+              style: TextStyle(color: Colors.white),
+            ),
+            content: Text(
+              'Êtes-vous sûr de vouloir supprimer cette moto ?',
+              style: TextStyle(color: Colors.white),
+            ),
+            actions: [
+              TextButton(
+                onPressed: () => Navigator.pop(context),
+                child: Text('Annuler', style: TextStyle(color: Colors.grey)),
+              ),
+              Consumer<MotoProvider>(
+                builder: (context, provider, child) {
+                  return ElevatedButton(
+                    style: ElevatedButton.styleFrom(
+                      backgroundColor: Colors.red,
+                    ),
+                    onPressed:
+                        provider.isLoading
+                            ? null
+                            : () async {
+                              final result = await provider.deleteMoto(moto.id);
+                              Navigator.pop(context);
+
+                              ScaffoldMessenger.of(context).showSnackBar(
+                                SnackBar(
+                                  content: Text(result['message']),
+                                  backgroundColor:
+                                      result['success']
+                                          ? Colors.green
+                                          : Colors.red,
+                                ),
+                              );
+                            },
+                    child: Text('Supprimer'),
+                  );
+                },
+              ),
+            ],
           ),
-          Consumer<MotoProvider>(
-            builder: (context, provider, child) {
-              return ElevatedButton(
-                style: ElevatedButton.styleFrom(backgroundColor: Colors.red),
-                onPressed: provider.isLoading
-                    ? null
-                    : () async {
-                        final result = await provider.deleteMoto(moto.id);
-                        Navigator.pop(context);
-                        
-                        ScaffoldMessenger.of(context).showSnackBar(
-                          SnackBar(
-                            content: Text(result['message']),
-                            backgroundColor: result['success'] ? Colors.green : Colors.red,
-                          ),
-                        );
-                      },
-                child: Text('Supprimer'),
-              );
-            },
-          ),
-        ],
-      ),
     );
   }
 
   void _navigateToPartsList(Moto moto) {
     Navigator.push(
       context,
-      MaterialPageRoute(
-        builder: (context) => MotoPartsScreen(moto: moto),
-      ),
+      MaterialPageRoute(builder: (context) => MotoPartsScreen(moto: moto)),
     );
   }
 
@@ -98,7 +107,9 @@ class _MesMotosScreenState extends State<MesMotosScreen> {
                   ),
                   SizedBox(height: 16),
                   ElevatedButton(
-                    style: ElevatedButton.styleFrom(backgroundColor: Colors.red),
+                    style: ElevatedButton.styleFrom(
+                      backgroundColor: Colors.red,
+                    ),
                     onPressed: () => motoProvider.loadClientMotos(),
                     child: Text('Réessayer'),
                   ),
@@ -158,7 +169,7 @@ class _MesMotosScreenState extends State<MesMotosScreen> {
                       final model = moto.model; // Peut être null
                       final marque = model?.marque ?? 'Inconnu';
                       final annee = model?.annee.toString() ?? 'Année inconnue';
-                      
+
                       return Card(
                         color: Colors.grey[900],
                         shape: RoundedRectangleBorder(
@@ -174,35 +185,53 @@ class _MesMotosScreenState extends State<MesMotosScreen> {
                             children: [
                               ClipRRect(
                                 borderRadius: BorderRadius.circular(8),
-                                child: moto.image != null && moto.image!.isNotEmpty
-                                    ? Image.network(
-                                        moto.image!,
-                                        width: screenWidth * 0.25,
-                                        height: screenWidth * 0.25,
-                                        fit: BoxFit.cover,
-                                        errorBuilder: (context, error, stackTrace) {
-                                          return Container(
-                                            width: screenWidth * 0.25,
-                                            height: screenWidth * 0.25,
-                                            color: Colors.grey[700],
-                                            child: Icon(
-                                              Icons.image_not_supported,
-                                              color: Colors.grey[500],
-                                              size: screenWidth * 0.1,
-                                            ),
-                                          );
-                                        },
-                                      )
-                                    : Container(
-                                        width: screenWidth * 0.25,
-                                        height: screenWidth * 0.25,
-                                        color: Colors.grey[700],
-                                        child: Icon(
-                                          Icons.motorcycle,
-                                          color: Colors.grey[500],
-                                          size: screenWidth * 0.1,
+                                child:
+                                    moto.image != null && moto.image!.isNotEmpty
+                                        ? CachedNetworkImage(
+                                          imageUrl:
+                                              moto.getImageUrl(), // Utilisez getImageUrl() au lieu de l'URL directe
+                                          width: screenWidth * 0.25,
+                                          height: screenWidth * 0.25,
+                                          fit: BoxFit.cover,
+                                          placeholder:
+                                              (context, url) => Container(
+                                                width: screenWidth * 0.25,
+                                                height: screenWidth * 0.25,
+                                                color: Colors.grey[800],
+                                                child: Center(
+                                                  child:
+                                                      CircularProgressIndicator(
+                                                        color: Colors.red,
+                                                        strokeWidth: 2.0,
+                                                      ),
+                                                ),
+                                              ),
+                                          errorWidget: (context, url, error) {
+                                            print(
+                                              'Erreur de chargement d\'image: $error pour URL: $url',
+                                            );
+                                            return Container(
+                                              width: screenWidth * 0.25,
+                                              height: screenWidth * 0.25,
+                                              color: Colors.grey[700],
+                                              child: Icon(
+                                                Icons.image_not_supported,
+                                                color: Colors.grey[500],
+                                                size: screenWidth * 0.1,
+                                              ),
+                                            );
+                                          },
+                                        )
+                                        : Container(
+                                          width: screenWidth * 0.25,
+                                          height: screenWidth * 0.25,
+                                          color: Colors.grey[700],
+                                          child: Icon(
+                                            Icons.motorcycle,
+                                            color: Colors.grey[500],
+                                            size: screenWidth * 0.1,
+                                          ),
                                         ),
-                                      ),
                               ),
                               SizedBox(width: screenWidth * 0.04),
                               // Wrap the text in a Flexible widget so it doesn't force overflow
@@ -241,7 +270,8 @@ class _MesMotosScreenState extends State<MesMotosScreen> {
                                           vertical: 8,
                                         ),
                                       ),
-                                      onPressed: () => _navigateToPartsList(moto),
+                                      onPressed:
+                                          () => _navigateToPartsList(moto),
                                     ),
                                   ],
                                 ),
@@ -250,7 +280,10 @@ class _MesMotosScreenState extends State<MesMotosScreen> {
                               SizedBox(
                                 width: screenWidth * 0.1,
                                 child: PopupMenuButton<String>(
-                                  icon: Icon(Icons.more_vert, color: Colors.white),
+                                  icon: Icon(
+                                    Icons.more_vert,
+                                    color: Colors.white,
+                                  ),
                                   color: Colors.grey[800],
                                   onSelected: (value) {
                                     if (value == 'parts') {
@@ -259,22 +292,25 @@ class _MesMotosScreenState extends State<MesMotosScreen> {
                                       _showDeleteConfirmation(moto);
                                     }
                                   },
-                                  itemBuilder: (context) => [
-                                    PopupMenuItem(
-                                      value: 'parts',
-                                      child: Text(
-                                        'Voir les pièces compatibles',
-                                        style: TextStyle(color: Colors.white),
-                                      ),
-                                    ),
-                                    PopupMenuItem(
-                                      value: 'delete',
-                                      child: Text(
-                                        'Supprimer',
-                                        style: TextStyle(color: Colors.red),
-                                      ),
-                                    ),
-                                  ],
+                                  itemBuilder:
+                                      (context) => [
+                                        PopupMenuItem(
+                                          value: 'parts',
+                                          child: Text(
+                                            'Voir les pièces compatibles',
+                                            style: TextStyle(
+                                              color: Colors.white,
+                                            ),
+                                          ),
+                                        ),
+                                        PopupMenuItem(
+                                          value: 'delete',
+                                          child: Text(
+                                            'Supprimer',
+                                            style: TextStyle(color: Colors.red),
+                                          ),
+                                        ),
+                                      ],
                                 ),
                               ),
                             ],

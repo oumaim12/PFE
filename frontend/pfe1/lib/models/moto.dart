@@ -73,7 +73,16 @@ class Moto {
   }
 
   String getImageUrl() {
-  return ApiService.getImageUrl(image!);
+  if (image == null || image!.isEmpty) {
+    return ''; 
+  }
+  
+  try {
+    return ApiService.getImageUrl(image!);
+  } catch (e) {
+    print("Erreur dans getImageUrl: $e");
+    return ''; 
+  }
 }
 
 }
