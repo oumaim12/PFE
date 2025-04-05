@@ -13,8 +13,10 @@ class Schema extends Model
         'nom',
         'parent_id',
         'version',
-        'price',    // Ajout du prix
-        'moto_id',  // Ajout de la relation avec les motos
+        'price',
+        'moto_id',
+        'image',
+        'serial_number',
     ];
 
     protected $casts = [

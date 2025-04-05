@@ -111,7 +111,9 @@ class SchemaController extends Controller
             'version' => 'required|string|max:50',
             'parent_id' => 'nullable|exists:schemas,id',
             'price' => 'required|numeric|min:0',
-            'moto_id' => 'nullable|exists:motos,id'
+            'moto_id' => 'nullable|exists:motos,id',
+            'image' => 'nullable|image|mimes:jpeg,png,jpg,gif|max:2048',
+            'serial_number' => 'nullable|string|max:100',
         ]);
 
         if ($validator->fails()) {
@@ -120,14 +122,24 @@ class SchemaController extends Controller
                 ->withInput();
         }
 
-        // Création de la pièce
-        Schema::create([
+        $data = [
             'nom' => $request->nom,
             'version' => $request->version,
             'parent_id' => $request->parent_id,
             'price' => $request->price,
-            'moto_id' => $request->moto_id
-        ]);
+            'moto_id' => $request->moto_id,
+            'serial_number' => $request->serial_number,
+        ];
+        
+        // Traitement de l'image si elle est présente
+        if ($request->hasFile('image')) {
+            $image = $request->file('image');
+            $imageName = time() . '.' . $image->getClientOriginalExtension();
+            $imagePath = $image->storeAs('schemas', $imageName, 'public');
+            $data['image'] = $imagePath;
+        }
+        
+        Schema::create($data);
 
         return redirect()->route('schemas.index')
             ->with('success', 'Pièce créée avec succès.');

@@ -7,7 +7,7 @@ import '../models/commande.dart';
 
 class ApiService {
   // Replace with your PC's IP
-  static const String baseUrl = "http://10.0.2.2:8000/api";
+  static const String baseUrl = "http://192.168.0.102:8000/api";
 
   static Map<String, dynamic>? currentUser;
   static String? accessToken;
@@ -993,6 +993,6 @@ class ApiService {
 
   static String getImageUrl(String imagePath) {
     // Éviter la duplication des segments de chemin
-    return 'http://10.0.2.2:8000/storage/$imagePath';
+    return 'http://192.168.0.102:8000/storage/$imagePath';
   }
 }

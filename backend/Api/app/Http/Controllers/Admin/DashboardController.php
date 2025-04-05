@@ -135,7 +135,6 @@ $popularModels = MotoModel::withCount('motos')
             'topCategoriesLabels',
             'topCategoriesData',
             'recentCustomers',
-            // Nouvelles variables pour motos et modèles
             'totalMotos',
             'newMotos',
             'totalModels',

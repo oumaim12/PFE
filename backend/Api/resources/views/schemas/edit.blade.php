@@ -35,6 +35,12 @@
                             <input type="text" name="nom" id="nom" value="{{ old('nom', $schema->nom) }}" required class="form-input" placeholder="Ex: Carburateur">
                             <p class="text-polished-chrome/70 text-xs mt-1">Le nom doit être précis et descriptif.</p>
                         </div>
+                        
+                        <div class="mb-4">
+                            <label for="serial_number" class="block text-polished-chrome text-sm font-medium mb-1">Numéro de série</label>
+                            <input type="text" name="serial_number" id="serial_number" value="{{ old('serial_number', $schema->serial_number ?? '') }}" class="form-input" placeholder="Ex: SN-12345-ABC">
+                            <p class="text-polished-chrome/70 text-xs mt-1">Numéro de série unique de la pièce</p>
+                        </div>
 
                         <div class="mb-4">
                             <label for="version" class="block text-polished-chrome text-sm font-medium mb-1">Version <span class="text-engine-red">*</span></label>
@@ -167,6 +173,12 @@
                             </div>
                         @endif
                     </div>
+                </div>
+
+                <div class="mb-4">
+                    <label for="image" class="block text-polished-chrome text-sm font-medium mb-1">Image</label>
+                    <input type="file" name="image" id="image" class="form-input">
+                    <p class="text-polished-chrome/70 text-xs mt-1">Image de la pièce (JPG, PNG)</p>
                 </div>
 
                 <div class="mt-6 flex justify-end space-x-3">
