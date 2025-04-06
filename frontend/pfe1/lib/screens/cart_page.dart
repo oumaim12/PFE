@@ -3,6 +3,7 @@ import 'package:provider/provider.dart';
 import '../models/cart_item.dart';
 import '../providers/cart_provider.dart';
 import '../services/api_service.dart';
+import 'package:cached_network_image/cached_network_image.dart';
 
 class CartPage extends StatefulWidget {
   const CartPage({super.key});
@@ -16,7 +17,7 @@ class _CartPageState extends State<CartPage> {
   double _discount = 0.0;
   bool _isLoadingLocal = false; // Pour le suivi local de l'état de chargement
   String? _localError; // Pour le suivi local des erreurs
-  
+
   // Define the dark theme colors
   final Color _primaryColor = Colors.red;
   final Color _backgroundColor = Colors.grey[900]!;
@@ -44,13 +45,10 @@ class _CartPageState extends State<CartPage> {
       setState(() {
         _localError = "Erreur lors du chargement du panier: $e";
       });
-      
+
       if (mounted) {
         ScaffoldMessenger.of(context).showSnackBar(
-          SnackBar(
-            content: Text(_localError!),
-            backgroundColor: Colors.red,
-          ),
+          SnackBar(content: Text(_localError!), backgroundColor: Colors.red),
         );
       }
     } finally {
@@ -75,15 +73,15 @@ class _CartPageState extends State<CartPage> {
   Future<void> _updateQuantity(int itemId, int newQuantity) async {
     if (newQuantity < 1) newQuantity = 1;
     if (newQuantity > 99) newQuantity = 99;
-    
+
     setState(() {
       _isLoadingLocal = true;
     });
-    
+
     try {
       final cartProvider = Provider.of<CartProvider>(context, listen: false);
       await cartProvider.updateQuantity(itemId, newQuantity);
-      
+
       if (mounted) {
         ScaffoldMessenger.of(context).showSnackBar(
           const SnackBar(
@@ -94,18 +92,20 @@ class _CartPageState extends State<CartPage> {
       }
     } catch (e, stackTrace) {
       debugPrint('Error updating quantity: $e\n$stackTrace');
-      
+
       if (mounted) {
         ScaffoldMessenger.of(context).showSnackBar(
           SnackBar(
-            content: Text(e.toString().contains('Validation')
-                ? "Erreur de validation - quantité invalide"
-                : "Erreur lors de la mise à jour"),
+            content: Text(
+              e.toString().contains('Validation')
+                  ? "Erreur de validation - quantité invalide"
+                  : "Erreur lors de la mise à jour",
+            ),
             backgroundColor: Colors.red,
           ),
         );
       }
-      
+
       // Revert to previous state if update fails
       if (mounted) _fetchCartItems();
     } finally {
@@ -121,11 +121,11 @@ class _CartPageState extends State<CartPage> {
     setState(() {
       _isLoadingLocal = true;
     });
-    
+
     try {
       final cartProvider = Provider.of<CartProvider>(context, listen: false);
       await cartProvider.removeItem(itemId);
-      
+
       if (mounted) {
         ScaffoldMessenger.of(context).showSnackBar(
           const SnackBar(
@@ -136,18 +136,20 @@ class _CartPageState extends State<CartPage> {
       }
     } catch (e, stackTrace) {
       debugPrint('Error removing item: $e\n$stackTrace');
-      
+
       if (mounted) {
         ScaffoldMessenger.of(context).showSnackBar(
           SnackBar(
-            content: Text(e.toString().contains('Validation')
-                ? "Erreur de validation - impossible de supprimer"
-                : "Erreur lors de la suppression"),
+            content: Text(
+              e.toString().contains('Validation')
+                  ? "Erreur de validation - impossible de supprimer"
+                  : "Erreur lors de la suppression",
+            ),
             backgroundColor: Colors.red,
           ),
         );
       }
-      
+
       if (mounted) _fetchCartItems();
     } finally {
       if (mounted) {
@@ -158,23 +160,22 @@ class _CartPageState extends State<CartPage> {
     }
   }
 
-
   Future<void> _applyPromoCode() async {
     if (_promoCode.isEmpty) return;
-    
+
     setState(() {
       _isLoadingLocal = true;
     });
-    
+
     try {
       // Simulate API call
       await Future.delayed(const Duration(milliseconds: 500));
-      
+
       if (_promoCode.toLowerCase() == 'skbt2025') {
         setState(() {
           _discount = _subtotal * 0.1;
         });
-        
+
         if (mounted) {
           ScaffoldMessenger.of(context).showSnackBar(
             const SnackBar(
@@ -189,10 +190,7 @@ class _CartPageState extends State<CartPage> {
     } catch (e) {
       if (mounted) {
         ScaffoldMessenger.of(context).showSnackBar(
-          SnackBar(
-            content: Text(e.toString()),
-            backgroundColor: Colors.red,
-          ),
+          SnackBar(content: Text(e.toString()), backgroundColor: Colors.red),
         );
       }
     } finally {
@@ -208,13 +206,13 @@ class _CartPageState extends State<CartPage> {
     setState(() {
       _isLoadingLocal = true;
     });
-    
+
     try {
       final result = await ApiService.createCommandeFromCart();
-      
+
       if (result['success']) {
         await Provider.of<CartProvider>(context, listen: false).clearCart();
-        
+
         if (mounted) {
           ScaffoldMessenger.of(context).showSnackBar(
             const SnackBar(
@@ -229,10 +227,7 @@ class _CartPageState extends State<CartPage> {
     } catch (e) {
       if (mounted) {
         ScaffoldMessenger.of(context).showSnackBar(
-          SnackBar(
-            content: Text(e.toString()),
-            backgroundColor: Colors.red,
-          ),
+          SnackBar(content: Text(e.toString()), backgroundColor: Colors.red),
         );
       }
     } finally {
@@ -277,7 +272,7 @@ class _CartPageState extends State<CartPage> {
         body: _buildBody(),
         bottomNavigationBar: Consumer<CartProvider>(
           builder: (context, cartProvider, _) {
-            return cartProvider.items.isEmpty 
+            return cartProvider.items.isEmpty
                 ? const SizedBox.shrink()
                 : _buildCheckoutBar();
           },
@@ -294,10 +289,7 @@ class _CartPageState extends State<CartPage> {
           children: [
             CircularProgressIndicator(color: _primaryColor),
             const SizedBox(height: 16),
-            Text(
-              "Chargement...",
-              style: TextStyle(color: _textColor),
-            ),
+            Text("Chargement...", style: TextStyle(color: _textColor)),
           ],
         ),
       );
@@ -346,7 +338,9 @@ class _CartPageState extends State<CartPage> {
                 ),
                 const SizedBox(height: 16),
                 ElevatedButton(
-                  style: ElevatedButton.styleFrom(backgroundColor: _primaryColor),
+                  style: ElevatedButton.styleFrom(
+                    backgroundColor: _primaryColor,
+                  ),
                   onPressed: _fetchCartItems,
                   child: const Text('Réessayer'),
                 ),
@@ -369,11 +363,7 @@ class _CartPageState extends State<CartPage> {
       child: Column(
         mainAxisAlignment: MainAxisAlignment.center,
         children: [
-          Icon(
-            Icons.shopping_cart_outlined,
-            size: 80,
-            color: Colors.grey[600],
-          ),
+          Icon(Icons.shopping_cart_outlined, size: 80, color: Colors.grey[600]),
           const SizedBox(height: 16),
           Text(
             "Votre panier est vide",
@@ -386,10 +376,7 @@ class _CartPageState extends State<CartPage> {
           const SizedBox(height: 8),
           Text(
             "Ajoutez des articles pour commencer vos achats",
-            style: TextStyle(
-              fontSize: 16,
-              color: Colors.grey[500],
-            ),
+            style: TextStyle(fontSize: 16, color: Colors.grey[500]),
           ),
           const SizedBox(height: 24),
           ElevatedButton(
@@ -406,7 +393,7 @@ class _CartPageState extends State<CartPage> {
             },
             child: const Text(
               "Explorer les produits",
-              style: TextStyle(fontSize: 16, color : Colors.white),
+              style: TextStyle(fontSize: 16, color: Colors.white),
             ),
           ),
         ],
@@ -440,6 +427,14 @@ class _CartPageState extends State<CartPage> {
   }
 
   Widget _buildCartItem(CartItem item) {
+    String? imageUrl;
+
+    if (item.schema != null) {
+      imageUrl = item.schema!.getImageUrl();
+    } else if (item.imageUrl.isNotEmpty) {
+      imageUrl = item.imageUrl;
+    }
+
     return Card(
       color: _cardColor,
       margin: const EdgeInsets.only(bottom: 16),
@@ -455,40 +450,49 @@ class _CartPageState extends State<CartPage> {
             // Product image
             ClipRRect(
               borderRadius: BorderRadius.circular(8),
-              child: item.imageUrl.isNotEmpty
-                  ? Image.network(
-                      item.imageUrl,
-                      width: 80,
-                      height: 80,
-                      fit: BoxFit.cover,
-                      errorBuilder: (context, error, stackTrace) {
-                        return Container(
-                          width: 80,
-                          height: 80,
+              child:
+                  imageUrl != null && imageUrl.isNotEmpty
+                      ? CachedNetworkImage(
+                        imageUrl: imageUrl,
+                        width: 80,
+                        height: 80,
+                        fit: BoxFit.cover,
+                        placeholder:
+                            (context, url) => Container(
+                              width: 80,
+                              height: 80,
+                              color: Colors.grey[700],
+                              child: const Center(
+                                child: CircularProgressIndicator(),
+                              ),
+                            ),
+                        errorWidget:
+                            (context, url, error) => Container(
+                              width: 80,
+                              height: 80,
+                              color: Colors.grey[700],
+                              child: Icon(
+                                Icons.image_not_supported,
+                                size: 40,
+                                color: Colors.grey[500],
+                              ),
+                            ),
+                      )
+                      : Container(
+                        width: 80,
+                        height: 80,
+                        decoration: BoxDecoration(
                           color: Colors.grey[700],
+                          borderRadius: BorderRadius.circular(8),
+                        ),
+                        child: Center(
                           child: Icon(
-                            Icons.image_not_supported,
+                            Icons.image,
                             size: 40,
                             color: Colors.grey[500],
                           ),
-                        );
-                      },
-                    )
-                  : Container(
-                      width: 80,
-                      height: 80,
-                      decoration: BoxDecoration(
-                        color: Colors.grey[700],
-                        borderRadius: BorderRadius.circular(8),
-                      ),
-                      child: Center(
-                        child: Icon(
-                          Icons.image,
-                          size: 40,
-                          color: Colors.grey[500],
                         ),
                       ),
-                    ),
             ),
             const SizedBox(width: 16),
             // Product details
@@ -506,10 +510,7 @@ class _CartPageState extends State<CartPage> {
                   const SizedBox(height: 4),
                   Text(
                     "${item.price.toStringAsFixed(2)} €",
-                    style: TextStyle(
-                      fontSize: 16,
-                      color: _primaryColor,
-                    ),
+                    style: TextStyle(fontSize: 16, color: _primaryColor),
                   ),
                   const SizedBox(height: 8),
                   Row(
@@ -517,7 +518,8 @@ class _CartPageState extends State<CartPage> {
                       // Quantity selector
                       IconButton(
                         icon: const Icon(Icons.remove),
-                        onPressed: () => _updateQuantity(item.id, item.quantity - 1),
+                        onPressed:
+                            () => _updateQuantity(item.schema!.id, item.quantity - 1),
                         style: IconButton.styleFrom(
                           backgroundColor: Colors.grey[800],
                           padding: const EdgeInsets.all(4),
@@ -533,7 +535,8 @@ class _CartPageState extends State<CartPage> {
                       ),
                       IconButton(
                         icon: const Icon(Icons.add),
-                        onPressed: () => _updateQuantity(item.id, item.quantity + 1),
+                        onPressed:
+                            () => _updateQuantity(item.schema!.id, item.quantity + 1),
                         style: IconButton.styleFrom(
                           backgroundColor: Colors.grey[800],
                           padding: const EdgeInsets.all(4),
@@ -544,7 +547,7 @@ class _CartPageState extends State<CartPage> {
                       // Remove button
                       IconButton(
                         icon: const Icon(Icons.delete_outline),
-                        onPressed: () => _removeItem(item.id),
+                        onPressed: () => _removeItem(item.schema!.id),
                         color: Colors.red[300],
                         tooltip: "Supprimer",
                       ),
@@ -573,10 +576,7 @@ class _CartPageState extends State<CartPage> {
           children: [
             const Text(
               "Code Promo",
-              style: TextStyle(
-                fontSize: 16,
-                fontWeight: FontWeight.bold,
-              ),
+              style: TextStyle(fontSize: 16, fontWeight: FontWeight.bold),
             ),
             const SizedBox(height: 12),
             Row(
@@ -600,7 +600,10 @@ class _CartPageState extends State<CartPage> {
                     padding: const EdgeInsets.symmetric(vertical: 16),
                   ),
                   onPressed: _applyPromoCode,
-                  child: const Text("Appliquer", style: TextStyle(color: Colors.white)),
+                  child: const Text(
+                    "Appliquer",
+                    style: TextStyle(color: Colors.white),
+                  ),
                 ),
               ],
             ),
@@ -637,15 +640,15 @@ class _CartPageState extends State<CartPage> {
           children: [
             const Text(
               "Résumé de la commande",
-              style: TextStyle(
-                fontSize: 16,
-                fontWeight: FontWeight.bold,
-              ),
+              style: TextStyle(fontSize: 16, fontWeight: FontWeight.bold),
             ),
             const SizedBox(height: 16),
             _buildSummaryRow("Sous-total", "${_subtotal.toStringAsFixed(2)} €"),
             const SizedBox(height: 8),
-            _buildSummaryRow("Frais de livraison", "${_shipping.toStringAsFixed(2)} €"),
+            _buildSummaryRow(
+              "Frais de livraison",
+              "${_shipping.toStringAsFixed(2)} €",
+            ),
             const SizedBox(height: 8),
             _buildSummaryRow("TVA (20%)", "${_tax.toStringAsFixed(2)} €"),
             if (_discount > 0) ...[
@@ -705,9 +708,7 @@ class _CartPageState extends State<CartPage> {
       padding: const EdgeInsets.all(16),
       decoration: BoxDecoration(
         color: _cardColor,
-        border: Border(
-          top: BorderSide(color: Colors.grey[800]!),
-        ),
+        border: Border(top: BorderSide(color: Colors.grey[800]!)),
       ),
       child: SafeArea(
         child: ElevatedButton(
@@ -724,12 +725,20 @@ class _CartPageState extends State<CartPage> {
             children: [
               const Text(
                 "Passer commande",
-                style: TextStyle(fontSize: 16, fontWeight: FontWeight.bold, color: Colors.white),
+                style: TextStyle(
+                  fontSize: 16,
+                  fontWeight: FontWeight.bold,
+                  color: Colors.white,
+                ),
               ),
               const SizedBox(width: 8),
               Text(
                 "${_total.toStringAsFixed(2)} €",
-                style: const TextStyle(fontSize: 16, fontWeight: FontWeight.bold, color: Colors.white),
+                style: const TextStyle(
+                  fontSize: 16,
+                  fontWeight: FontWeight.bold,
+                  color: Colors.white,
+                ),
               ),
             ],
           ),
