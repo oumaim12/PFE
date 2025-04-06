@@ -596,8 +596,8 @@ class ApiService {
 
   // Met à jour la quantité d'un produit dans le panier
   static Future<Map<String, dynamic>> updateCartItemQuantity(
-    int productId,
-    int quantity,
+    int schemaId,
+    int newQuantity,
   ) async {
     try {
       if (!isLoggedIn() || currentUser == null) {
@@ -610,7 +610,7 @@ class ApiService {
           "Content-Type": "application/json",
           "Authorization": "Bearer $accessToken",
         },
-        body: jsonEncode({"product_id": productId, "quantity": quantity}),
+        body: jsonEncode({"schema_id": schemaId, "quantity": newQuantity}),
       );
 
       if (response.statusCode == 200) {
@@ -632,7 +632,7 @@ class ApiService {
   }
 
   // Supprime un produit du panier
-  static Future<Map<String, dynamic>> removeFromCart(int productId) async {
+  static Future<Map<String, dynamic>> removeFromCart(int schemaId) async {
     try {
       if (!isLoggedIn() || currentUser == null) {
         return {"success": false, "message": "Utilisateur non connecté"};
@@ -644,7 +644,7 @@ class ApiService {
           "Content-Type": "application/json",
           "Authorization": "Bearer $accessToken",
         },
-        body: jsonEncode({"product_id": productId}),
+        body: jsonEncode({"schema_id": schemaId}),
       );
 
       if (response.statusCode == 200) {
